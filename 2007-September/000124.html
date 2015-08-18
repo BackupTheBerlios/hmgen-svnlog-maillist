@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r125 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r125%20-%20trunk&In-Reply-To=%3C200709121153.l8CBrQ91007178%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000123.html">
+   <LINK REL="Next"  HREF="000125.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r125 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r125%20-%20trunk&In-Reply-To=%3C200709121153.l8CBrQ91007178%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r125 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 13:53:26 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000123.html">[Hmgen-svnlog] r124 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000125.html">[Hmgen-svnlog] r126 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#124">[ date ]</a>
+              <a href="thread.html#124">[ thread ]</a>
+              <a href="subject.html#124">[ subject ]</a>
+              <a href="author.html#124">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 13:53:26 +0200 (Wed, 12 Sep 2007)
+New Revision: 125
+
+Modified:
+   trunk/README
+Log:
+move to build.sh
+
+
+Modified: trunk/README
+===================================================================
+--- trunk/README	2007-09-12 11:52:49 UTC (rev 124)
++++ trunk/README	2007-09-12 11:53:26 UTC (rev 125)
+@@ -15,34 +15,19 @@
+ =========
+ 
+ One-time build:
+-    make all
++    ./build.sh
+ 
+ To build without the GTK+-2.0 GUI, type:
+-    make hmgen
++    ./build.sh cli
+ 
+-Developer build:
+-    make dep
+-    make verbose
+-    or
+-    make dep
+-    make hmgen-verbose
+-    etc...
+-
+ Clean up:
+-    make clean
++    ./build.sh clean
+ 
+ Cleaner up:
+-    make distclean
+-    make mrproper
++    ./build.sh distclean
+ 
+ Just configure:
+-    make configure
++    ./build.sh configure
+ 
+-Or specify a different C compiler:
+-    make CC=suncc configure
+-    or
+-    make CC=suncc all
+-
+-Building on MingW/MSYS:
+-    make CC=gcc
+-
++Et cetera. For all build actions and options like --cc and --prefix:
++    ./build.sh --help
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000123.html">[Hmgen-svnlog] r124 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000125.html">[Hmgen-svnlog] r126 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#124">[ date ]</a>
+              <a href="thread.html#124">[ thread ]</a>
+              <a href="subject.html#124">[ subject ]</a>
+              <a href="author.html#124">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

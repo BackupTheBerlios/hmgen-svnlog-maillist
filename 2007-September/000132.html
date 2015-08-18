@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r132 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r132%20-%20trunk&In-Reply-To=%3C200709121827.l8CIRdNQ015842%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000131.html">
+   <LINK REL="Next"  HREF="000133.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r132 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r132%20-%20trunk&In-Reply-To=%3C200709121827.l8CIRdNQ015842%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r132 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 20:27:39 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000131.html">[Hmgen-svnlog] propchange - r130 svn:log
+</A></li>
+        <LI>Next message: <A HREF="000133.html">[Hmgen-svnlog] r133 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#132">[ date ]</a>
+              <a href="thread.html#132">[ thread ]</a>
+              <a href="subject.html#132">[ subject ]</a>
+              <a href="author.html#132">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 20:27:39 +0200 (Wed, 12 Sep 2007)
+New Revision: 132
+
+Modified:
+   trunk/build.sh
+Log:
+extend help() and add destdir for (future) install actions
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 16:27:05 UTC (rev 131)
++++ trunk/build.sh	2007-09-12 18:27:39 UTC (rev 132)
+@@ -20,8 +20,11 @@
+ 
+ --cc=CC             specify C compiler
+ --prefix=PREFIX     installation prefix [default: $prefix]
++--destdir=DESTDIR   installation destination directory [default: $destdir]
+ --verbose           verbose compilation
+ --nocolor           disable colors for terminals w/o VT100 capabilities
++--configfile=FILE   specify alternative config file
++--depsfile=FILE     specify alternative dependencies file
+ --help              print this message
+ 
+ actions:
+@@ -97,6 +100,7 @@
+ # Defaults
+ 
+ prefix=/usr/local
++destdir=/
+ CC=cc
+ action=
+ depsfile=build.deps
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000131.html">[Hmgen-svnlog] propchange - r130 svn:log
+</A></li>
+	<LI>Next message: <A HREF="000133.html">[Hmgen-svnlog] r133 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#132">[ date ]</a>
+              <a href="thread.html#132">[ thread ]</a>
+              <a href="subject.html#132">[ subject ]</a>
+              <a href="author.html#132">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

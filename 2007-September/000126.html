@@ -1,0 +1,429 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r127 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r127%20-%20trunk&In-Reply-To=%3C200709121208.l8CC8VlT008451%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000125.html">
+   <LINK REL="Next"  HREF="000127.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r127 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r127%20-%20trunk&In-Reply-To=%3C200709121208.l8CC8VlT008451%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r127 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 14:08:31 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000125.html">[Hmgen-svnlog] r126 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000127.html">[Hmgen-svnlog] r128 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#126">[ date ]</a>
+              <a href="thread.html#126">[ thread ]</a>
+              <a href="subject.html#126">[ subject ]</a>
+              <a href="author.html#126">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 14:08:30 +0200 (Wed, 12 Sep 2007)
+New Revision: 127
+
+Modified:
+   trunk/Makefile
+Log:
+Remove old Makefile
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-09-12 12:06:04 UTC (rev 126)
++++ trunk/Makefile	2007-09-12 12:08:30 UTC (rev 127)
+@@ -1,345 +1,11 @@
++# Make is obsolete ;)
+ 
+-# Makefile with built-in configure experiment
+-# Needs GNU Make to run properly
++all:
++	@echo &quot;This project does not use make. Use ./build.sh instead.&quot;
++	@echo &quot;Type ./build.sh --help for details.&quot;
+ 
+-ifeq ($(V),1)
+-SILENT=no
+-endif
+-
+-# ---------- COLORS ----------
+-
+-ifneq ($(colors),no)
+-Bon = &quot;[1m&quot;
+-Boff = &quot;[0m&quot;
+-Red = &quot;[31m&quot;
+-Green = &quot;[32m&quot;
+-else
+-Bon =
+-Boff =
+-Red =
+-Green =
+-endif
+-
+-# ---------- CONFIGURE PREAMBLE ----------
+-
+--include config.mak
+-
+-MAKEFLAGS += --no-print-directory
+-
+-ifneq ($(CONFIGURE_DONE),yes)
+-DEFGOAL=$(filter-out all clean distclean configure, $(MAKECMDGOALS))
+-$(DEFGOAL) all:
+-	@make configure
+-	@make $(MAKECMDGOALS)
+-
+ clean:
++	@./build.sh clean
+ 
+-else
+-
+-# ---------- PROJECT ----------
+-
+-.SUFFIXES:
+-.SUFFIXES: $(OBJSUF) .c
+-
+-DEF_CFLAGS = $(STD_FLAGS) $(WARN_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
+-DEF_LDFLAGS = -lm $(DEBUG_FLAGS) $(SYS_LDFLAGS)
+-
+-CLI = hmgen$(EXESUF)
+-CLIg = hmgen_g$(EXESUF)
+-CLI_BASENAMES = cli_main
+-CLI_OBJS = $(addsuffix $(OBJSUF), $(CLI_BASENAMES))
+-CLI_SRCS = $(addsuffix .c, $(CLI_BASENAMES))
+-
+-GUI = hmgengui$(EXESUF)
+-GUIg = hmgengui_g$(EXESUF)
+-GUI_BASENAMES = gui_main gui_callbacks gui_interface gui_support
+-GUI_OBJS = $(addsuffix $(OBJSUF), $(GUI_BASENAMES))
+-GUI_SRCS = $(addsuffix .c, $(GUI_BASENAMES))
+-
+-LIBHMGEN = libhmgen.a
+-LIBHMGEN_BASENAMES = lib_algo_ff lib_algo_mpd lib_algo_forge \
+-                     lib_postproc lib_util lib_hmgen lib_export
+-LIBHMGEN_OBJS = $(addsuffix $(OBJSUF), $(LIBHMGEN_BASENAMES))
+-LIBHMGEN_SRCS = $(addsuffix .c, $(LIBHMGEN_BASENAMES))
+-
+-build_pretty = printf &quot;$(Bon)%s$(Boff) %s\n&quot; &quot;$(1)&quot; &quot;$(2)&quot;
+-SILENT ?= yes
+-SILENT_EXEC = @test &quot;$(SILENT)&quot; = &quot;yes&quot; &amp;&amp; $(call build_pretty,$(2),$(3)) \
+-                                        || echo &quot;$(1)&quot;; $(1)
+-
+-all: $(GUI) $(CLI)
+-
+-verbose: SILENT=no
+-verbose: all
+-
+-$(CLI)-verbose: SILENT=no
+-$(CLI)-verbose: $(CLI)
+-$(CLI): $(CLIg)
+-	$(call SILENT_EXEC,cp $(CLIg) $@,copy,$(CLIg) $@)
+-	$(call SILENT_EXEC,$(STRIP) $@,strip,$@)
+-
+-$(CLIg): CFLAGS = $(DEF_CFLAGS)
+-$(CLIg): LDFLAGS = $(DEF_LDFLAGS)
+-$(CLIg): $(LIBHMGEN) $(CLI_OBJS)
+-	$(call SILENT_EXEC,$(CC) $(OBJ_OUT_FLAG) $@ $(CLI_OBJS) $(LIBHMGEN) \
+-		$(LDFLAGS),link,$@)
+-
+-$(GUI)-verbose: SILENT=no
+-$(GUI)-verbose: $(GUI)
+-$(GUI): $(GUIg)
+-	$(call SILENT_EXEC,cp $(GUIg) $@,copy,$(GUIg) $@)
+-	$(call SILENT_EXEC,$(STRIP) $@,strip,$@)
+-
+-$(GUIg): CFLAGS = $(GTK_CFLAGS) $(GTHREAD_CFLAGS) $(DEF_CFLAGS)
+-$(GUIg): LDFLAGS = $(GTK_LDFLAGS) $(GTHREAD_LDFLAGS) $(DEF_LDFLAGS)
+-$(GUIg): $(LIBHMGEN) $(GUI_OBJS)
+-	$(call SILENT_EXEC,$(CC) $(OBJ_OUT_FLAG) $@ $(GUI_OBJS) $(LIBHMGEN) \
+-		$(LDFLAGS),link,$@)
+-
+-$(LIBHMGEN)-verbose: SILENT=no
+-$(LIBHMGEN)-verbose: $(LIBHMGEN)
+-$(LIBHMGEN): CFLAGS = $(DEF_CFLAGS)
+-$(LIBHMGEN): LDFLAGS = $(DEF_LDFLAGS)
+-$(LIBHMGEN): $(LIBHMGEN_OBJS)
+-	$(call SILENT_EXEC,$(AR) $(AR_FLAGS) $@ $^,archive,$@)
+-	$(call SILENT_EXEC,$(RANLIB) $@,ranlib,$@)
+-
+-.c.o:
+-	$(call SILENT_EXEC,$(CC) $(DONT_LINK_FLAG) $(OBJ_OUT_FLAG) $@ $&lt; $(CFLAGS)\
+-		,compile,$&lt;)
+-
+-depend-verbose dep-verbose: SILENT=no
+-depend-verbose dep-verbose: dep
+-depend dep: $(CLI_SRCS) $(LIBHMGEN_SRCS) $(GUI_SRCS)
+-	$(call SILENT_EXEC,$(CC_DEP) $(DEP_FLAGS) $(DEF_CFLAGS) $(GTK_CFLAGS) $(GTHREAD_CFLAGS) $^ 1&gt;.depend,ccdep,&gt;.depend)
+-
+-size:
+-	@wc -l *.[ch] Makefile *.mak | tail -1
+-
+-size-long:
+-	@wc -l *.[ch] Makefile *.mak
+-
+-clean:
+-	rm -f $(CLI) $(CLIg) $(CLI_OBJS)
+-	rm -f $(LIBHMGEN) $(LIBHMGEN_OBJS)
+-	rm -f $(GUI) $(GUIg) $(GUI_OBJS)
+-
+-.PHONY: all dep depend clean verbose $(CLI)-verbose size \
+-        $(GUI)-verbose $(LIBHMGEN)-verbose depend-verbose dep-verbose size-long
+-
+-endif	# END CONFIGURE PREAMBLE
+-
+-# ---------- CONFIGURE ----------
+-
+-define config-print-result
+-	if test &quot;$(2)&quot; = &quot;no&quot; ; then \
+-		col=&quot;$(Bon)$(Red)&quot; ; \
+-	elif test &quot;$(2)&quot; = &quot;yes&quot; ; then \
+-		col=&quot;$(Bon)$(Green)&quot; ; \
+-	else \
+-		col=&quot;$(Bon)&quot; ; \
+-	fi ; \
+-	if test -n &quot;$(2)&quot; ; then \
+-		printf &quot;%-16s : $$col%s$(Boff)\n&quot; &quot;$(1)&quot; &quot;$(2)&quot; ; \
+-	fi
+-endef
+-
+-clean-config.mak:
+-	@&gt; config.mak
+-
+-config-cc:
+-	@$(call config-print-result,compiler,$(CC))
+-	@echo CC=$(CC) &gt;&gt; config.mak
+-	@echo CC_DEP=$(CC) &gt;&gt; config.mak
+-
+-config-cc-vendor-and-version:	config-cc
+-	@CC_VENDOR=`$(CC) --help 2&gt;/dev/null | grep -q gcc &amp;&amp; echo gnu` ; \
+-	if test &quot;$$CC_VENDOR&quot; = &quot;gnu&quot; ; then \
+-		CC_VERSION=`$(CC) -dumpversion` ; \
+-	else \
+-		CC_VENDOR=`$(CC) -flags 2&gt;/dev/null | grep -q sunperf &amp;&amp; echo sun` ; \
+-		if test &quot;$$CC_VENDOR&quot; = &quot;sun&quot; ; then \
+-			CC_VERSION=`echo | $(CC) -E - | grep ident | cut -d ' ' -f 5` ; \
+-		else \
+-			CC_VENDOR=unknown; \
+-			echo CC_DEP=true &gt;&gt; config.mak; \
+-		fi ; \
+-	fi ; \
+-	echo CC_VENDOR=$$CC_VENDOR &gt;&gt; config.mak ; \
+-	echo CC_VERSION=$$CC_VERSION &gt;&gt; config.mak ; \
+-	echo CC_VERSION_MAJOR=`echo $$CC_VERSION | cut -d '.' -f 1` \
+-		&gt;&gt;config.mak ;\
+-	echo CC_VERSION_MINOR=`echo $$CC_VERSION | cut -d '.' -f 2` \
+-		&gt;&gt;config.mak ;\
+-	echo CC_VERSION_SUBMINOR=`echo $$CC_VERSION | cut -d '.' -f 3` \
+-		&gt;&gt;config.mak ;\
+-	$(call config-print-result,vendor,$$CC_VENDOR) ; \
+-	$(call config-print-result,version,$$CC_VERSION)
+-
+-config-cc-vendor-and-version-restrict:	config-cc-vendor-and-version
+-	@. config.mak ; \
+-	if test &quot;$$CC_VENDOR&quot; = gnu ; then \
+-		if test &quot;$$CC_VERSION_MAJOR&quot; -le 2 ; then \
+-			echo &quot;gcc version &lt; 3.x is not supported&quot; ; \
+-			exit 1 ; \
+-		fi ; \
+-	fi ;
+-
+-config-cc-flags: 	config-cc-vendor-and-version-restrict
+-	@. config.mak ; \
+-	case $$CC_VENDOR in \
+-		gnu) \
+-			WARN_FLAGS=&quot;-Wall -W&quot; ; \
+-			OPT_FLAGS=&quot;-O3&quot; ; \
+-			STD_FLAGS=&quot;-std=c99&quot; ; \
+-			DEBUG_FLAGS=&quot;-g&quot; ; \
+-			DEP_FLAGS=&quot;-MM&quot; ; \
+-			OBJ_OUT_FLAG=&quot;-o&quot; ; \
+-			DONT_LINK_FLAG=&quot;-c&quot; ; \
+-			;; \
+-		sun) \
+-			WARN_FLAGS= ; \
+-			OPT_FLAGS=&quot;-xO5&quot; ; \
+-			STD_FLAGS=&quot;-Xc&quot; ; \
+-			DEBUG_FLAGS=&quot;-g&quot; ; \
+-			DEP_FLAGS=&quot;-xM&quot; ; \
+-			OBJ_OUT_FLAG=&quot;-o&quot; ; \
+-			DONT_LINK_FLAG=&quot;-c&quot; ; \
+-			;; \
+-		unknown) \
+-			WARN_FLAGS= ; \
+-			OPT_FLAGS=&quot;-O&quot; ; \
+-			STD_FLAGS= ; \
+-			DEBUG_FLAGS=&quot;-g&quot; ; \
+-			DEP_FLAGS= ; \
+-			OBJ_OUT_FLAG=&quot;-o&quot; ; \
+-			DONT_LINK_FLAG=&quot;-c&quot; ; \
+-			;; \
+-	esac ; \
+-	echo WARN_FLAGS=$$WARN_FLAGS &gt;&gt; config.mak ; \
+-	echo OPT_FLAGS=$$OPT_FLAGS &gt;&gt; config.mak ; \
+-	echo STD_FLAGS=$$STD_FLAGS &gt;&gt; config.mak ; \
+-	echo DEBUG_FLAGS=$$DEBUG_FLAGS &gt;&gt; config.mak ; \
+-	echo DEP_FLAGS=$$DEP_FLAGS &gt;&gt; config.mak ; \
+-	echo OBJ_OUT_FLAG=$$OBJ_OUT_FLAG &gt;&gt; config.mak ; \
+-	echo DONT_LINK_FLAG=$$DONT_LINK_FLAG &gt;&gt; config.mak ; \
+-	$(call config-print-result,warnings,$$WARN_FLAGS) ; \
+-	$(call config-print-result,optimize,$$OPT_FLAGS) ; \
+-	$(call config-print-result,standards,$$STD_FLAGS) ; \
+-	$(call config-print-result,debug,$$DEBUG_FLAGS) ; \
+-	$(call config-print-result,dependencies,$$DEP_FLAGS) ; \
+-	$(call config-print-result,object out,$$OBJ_OUT_FLAG) ; \
+-	$(call config-print-result,do not link,$$DONT_LINK_FLAG) ;
+-
+-config-pkg-config:
+-	@TMP=`pkg-config --version 2&gt;/dev/null 1&gt;&amp;2 &amp;&amp; echo yes || echo no` ; \
+-	$(call config-print-result,pkg-config,$$TMP) ; \
+-	if test &quot;$$TMP&quot; != &quot;yes&quot; ; then \
+-		echo &quot;pkg-config not found&quot; ; \
+-		exit 1 ; \
+-	fi ; \
+-
+-NOERR=2&gt;/dev/null
+-
+-define CONFIG_PKG_CONFIG_PKG
+-	@TMP=`pkg-config --atleast-version=$(4) $(1) $(NOERR) &amp;&amp; \
+-		echo yes || echo no` ;\
+-	$(call config-print-result,$(1),$$TMP) ; \
+-	if test &quot;$$TMP&quot; != &quot;yes&quot; ; then \
+-		echo &quot;$(1), at least version $(4), not found.&quot; ; \
+-		echo &quot;Perhaps you need to install the dev(el) packages?&quot; ; \
+-		exit 1 ; \
+-	fi ; \
+-	TVARC=`pkg-config --cflags $(1) $(NOERR)` ; \
+-	TVARL=`pkg-config --static --libs $(1) $(NOERR)` ; \
+-	echo $(2)=$$TVARC &gt;&gt; config.mak ; \
+-	echo $(3)=$$TVARL &gt;&gt; config.mak ;
+-endef
+-
+-config-gtk-flags: config-pkg-config
+-	$(call CONFIG_PKG_CONFIG_PKG,gtk+-2.0,GTK_CFLAGS,GTK_LDFLAGS,2.0)
+-
+-config-gthread-flags: config-pkg-config
+-	$(call CONFIG_PKG_CONFIG_PKG,gthread-2.0,GTHREAD_CFLAGS,GTHREAD_LDFLAGS,2.0)
+-
+-config-suncc-flags-fix: config-cc-vendor-and-version config-gthread-flags
+-	@if grep -q CC_VENDOR=sun config.mak ; then \
+-		GTHREAD_CFLAGS=`grep GTHREAD_CFLAGS= config.mak | sed 's/-pthread//'` ; \
+-		GTHREAD_LDFLAGS=`grep GTHREAD_LDFLAGS= config.mak | sed 's/-pthread//'` ; \
+-		echo $$GTHREAD_CFLAGS &gt;&gt; config.mak ; \
+-		echo $$GTHREAD_LDFLAGS &gt;&gt; config.mak ; \
+-	fi ;
+-
+-config-define-none:
+-	@echo DEFINES= &gt;&gt; config.mak
+-
+-config-define-svnrev: config-define-none
+-	@svn_rev=`LC_ALL=C svn info * 2&gt;/dev/null | grep ^Revision: \
+-		| cut -d ' ' -f 2 | xargs -n 1 -iX printf &quot;%05i\n&quot; X \
+-		| sort -r | head -n 1 | sed 's/^0//' | sed 's/^0//' \
+-		| sed 's/^0//'` ; \
+-	test $$svn_rev || svn_rev=`grep revision .svn/entries 2&gt;/dev/null \
+-		| cut -d '&quot;' -f 2` | xargs -n 1 -iX printf &quot;%05i\n&quot; X \
+-		| sort -r | head -n 1 | sed 's/^0//' | sed 's/^0//' \
+-		| sed 's/^0//' ; \
+-	test $$svn_rev || svn_rev=`sed -n -e '/^dir$/{n;p;q;}' \
+-		.svn/entries 2&gt;/dev/null` ; \
+-	test $$svn_rev || svn_rev=0 ; \
+-	echo DEFINES=-DSVN_REVISION=$$svn_rev &gt;&gt; config.mak
+-
+-config-system:
+-	@SYSTEM=`uname -s` ; \
+-	SYSTEM=`echo $$SYSTEM | tr '[A-Z]' '[a-z]'` ; \
+-	case &quot;$$SYSTEM&quot; in \
+-		linux*)     SYSTEM=linux ;; \
+-		mingw*)     SYSTEM=mingw ;; \
+-		*)          SYSTEM=&quot;$$SYSTEM_untested&quot; ;; \
+-	esac ; \
+-	echo SYSTEM=$$SYSTEM &gt;&gt; config.mak ; \
+-	$(call config-print-result,system,$$SYSTEM) ;
+-
+-config-system-ldflags: config-system
+-	@SYS_LDFLAGS= ; \
+-	if grep -q SYSTEM=mingw config.mak ; then \
+-		if grep -q CC_VENDOR=gnu config.mak ; then \
+-			SYS_LDFLAGS=-mwindows ; \
+-		fi ; \
+-	fi ; \
+-	echo SYS_LDFLAGS=$$SYS_LDFLAGS &gt;&gt; config.mak ; \
+-	$(call config-print-result,system ldflags,$$SYS_LDFLAGS) ;
+-
+-config-exe-suf: config-system
+-	@EXESUF= ; \
+-	if grep -q SYSTEM=mingw config.mak ; then \
+-		EXESUF=.exe ; \
+-	fi ; \
+-	echo EXESUF=$$EXESUF &gt;&gt; config.mak ; \
+-	$(call config-print-result,exe suffix,$$EXESUF) ;
+-
+-configure: clean-config.mak \
+-           config-cc-flags \
+-           config-gtk-flags \
+-           config-gthread-flags \
+-           config-suncc-flags-fix \
+-           config-define-svnrev \
+-		   config-system \
+-		   config-system-ldflags \
+-		   config-exe-suf
+-	@echo AR?=ar &gt;&gt; config.mak
+-	@echo RANLIB?=ranlib &gt;&gt; config.mak
+-	@echo STRIP?=strip &gt;&gt; config.mak
+-	@echo OBJSUF=.o &gt;&gt; config.mak
+-	@echo AR_FLAGS=cru &gt;&gt; config.mak
+-	@echo CONFIGURE_DONE=yes &gt;&gt; config.mak
+-
+-mrproper distclean: clean
+-	rm -f *~ .depend *.pgm *.ppm config.mak
+-
+-.PHONY: mrproper distclean clean-config.mak configure config-cc \
+-        config-cc-vendor-and-version \
+-        config-cc-flags config-cc-vendor-and-version-restrict \
+-        config-pkg-config config-gtk-flags config-gthread-flags
+-
+-# ---------- DEPENDENCIES ----------
+-
+--include .depend
++distclean:
++	@./build.sh distclean
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000125.html">[Hmgen-svnlog] r126 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000127.html">[Hmgen-svnlog] r128 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#126">[ date ]</a>
+              <a href="thread.html#126">[ thread ]</a>
+              <a href="subject.html#126">[ subject ]</a>
+              <a href="author.html#126">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

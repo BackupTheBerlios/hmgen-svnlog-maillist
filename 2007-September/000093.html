@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r94 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r94%20-%20trunk&In-Reply-To=%3C200709091148.l89Bm5fu018131%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000092.html">
+   <LINK REL="Next"  HREF="000094.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r94 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r94%20-%20trunk&In-Reply-To=%3C200709091148.l89Bm5fu018131%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r94 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sun Sep  9 13:48:05 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000092.html">[Hmgen-svnlog] r93 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000094.html">[Hmgen-svnlog] r95 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-09 13:48:04 +0200 (Sun, 09 Sep 2007)
+New Revision: 94
+
+Modified:
+   trunk/Makefile
+Log:
+configure system and system dependant ldflags
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-09-09 11:34:30 UTC (rev 93)
++++ trunk/Makefile	2007-09-09 11:48:04 UTC (rev 94)
+@@ -42,7 +42,7 @@
+ .SUFFIXES: $(OBJSUF) .c
+ 
+ DEF_CFLAGS = $(STD_FLAGS) $(WARN_FLAGS) $(OPT_FLAGS) $(DEBUG_FLAGS) $(DEFINES)
+-DEF_LDFLAGS = -lm $(DEBUG_FLAGS)
++DEF_LDFLAGS = -lm $(DEBUG_FLAGS) $(SYS_LDFLAGS)
+ 
+ CLI = hmgen$(EXESUF)
+ CLIg = hmgen_g$(EXESUF)
+@@ -285,12 +285,35 @@
+ 	test $$svn_rev || svn_rev=0 ; \
+ 	echo DEFINES=-DSVN_REVISION=$$svn_rev &gt;&gt; config.mak
+ 
++config-system:
++	@SYSTEM=`uname -s` ; \
++	SYSTEM=`echo $$SYSTEM | tr '[A-Z]' '[a-z]'` ; \
++	case &quot;$$SYSTEM&quot; in \
++		linux*)     SYSTEM=linux ;; \
++		mingw*)     SYSTEM=mingw ;; \
++		*)          SYSTEM=&quot;$$SYSTEM_untested&quot; ;; \
++	esac ; \
++	echo SYSTEM=$$SYSTEM &gt;&gt; config.mak ; \
++	$(call config-print-result,system,$$SYSTEM) ;
++
++config-system-ldflags:
++	@SYS_LDFLAGS= ; \
++	if grep -q SYSTEM=mingw config.mak ; then \
++		if greq -q CC_VENDOR=gnu config.mak ; then \
++			SYS_LDFLAGS=-mwindows ; \
++		fi ; \
++	fi ; \
++	echo SYS_LDFLAGS=$$SYS_LDFLAGS &gt;&gt; config.mak ; \
++	$(call config-print-result,system ldflags,$$SYS_LDFLAGS) ;
++
+ configure: clean-config.mak \
+            config-cc-flags \
+            config-gtk-flags \
+            config-gthread-flags \
+            config-suncc-flags-fix \
+-           config-define-svnrev
++           config-define-svnrev \
++		   config-system \
++		   config-system-ldflags
+ 	@echo AR?=ar &gt;&gt; config.mak
+ 	@echo RANLIB?=ranlib &gt;&gt; config.mak
+ 	@echo STRIP?=strip &gt;&gt; config.mak
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000092.html">[Hmgen-svnlog] r93 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000094.html">[Hmgen-svnlog] r95 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#93">[ date ]</a>
+              <a href="thread.html#93">[ thread ]</a>
+              <a href="subject.html#93">[ subject ]</a>
+              <a href="author.html#93">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

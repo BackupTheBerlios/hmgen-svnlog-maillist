@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r142 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r142%20-%20trunk&In-Reply-To=%3C200709122305.l8CN5XZo030586%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000141.html">
+   <LINK REL="Next"  HREF="000143.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r142 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r142%20-%20trunk&In-Reply-To=%3C200709122305.l8CN5XZo030586%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r142 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep 13 01:05:33 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000141.html">[Hmgen-svnlog] r141 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000143.html">[Hmgen-svnlog] r143 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#142">[ date ]</a>
+              <a href="thread.html#142">[ thread ]</a>
+              <a href="subject.html#142">[ subject ]</a>
+              <a href="author.html#142">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-13 01:05:33 +0200 (Thu, 13 Sep 2007)
+New Revision: 142
+
+Modified:
+   trunk/build.sh
+Log:
+proper PREFIX and DESTDIR handling
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 23:00:19 UTC (rev 141)
++++ trunk/build.sh	2007-09-12 23:05:33 UTC (rev 142)
+@@ -94,8 +94,8 @@
+ 
+ # Defaults
+ 
+-prefix=/usr/local
+-destdir=/
++PREFIX=/usr/local
++DESTDIR=
+ CC=cc
+ action=
+ depsfile=build.deps
+@@ -284,6 +284,9 @@
+     find_program ranlib RANLIB  optional $RANLIB    ranlib true
+     find_program strip  STRIP   optional $STRIP     strip true
+     find_program awk    AWK     optional $AWK       mawk gawk nawk awk true
++
++    result &quot;install prefix&quot; &quot;$PREFIX&quot;
++    result &quot;install destdir&quot; &quot;$DESTDIR&quot;
+ }
+ 
+ output_build_config() {
+@@ -293,7 +296,7 @@
+         CC_VERSION_SUBMINOR WARN_FLAGS OPT_FLAGS STD_FLAGS DEBUG_FLAGS \
+         DEP_FLAGS OBJ_OUT_FLAG DONT_LINK_FLAG GTK_CFLAGS GTK_LDFLAGS \
+         GTHREAD_CFLAGS GTHREAD_LDFLAGS DEFINES SYSTEM SYS_LDFLAGS EXESUF AR \
+-        AR_FLAGS RANLIB STRIP OBJSUF AWK CONFIGURE_DONE ; do
++        AR_FLAGS RANLIB STRIP OBJSUF AWK PREFIX DESTDIR CONFIGURE_DONE ; do
+         eval echo &quot;$i=\\\&quot;\$$i\\\&quot;&quot; &gt;&gt; $configfile
+     done
+ }
+@@ -542,7 +545,8 @@
+ for i in $@ ; do
+     case &quot;$i&quot; in
+         --cc=*)         CC=`optarg $i`      ;;
+-        --prefix=*)     prefix=`optarg $i`  ;;
++        --prefix=*)     PREFIX=`optarg $i`  ;;
++        --destdir=*)    DESTDIR=`optarg $i` ;;
+         --verbose)      V=1                 ;;
+         --nocolor)      C=0 ; init_colors   ;;
+         --configfile=*) configfile=`optarg $i`  ;;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000141.html">[Hmgen-svnlog] r141 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000143.html">[Hmgen-svnlog] r143 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#142">[ date ]</a>
+              <a href="thread.html#142">[ thread ]</a>
+              <a href="subject.html#142">[ subject ]</a>
+              <a href="author.html#142">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

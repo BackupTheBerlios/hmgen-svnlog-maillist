@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r33 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r33%20-%20trunk&In-Reply-To=%3C200708311108.l7VB8jbk007286%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000031.html">
+   <LINK REL="Next"  HREF="000033.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r33 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r33%20-%20trunk&In-Reply-To=%3C200708311108.l7VB8jbk007286%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r33 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Aug 31 13:08:45 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000031.html">[Hmgen-svnlog] r32 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000033.html">[Hmgen-svnlog] r34 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#32">[ date ]</a>
+              <a href="thread.html#32">[ thread ]</a>
+              <a href="subject.html#32">[ subject ]</a>
+              <a href="author.html#32">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-31 13:08:36 +0200 (Fri, 31 Aug 2007)
+New Revision: 33
+
+Modified:
+   trunk/gui_main.c
+Log:
+suppress stupid/buggy libgtk warning messages to stderr
+
+it looks like libgtk has no sane mechanism for redirecting stdout/stderr, so
+we just close fd 2 and reopen it to /dev/null
+
+to disable this functionality, export HMGENGUI_SHOW_STDERR= before starting
+the gui
+
+
+Modified: trunk/gui_main.c
+===================================================================
+--- trunk/gui_main.c	2007-08-31 11:00:48 UTC (rev 32)
++++ trunk/gui_main.c	2007-08-31 11:08:36 UTC (rev 33)
+@@ -1,13 +1,24 @@
+ #include &lt;gtk/gtk.h&gt;
+ #include &lt;locale.h&gt;
+ #include &lt;stdlib.h&gt;
++#include &lt;unistd.h&gt;
++#include &lt;fcntl.h&gt;
+ #include &quot;gui_interface.h&quot;
+ #include &quot;gui_support.h&quot;
+ #include &quot;lib_hmgen.c&quot;
+ 
+ int main(int argc, char *argv[]) {
+     GtkWidget *hmgengui;
++    char *show_stderr;
+ 
++    /* stop gtk spamming stderr with warnings about gnome icons
++     * this is a bug in gtk */
++    show_stderr = getenv(&quot;HMGENGUI_SHOW_STDERR&quot;);
++    if (!show_stderr) {
++        close(2);
++        open(&quot;/dev/null&quot;, O_WRONLY);
++    }
++
+     gtk_disable_setlocale();
+     setlocale(LC_ALL, &quot;C&quot;);
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000031.html">[Hmgen-svnlog] r32 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000033.html">[Hmgen-svnlog] r34 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#32">[ date ]</a>
+              <a href="thread.html#32">[ thread ]</a>
+              <a href="subject.html#32">[ subject ]</a>
+              <a href="author.html#32">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

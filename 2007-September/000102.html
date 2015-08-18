@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r103 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r103%20-%20trunk&In-Reply-To=%3C200709101229.l8ACTZmU029691%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000101.html">
+   <LINK REL="Next"  HREF="000103.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r103 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r103%20-%20trunk&In-Reply-To=%3C200709101229.l8ACTZmU029691%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r103 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Mon Sep 10 14:29:35 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000101.html">[Hmgen-svnlog] r102 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000103.html">[Hmgen-svnlog] r104 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#102">[ date ]</a>
+              <a href="thread.html#102">[ thread ]</a>
+              <a href="subject.html#102">[ subject ]</a>
+              <a href="author.html#102">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-10 14:29:34 +0200 (Mon, 10 Sep 2007)
+New Revision: 103
+
+Modified:
+   trunk/build.sh
+Log:
+faster up_to_date check
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-10 12:21:18 UTC (rev 102)
++++ trunk/build.sh	2007-09-10 12:29:34 UTC (rev 103)
+@@ -297,10 +297,7 @@
+ 
+ up_to_date() {
+     r=`ls -t1 $@ 2&gt;/dev/null | head -1`
+-    case $r in
+-        $1) true ;;
+-        *)  false ;;
+-    esac
++    test &quot;$r&quot; = &quot;$1&quot;
+ }
+ 
+ mangle() {
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000101.html">[Hmgen-svnlog] r102 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000103.html">[Hmgen-svnlog] r104 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#102">[ date ]</a>
+              <a href="thread.html#102">[ thread ]</a>
+              <a href="subject.html#102">[ subject ]</a>
+              <a href="author.html#102">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

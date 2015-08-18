@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r8 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r8%20-%20trunk&In-Reply-To=%3C200708291913.l7TJDZcU009908%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000006.html">
+   <LINK REL="Next"  HREF="000008.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r8 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r8%20-%20trunk&In-Reply-To=%3C200708291913.l7TJDZcU009908%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r8 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Aug 29 21:13:35 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000006.html">[Hmgen-svnlog] r7 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000008.html">[Hmgen-svnlog] r9 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#7">[ date ]</a>
+              <a href="thread.html#7">[ thread ]</a>
+              <a href="subject.html#7">[ subject ]</a>
+              <a href="author.html#7">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-29 21:13:35 +0200 (Wed, 29 Aug 2007)
+New Revision: 8
+
+Modified:
+   trunk/Makefile
+Log:
+move clean targets
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-08-29 19:13:06 UTC (rev 7)
++++ trunk/Makefile	2007-08-29 19:13:35 UTC (rev 8)
+@@ -13,6 +13,9 @@
+ $(DEFGOAL) all::
+ 	@make configure
+ 	@make $(MAKECMDGOALS)
++
++clean:
++
+ else
+ 
+ # ---------- PROJECT ----------
+@@ -93,20 +96,15 @@
+ size-long:
+ 	@wc -l *.[ch] Makefile *.mak
+ 
+-endif	# END CONFIGURE PREAMBLE
+-
+-# ---------- CLEAN UP ----------
+-
+ clean:
+ 	rm -f $(CLI) $(CLIg) $(CLI_OBJS)
+ 	rm -f $(LIBHMGEN) $(LIBHMGEN_OBJS)
+ 	rm -f $(GUI) $(GUIg) $(GUI_OBJS)
+ 
+-mrproper distclean: clean
+-	rm -f *~ .depend *.pgm *.ppm config.mak
++.PHONY: all dep depend clean verbose $(CLI)-verbose size \
++        $(GUI)-verbose $(LIBHMGEN)-verbose depend-verbose dep-verbose size-long
+ 
+-.PHONY: all dep depend clean distclean mrproper verbose $(CLI)-verbose size
+-.PHONY: $(GUI)-verbose $(LIBHMGEN)-verbose depend-verbose dep-verbose size-long
++endif	# END CONFIGURE PREAMBLE
+ 
+ # ---------- CONFIGURE ----------
+ 
+@@ -221,7 +219,11 @@
+ 	@echo AR_FLAGS=cru &gt;&gt; config.mak
+ 	@echo CONFIGURE_DONE=yes &gt;&gt; config.mak
+ 
+-.PHONY: clean-config.mak configure config-cc config-cc-vendor-and-version \
++mrproper distclean: clean
++	rm -f *~ .depend *.pgm *.ppm config.mak
++
++.PHONY: mrproper distclean clean-config.mak configure config-cc \
++        config-cc-vendor-and-version \
+         config-cc-flags config-cc-vendor-and-version-restrict \
+         config-pkg-config config-gtk-flags config-gthread-flags
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000006.html">[Hmgen-svnlog] r7 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000008.html">[Hmgen-svnlog] r9 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#7">[ date ]</a>
+              <a href="thread.html#7">[ thread ]</a>
+              <a href="subject.html#7">[ subject ]</a>
+              <a href="author.html#7">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

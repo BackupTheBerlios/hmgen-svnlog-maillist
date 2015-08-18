@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r80 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r80%20-%20trunk&In-Reply-To=%3C200709072238.l87McCcZ008184%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000078.html">
+   <LINK REL="Next"  HREF="000080.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r80 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r80%20-%20trunk&In-Reply-To=%3C200709072238.l87McCcZ008184%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r80 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 00:38:12 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000078.html">[Hmgen-svnlog] r79 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000080.html">[Hmgen-svnlog] r81 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#79">[ date ]</a>
+              <a href="thread.html#79">[ thread ]</a>
+              <a href="subject.html#79">[ subject ]</a>
+              <a href="author.html#79">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 00:38:11 +0200 (Sat, 08 Sep 2007)
+New Revision: 80
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+cosmetics, alignment
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-07 22:36:58 UTC (rev 79)
++++ trunk/gui_callbacks.c	2007-09-07 22:38:11 UTC (rev 80)
+@@ -245,21 +245,21 @@
+     gdk_threads_enter();
+         normfirst   = get_check_button_active(args, &quot;norm_first_checkbutton&quot;);
+         normlast    = get_check_button_active(args, &quot;norm_last_checkbutton&quot;);
+-        normmin = get_spin_button_int(args, &quot;norm_min_spinbutton&quot;);
+-        normmax = get_spin_button_int(args, &quot;norm_max_spinbutton&quot;);
++        normmin     = get_spin_button_int    (args, &quot;norm_min_spinbutton&quot;);
++        normmax     = get_spin_button_int    (args, &quot;norm_max_spinbutton&quot;);
+         inv         = get_check_button_active(args, &quot;invert_checkbutton&quot;);
+         blur        = get_check_button_active(args, &quot;blur_checkbutton&quot;);
+-        blurx     = get_spin_button_int  (args, &quot;blur_xradius_spinbutton&quot;);
+-        blury     = get_spin_button_int  (args, &quot;blur_yradius_spinbutton&quot;);
+-        blursigma = get_spin_button_float(args, &quot;blur_sigma_spinbutton&quot;);
++        blurx       = get_spin_button_int    (args, &quot;blur_xradius_spinbutton&quot;);
++        blury       = get_spin_button_int    (args, &quot;blur_yradius_spinbutton&quot;);
++        blursigma   = get_spin_button_float  (args, &quot;blur_sigma_spinbutton&quot;);
+         crop        = get_check_button_active(args, &quot;crop_enable_checkbutton&quot;);
+-        cropleft    = get_spin_button_int(args, &quot;crop_left_spinbutton&quot;);
+-        cropright   = get_spin_button_int(args, &quot;crop_right_spinbutton&quot;);
+-        croptop     = get_spin_button_int(args, &quot;crop_top_spinbutton&quot;);
+-        cropbottom  = get_spin_button_int(args, &quot;crop_bottom_spinbutton&quot;);
++        cropleft    = get_spin_button_int    (args, &quot;crop_left_spinbutton&quot;);
++        cropright   = get_spin_button_int    (args, &quot;crop_right_spinbutton&quot;);
++        croptop     = get_spin_button_int    (args, &quot;crop_top_spinbutton&quot;);
++        cropbottom  = get_spin_button_int    (args, &quot;crop_bottom_spinbutton&quot;);
+         clip        = get_check_button_active(args, &quot;clip_enable_checkbutton&quot;);
+-        clipmin     = get_spin_button_int(args, &quot;clip_min_spinbutton&quot;);
+-        clipmax     = get_spin_button_int(args, &quot;clip_max_spinbutton&quot;);
++        clipmin     = get_spin_button_int    (args, &quot;clip_min_spinbutton&quot;);
++        clipmax     = get_spin_button_int    (args, &quot;clip_max_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     if (normfirst)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000078.html">[Hmgen-svnlog] r79 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000080.html">[Hmgen-svnlog] r81 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#79">[ date ]</a>
+              <a href="thread.html#79">[ thread ]</a>
+              <a href="subject.html#79">[ subject ]</a>
+              <a href="author.html#79">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

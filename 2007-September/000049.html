@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r50 - trunk/assist
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r50%20-%20trunk/assist&In-Reply-To=%3C200709010939.l819dfEa024470%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000048.html">
+   <LINK REL="Next"  HREF="000050.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r50 - trunk/assist</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r50%20-%20trunk/assist&In-Reply-To=%3C200709010939.l819dfEa024470%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r50 - trunk/assist">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  1 11:39:41 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000048.html">[Hmgen-svnlog] r49 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000050.html">[Hmgen-svnlog] r51 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-01 11:39:41 +0200 (Sat, 01 Sep 2007)
+New Revision: 50
+
+Modified:
+   trunk/assist/hmgengui.glade
+Log:
+update
+
+
+Modified: trunk/assist/hmgengui.glade
+===================================================================
+--- trunk/assist/hmgengui.glade	2007-09-01 09:38:51 UTC (rev 49)
++++ trunk/assist/hmgengui.glade	2007-09-01 09:39:41 UTC (rev 50)
+@@ -8,7 +8,7 @@
+   &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+   &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;hmgengui&lt;/property&gt;
+   &lt;property name=&quot;type&quot;&gt;GTK_WINDOW_TOPLEVEL&lt;/property&gt;
+-  &lt;property name=&quot;window_position&quot;&gt;GTK_WIN_POS_NONE&lt;/property&gt;
++  &lt;property name=&quot;window_position&quot;&gt;GTK_WIN_POS_CENTER&lt;/property&gt;
+   &lt;property name=&quot;modal&quot;&gt;False&lt;/property&gt;
+   &lt;property name=&quot;resizable&quot;&gt;True&lt;/property&gt;
+   &lt;property name=&quot;destroy_with_parent&quot;&gt;False&lt;/property&gt;
+@@ -2526,7 +2526,7 @@
+ 		      &lt;property name=&quot;right_padding&quot;&gt;0&lt;/property&gt;
+ 
+ 		      &lt;child&gt;
+-			&lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale19&quot;&gt;
++			&lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale6&quot;&gt;
+ 			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 			  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 			  &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2549,11 +2549,12 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton1&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton1&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+ 		      &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
++		      &lt;signal name=&quot;color_set&quot; handler=&quot;on_colormap_colorbutton1_color_set&quot; last_modification_time=&quot;Fri, 31 Aug 2007 21:12:45 GMT&quot;/&gt;
+ 		    &lt;/widget&gt;
+ 		    &lt;packing&gt;
+ 		      &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+@@ -2566,7 +2567,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton2&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton2&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2583,7 +2584,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton3&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton3&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2600,7 +2601,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton4&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton4&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2617,7 +2618,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton5&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton5&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2634,7 +2635,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton6&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton6&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2651,7 +2652,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton7&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton7&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2668,7 +2669,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colorbutton8&quot;&gt;
++		    &lt;widget class=&quot;GtkColorButton&quot; id=&quot;colormap_colorbutton8&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;use_alpha&quot;&gt;False&lt;/property&gt;
+@@ -2685,7 +2686,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale15&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale2&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2706,7 +2707,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale16&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale3&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2727,7 +2728,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale17&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale4&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2748,7 +2749,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale18&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale5&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2769,7 +2770,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale20&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale7&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2790,7 +2791,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale21&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale8&quot;&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_value&quot;&gt;True&lt;/property&gt;
+@@ -2811,7 +2812,7 @@
+ 		  &lt;/child&gt;
+ 
+ 		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;hscale8&quot;&gt;
++		    &lt;widget class=&quot;GtkHScale&quot; id=&quot;colormap_scale1&quot;&gt;
+ 		      &lt;property name=&quot;width_request&quot;&gt;300&lt;/property&gt;
+ 		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+@@ -2821,6 +2822,7 @@
+ 		      &lt;property name=&quot;update_policy&quot;&gt;GTK_UPDATE_CONTINUOUS&lt;/property&gt;
+ 		      &lt;property name=&quot;inverted&quot;&gt;False&lt;/property&gt;
+ 		      &lt;property name=&quot;adjustment&quot;&gt;0 0 255 0 0 0&lt;/property&gt;
++		      &lt;signal name=&quot;value_changed&quot; handler=&quot;on_colormap_scale1_value_changed&quot; last_modification_time=&quot;Fri, 31 Aug 2007 14:50:37 GMT&quot;/&gt;
+ 		    &lt;/widget&gt;
+ 		    &lt;packing&gt;
+ 		      &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+@@ -2859,6 +2861,7 @@
+ 		      &lt;property name=&quot;active&quot;&gt;False&lt;/property&gt;
+ 		      &lt;property name=&quot;inconsistent&quot;&gt;False&lt;/property&gt;
+ 		      &lt;property name=&quot;draw_indicator&quot;&gt;True&lt;/property&gt;
++		      &lt;signal name=&quot;toggled&quot; handler=&quot;on_colormap_auto_update_checkbutton_toggled&quot; last_modification_time=&quot;Fri, 31 Aug 2007 21:01:33 GMT&quot;/&gt;
+ 		    &lt;/widget&gt;
+ 		    &lt;packing&gt;
+ 		      &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+@@ -2987,7 +2990,7 @@
+ 	      &lt;property name=&quot;border_width&quot;&gt;8&lt;/property&gt;
+ 	      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 	      &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
+-	      &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
++	      &lt;property name=&quot;n_columns&quot;&gt;4&lt;/property&gt;
+ 	      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+ 	      &lt;property name=&quot;row_spacing&quot;&gt;8&lt;/property&gt;
+ 	      &lt;property name=&quot;column_spacing&quot;&gt;8&lt;/property&gt;
+@@ -3053,77 +3056,15 @@
+ 		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		  &lt;property name=&quot;sensitive&quot;&gt;False&lt;/property&gt;
+ 		  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;label&quot;&gt;gtk-save&lt;/property&gt;
++		  &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
+ 		  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
+ 		  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
+ 		  &lt;signal name=&quot;clicked&quot; handler=&quot;on_pgm_save_as_button_clicked&quot; last_modification_time=&quot;Tue, 21 Aug 2007 13:31:07 GMT&quot;/&gt;
+-
+-		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment4&quot;&gt;
+-		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-		      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-		      &lt;property name=&quot;xscale&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;yscale&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;top_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;bottom_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;left_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;right_padding&quot;&gt;0&lt;/property&gt;
+-
+-		      &lt;child&gt;
+-			&lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox3&quot;&gt;
+-			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			  &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+-			  &lt;property name=&quot;spacing&quot;&gt;2&lt;/property&gt;
+-
+-			  &lt;child&gt;
+-			    &lt;widget class=&quot;GtkImage&quot; id=&quot;image1&quot;&gt;
+-			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;stock&quot;&gt;gtk-save-as&lt;/property&gt;
+-			      &lt;property name=&quot;icon_size&quot;&gt;4&lt;/property&gt;
+-			      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+-			    &lt;/widget&gt;
+-			    &lt;packing&gt;
+-			      &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
+-			    &lt;/packing&gt;
+-			  &lt;/child&gt;
+-
+-			  &lt;child&gt;
+-			    &lt;widget class=&quot;GtkLabel&quot; id=&quot;label33&quot;&gt;
+-			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Save As...&lt;/property&gt;
+-			      &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;use_markup&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;justify&quot;&gt;GTK_JUSTIFY_LEFT&lt;/property&gt;
+-			      &lt;property name=&quot;wrap&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;selectable&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_NONE&lt;/property&gt;
+-			      &lt;property name=&quot;width_chars&quot;&gt;-1&lt;/property&gt;
+-			      &lt;property name=&quot;single_line_mode&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;angle&quot;&gt;0&lt;/property&gt;
+-			    &lt;/widget&gt;
+-			    &lt;packing&gt;
+-			      &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
+-			    &lt;/packing&gt;
+-			  &lt;/child&gt;
+-			&lt;/widget&gt;
+-		      &lt;/child&gt;
+-		    &lt;/widget&gt;
+-		  &lt;/child&gt;
+ 		&lt;/widget&gt;
+ 		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+ 		  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+ 		  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
+ 		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+@@ -3136,73 +3077,51 @@
+ 		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 		  &lt;property name=&quot;sensitive&quot;&gt;False&lt;/property&gt;
+ 		  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;label&quot;&gt;gtk-save&lt;/property&gt;
++		  &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
+ 		  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
+ 		  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
+ 		  &lt;signal name=&quot;clicked&quot; handler=&quot;on_ppm_save_as_button_clicked&quot; last_modification_time=&quot;Tue, 21 Aug 2007 13:30:57 GMT&quot;/&gt;
++		&lt;/widget&gt;
++		&lt;packing&gt;
++		  &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
++		  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++		  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
++		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++		&lt;/packing&gt;
++	      &lt;/child&gt;
+ 
+-		  &lt;child&gt;
+-		    &lt;widget class=&quot;GtkAlignment&quot; id=&quot;alignment5&quot;&gt;
+-		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-		      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-		      &lt;property name=&quot;xscale&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;yscale&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;top_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;bottom_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;left_padding&quot;&gt;0&lt;/property&gt;
+-		      &lt;property name=&quot;right_padding&quot;&gt;0&lt;/property&gt;
++	      &lt;child&gt;
++		&lt;widget class=&quot;GtkFileChooserButton&quot; id=&quot;filechooserbutton1&quot;&gt;
++		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;Select A File&lt;/property&gt;
++		  &lt;property name=&quot;action&quot;&gt;GTK_FILE_CHOOSER_ACTION_OPEN&lt;/property&gt;
++		  &lt;property name=&quot;local_only&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;show_hidden&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;do_overwrite_confirmation&quot;&gt;False&lt;/property&gt;
++		  &lt;property name=&quot;width_chars&quot;&gt;32&lt;/property&gt;
++		&lt;/widget&gt;
++		&lt;packing&gt;
++		  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
++		  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
++		  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
++		  &lt;property name=&quot;y_options&quot;&gt;fill&lt;/property&gt;
++		&lt;/packing&gt;
++	      &lt;/child&gt;
+ 
+-		      &lt;child&gt;
+-			&lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox4&quot;&gt;
+-			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			  &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+-			  &lt;property name=&quot;spacing&quot;&gt;2&lt;/property&gt;
+-
+-			  &lt;child&gt;
+-			    &lt;widget class=&quot;GtkImage&quot; id=&quot;image2&quot;&gt;
+-			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;stock&quot;&gt;gtk-save-as&lt;/property&gt;
+-			      &lt;property name=&quot;icon_size&quot;&gt;4&lt;/property&gt;
+-			      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+-			    &lt;/widget&gt;
+-			    &lt;packing&gt;
+-			      &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
+-			    &lt;/packing&gt;
+-			  &lt;/child&gt;
+-
+-			  &lt;child&gt;
+-			    &lt;widget class=&quot;GtkLabel&quot; id=&quot;label34&quot;&gt;
+-			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Save As...&lt;/property&gt;
+-			      &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;use_markup&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;justify&quot;&gt;GTK_JUSTIFY_LEFT&lt;/property&gt;
+-			      &lt;property name=&quot;wrap&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;selectable&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-			      &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_NONE&lt;/property&gt;
+-			      &lt;property name=&quot;width_chars&quot;&gt;-1&lt;/property&gt;
+-			      &lt;property name=&quot;single_line_mode&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;angle&quot;&gt;0&lt;/property&gt;
+-			    &lt;/widget&gt;
+-			    &lt;packing&gt;
+-			      &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
+-			      &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
+-			      &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
+-			    &lt;/packing&gt;
+-			  &lt;/child&gt;
+-			&lt;/widget&gt;
+-		      &lt;/child&gt;
+-		    &lt;/widget&gt;
+-		  &lt;/child&gt;
++	      &lt;child&gt;
++		&lt;widget class=&quot;GtkFileChooserButton&quot; id=&quot;filechooserbutton2&quot;&gt;
++		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;Select A File&lt;/property&gt;
++		  &lt;property name=&quot;action&quot;&gt;GTK_FILE_CHOOSER_ACTION_OPEN&lt;/property&gt;
++		  &lt;property name=&quot;local_only&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;show_hidden&quot;&gt;False&lt;/property&gt;
++		  &lt;property name=&quot;do_overwrite_confirmation&quot;&gt;False&lt;/property&gt;
++		  &lt;property name=&quot;width_chars&quot;&gt;32&lt;/property&gt;
+ 		&lt;/widget&gt;
+ 		&lt;packing&gt;
+ 		  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+@@ -3210,7 +3129,7 @@
+ 		  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+ 		  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+ 		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++		  &lt;property name=&quot;y_options&quot;&gt;fill&lt;/property&gt;
+ 		&lt;/packing&gt;
+ 	      &lt;/child&gt;
+ 	    &lt;/widget&gt;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000048.html">[Hmgen-svnlog] r49 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000050.html">[Hmgen-svnlog] r51 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

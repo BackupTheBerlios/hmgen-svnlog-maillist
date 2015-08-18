@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r122 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r122%20-%20trunk&In-Reply-To=%3C200709121111.l8CBBaNY015924%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000120.html">
+   <LINK REL="Next"  HREF="000122.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r122 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r122%20-%20trunk&In-Reply-To=%3C200709121111.l8CBBaNY015924%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r122 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 13:11:36 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000120.html">[Hmgen-svnlog] r121 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000122.html">[Hmgen-svnlog] r123 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 13:11:36 +0200 (Wed, 12 Sep 2007)
+New Revision: 122
+
+Modified:
+   trunk/build.sh
+Log:
+move stuff to functions
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 11:01:54 UTC (rev 121)
++++ trunk/build.sh	2007-09-12 11:11:36 UTC (rev 122)
+@@ -91,6 +91,7 @@
+ 
+ prefix=/usr/local
+ CC=cc
++action=
+ 
+ # --------------------------------( CONFIGURE )--------------------------------
+ 
+@@ -330,18 +331,7 @@
+ 
+ # ----------------------------------( MAKE )-----------------------------------
+ 
+-# &quot;docs&quot;:
+-#
+-# make_exec     &quot;command&quot;       &quot;short text&quot;    &quot;short text argument&quot;
+-# make_c_to_o   filename.o
+-# make_link     exefilename     filename.o      libraries ...
+-# make_o_to_a   filename.a      object ...
+-# addsuffix     suffix          basenames ...
+-# up_to_date    target          deps ...
+-#
+-# make_init_object_deps objects ...
+-
+-make_init() {
++make_init_default() {
+     DEF_CFLAGS=&quot;$STD_FLAGS $WARN_FLAGS $OPT_FLAGS $DEBUG_FLAGS $DEFINES&quot;
+     DEF_LDFLAGS=&quot;-lm $DEBUG_FLAGS $SYS_LDFLAGS&quot;
+     CFLAGS=&quot;$DEF_CFLAGS&quot;
+@@ -472,44 +462,59 @@
+ 
+ # ----------------------------------( MAIN )-----------------------------------
+ 
+-for i in $@ ; do
+-    case &quot;$i&quot; in --help|-help|-h|-?) help ; exit ;; esac
+-done
++do_configure() {
++    if grep -q CONFIGURE_DONE=yes build.config 2&gt;/dev/null ; then
++        echo reading build.config
++        . build.config
++    else
++        &gt; build.config
++        configure
++        output_build_config
++    fi
++}
+ 
+-if grep -q CONFIGURE_DONE=yes build.config 2&gt;/dev/null ; then
+-    echo reading build.config
+-    . build.config
+-else
+-    &gt; build.config
+-    configure
+-    output_build_config
+-fi
++do_make_init() {
++    make_init_default
++    make_init_project
++}
+ 
+-make_init
+-make_init_project
++do_deps() {
++    if not grep -q deps_done=yes build.dep 2&gt;/dev/null ; then
++        &gt; build.dep
++        make_dep $libhmgen_srcs $cli_srcs $gui_srcs
++        echo &quot;deps_done=yes&quot; &gt;&gt; build.dep
++    fi
+ 
+-if not grep -q deps_done=yes build.dep 2&gt;/dev/null ; then
+-    &gt; build.dep
+-    make_dep $libhmgen_srcs $cli_srcs $gui_srcs
+-    echo &quot;deps_done=yes&quot; &gt;&gt; build.dep
+-fi
++    echo reading build.dep
++    . build.dep
++}
+ 
+-echo reading build.dep
+-. build.dep
++do_make_cli() {
++    make_exe $cli_g_exe
++    if not up_to_date $cli_exe $cli_g_exe ; then
++        make_exec &quot;cp $cli_g_exe $cli_exe&quot; &quot;copy&quot; &quot;$cli_g_exe $cli_exe&quot;
++        make_exec &quot;$STRIP $cli_exe&quot; &quot;strip&quot; &quot;$cli_exe&quot;
++    fi
++}
+ 
+-make_exe $cli_g_exe
++do_make_gui() {
++    CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
++    LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
++    make_exe $gui_g_exe
++    if not up_to_date $gui_exe $gui_g_exe ; then
++        make_exec &quot;cp $gui_g_exe $gui_exe&quot; &quot;copy&quot; &quot;$gui_g_exe $gui_exe&quot;
++        make_exec &quot;$STRIP $gui_exe&quot; &quot;strip&quot; &quot;$gui_exe&quot;
++    fi
++}
+ 
+-CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
+-LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
+-make_exe $gui_g_exe
++for i in $@ ; do
++    case &quot;$i&quot; in --help|-help|-h|-?) help ; exit ;; esac
++done
+ 
+-if not up_to_date $cli_exe $cli_g_exe ; then
+-    make_exec &quot;cp $cli_g_exe $cli_exe&quot; &quot;copy&quot; &quot;$cli_g_exe $cli_exe&quot;
+-    make_exec &quot;$STRIP $cli_exe&quot; &quot;strip&quot; &quot;$cli_exe&quot;
+-fi
+-if not up_to_date $gui_exe $gui_g_exe ; then
+-    make_exec &quot;cp $gui_g_exe $gui_exe&quot; &quot;copy&quot; &quot;$gui_g_exe $gui_exe&quot;
+-    make_exec &quot;$STRIP $gui_exe&quot; &quot;strip&quot; &quot;$gui_exe&quot;
+-fi
++do_configure
++do_make_init
++do_deps
++do_make_cli
++do_make_gui
+ 
+ echo &quot;done&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000120.html">[Hmgen-svnlog] r121 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000122.html">[Hmgen-svnlog] r123 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#121">[ date ]</a>
+              <a href="thread.html#121">[ thread ]</a>
+              <a href="subject.html#121">[ subject ]</a>
+              <a href="author.html#121">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

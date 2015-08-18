@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r107 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r107%20-%20trunk&In-Reply-To=%3C200709111328.l8BDSiBO020720%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000105.html">
+   <LINK REL="Next"  HREF="000107.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r107 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r107%20-%20trunk&In-Reply-To=%3C200709111328.l8BDSiBO020720%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r107 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Tue Sep 11 15:28:44 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000105.html">[Hmgen-svnlog] r106 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000107.html">[Hmgen-svnlog] r108 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#106">[ date ]</a>
+              <a href="thread.html#106">[ thread ]</a>
+              <a href="subject.html#106">[ subject ]</a>
+              <a href="author.html#106">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-11 15:28:43 +0200 (Tue, 11 Sep 2007)
+New Revision: 107
+
+Modified:
+   trunk/build.sh
+Log:
+if you depend on generated files (i.e. archives on objects, or executables
+on archives and objects) the mod-times can be exactle the same.
+apparently milliseconds are not accounted for (how does the real make do
+this?). a sideeffect of that is that if you run build.sh two times in a row,
+some stuff gets rearchived or relinked. to avoid that, we sleep 1s and touch
+the target (.a or .exe) after creating it. this slows down the build process
+and is a hack, but it has to do for now.
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-11 13:07:41 UTC (rev 106)
++++ trunk/build.sh	2007-09-11 13:28:43 UTC (rev 107)
+@@ -281,13 +281,16 @@
+ make_link() {
+     exe=$1$EXESUF ; shift 1
+     make_exec &quot;$CC $OBJ_OUT_FLAG $exe `echo $@` $LDFLAGS&quot; &quot;link&quot; &quot;$exe&quot;
++    sleep 1
++    touch -c $exe
+ }
+ 
+ make_o_to_a() {
+     a=$1 ; shift 1
+     make_exec &quot;$AR $AR_FLAGS $a `echo $@`&quot; &quot;archive&quot; &quot;$a&quot;
+     make_exec &quot;$RANLIB $a&quot; &quot;ranlib&quot; &quot;$a&quot;
+-    touch $a
++    sleep 1
++    touch -c $a
+ }
+ 
+ addsuffix() {
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000105.html">[Hmgen-svnlog] r106 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000107.html">[Hmgen-svnlog] r108 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#106">[ date ]</a>
+              <a href="thread.html#106">[ thread ]</a>
+              <a href="subject.html#106">[ subject ]</a>
+              <a href="author.html#106">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r172 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r172%20-%20trunk&In-Reply-To=%3C200709152141.l8FLfT9s009440%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000171.html">
+   <LINK REL="Next"  HREF="000173.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r172 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r172%20-%20trunk&In-Reply-To=%3C200709152141.l8FLfT9s009440%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r172 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep 15 23:41:29 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000171.html">[Hmgen-svnlog] r171 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000173.html">[Hmgen-svnlog] r173 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#172">[ date ]</a>
+              <a href="thread.html#172">[ thread ]</a>
+              <a href="subject.html#172">[ subject ]</a>
+              <a href="author.html#172">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-15 23:41:29 +0200 (Sat, 15 Sep 2007)
+New Revision: 172
+
+Modified:
+   trunk/gui_main.c
+Log:
+make about_image_filename relative to called binary
+this should also work for c:\Program Files\hmgen\bin\hmgengui
+
+
+Modified: trunk/gui_main.c
+===================================================================
+--- trunk/gui_main.c	2007-09-15 14:58:50 UTC (rev 171)
++++ trunk/gui_main.c	2007-09-15 21:41:29 UTC (rev 172)
+@@ -24,12 +24,46 @@
+ #include &lt;stdlib.h&gt;
+ #include &lt;unistd.h&gt;
+ #include &lt;fcntl.h&gt;
++#include &lt;string.h&gt;
+ #include &quot;gui_interface.h&quot;
+ #include &quot;gui_support.h&quot;
+ #include &quot;lib_hmgen.c&quot;
+ 
+-char *about_image_filename = &quot;share/hmgen/hmgen.png&quot;;
++char *about_image_filename = NULL; 
+ 
++static int malloced = 0;
++static const char * const about_img = &quot;/share/hmgen/hmgen.png&quot;;
++
++static void assemble_about_image_filename(char *argv0) {
++    int x, y;
++    char *p;
++
++    x = strlen(argv0) - 1;
++
++    if (x&lt;=0) {
++        about_image_filename = &quot;nothing&quot;;
++        return;
++    }
++
++    while (x&gt;0 &amp;&amp; argv0[x] != '/' &amp;&amp; argv0[x] != '\\') x--;
++
++    y = x - 1;
++    while (y&gt;0 &amp;&amp; argv0[y] != '/' &amp;&amp; argv0[y] != '\\') y--;
++    if (y) y++;
++    if (!strncmp(&amp;argv0[y], &quot;bin&quot;, 3)) x = y;
++
++    p = malloc(x + strlen(about_img) + 1);
++    if (!p) {
++        fprintf(stderr, &quot;out of memory\n&quot;);
++        exit(-1);
++    }
++
++    memcpy(p, argv0, x);
++    snprintf(p+x, strlen(about_img) + 1, about_img);
++    about_image_filename = p;
++    malloced = 1;
++}
++
+ int main(int argc, char *argv[]) {
+     GtkWidget *hmgengui;
+     char *show_stderr;
+@@ -45,6 +79,8 @@
+     gtk_disable_setlocale();
+     setlocale(LC_ALL, &quot;C&quot;);
+ 
++    assemble_about_image_filename(argv[0]);
++
+     hmg_init_colormap(NULL);
+ 
+     g_thread_init(NULL);
+@@ -61,5 +97,7 @@
+     gtk_main ();
+     gdk_threads_leave();
+ 
++    if (malloced) free(about_image_filename);
++
+     return 0;
+ }
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000171.html">[Hmgen-svnlog] r171 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000173.html">[Hmgen-svnlog] r173 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#172">[ date ]</a>
+              <a href="thread.html#172">[ thread ]</a>
+              <a href="subject.html#172">[ subject ]</a>
+              <a href="author.html#172">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

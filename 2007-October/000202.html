@@ -1,0 +1,730 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r202 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-October/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r202%20-%20trunk&In-Reply-To=%3C200710171635.l9HGZHfO022601%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000201.html">
+   <LINK REL="Next"  HREF="000203.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r202 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r202%20-%20trunk&In-Reply-To=%3C200710171635.l9HGZHfO022601%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r202 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Oct 17 18:35:17 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000201.html">[Hmgen-svnlog] r201 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000203.html">[Hmgen-svnlog] r203 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-10-17 18:35:16 +0200 (Wed, 17 Oct 2007)
+New Revision: 202
+
+Removed:
+   trunk/build.sh
+Log:
+revert previous commit
+
+
+Deleted: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-10-17 13:51:32 UTC (rev 201)
++++ trunk/build.sh	2007-10-17 16:35:16 UTC (rev 202)
+@@ -1,653 +0,0 @@
+-#! /bin/sh
+-
+-# Experimental configure/make script
+-# Copyright (C) 2007 Ivo van Poorten
+-# See LICENSE for licensing details
+-# Tested with:
+-# Shells: bash 3.1.17, zsh 4.3.4, pdksh 5.2.14, posh 0.5.7, heirloom-sh-050706
+-# Awk: gawk 3.1.5, bwk's One True Awk May 2007
+-
+-# ----------------------------------( USAGE )----------------------------------
+-
+-help() {
+-    cat &lt;&lt; __EOF__
+-
+-usage: ./build.sh [option(s)] [action(s)] [option(s)] [action(s)] ...
+-
+-options:
+-
+---cc=CC             specify C compiler
+---prefix=PREFIX     installation prefix [default: $PREFIX]
+---destdir=DESTDIR   installation destination directory [default: $DESTDIR]
+---verbose           verbose compilation
+---nocolor           disable colors for terminals w/o ANSI capabilities
+---configfile=FILE   specify alternative config file
+---depsfile=FILE     specify alternative dependencies file
+---ar=AR             specify archiver
+---ranlib=RANLIB     specify ranlib
+---strip=STRIP       specify strip
+---awk=AWK           specify awk
+---help              print this message
+-
+-actions:
+-
+-all                 build all
+-cli                 build cli version only
+-gui                 build gui version only
+-lib                 build (static) library only
+-install             install all programs
+-install_cli         install cli version only
+-install_gui         install gui version only
+-configure           perform configure only
+-deps                determine dependencies only
+-clean               clean up
+-distclean           cleaner up
+-
+-__EOF__
+-}
+-
+-# ----------------------------------( INIT )-----------------------------------
+-
+-# Be a nice shell
+-
+-LC_ALL=C ; export LC_ALL
+-if test -n &quot;$ZSH_VERSION&quot; &amp;&amp; (emulate sh) 2&gt;/dev/null 1&gt;&amp;2 ; then
+-    emulate sh
+-    NULLCMD=:
+-else
+-    case `(set -o) 2&gt;/dev/null` in *posix*) set -o posix ;; esac
+-fi
+-BIN_SH=xpg4 ; export BIN_SH
+-DUALCASE=1 ; export DUALCASE
+-unset ENV MAIL MAILPATH
+-PS1='$ ' ; PS2='&gt; ' ; PS4='+ '
+-nl='
+-'
+-IFS=&quot; 	$nl&quot;
+-
+-# Portable functions
+-
+-if test &quot;`(echo first ; echo last) | head -1 2&gt;/dev/null`&quot; = &quot;first&quot; ; then
+-    _head() { head -$1 2&gt;/dev/null ; }
+-else
+-    _head() { head -n $1 2&gt;/dev/null ; }
+-fi
+-if test &quot;`(echo first ; echo last) | tail -1 2&gt;/dev/null`&quot; = &quot;last&quot; ; then
+-    _tail() { tail -$1 2&gt;/dev/null ; }
+-else
+-    _tail() { tail -n $1 2&gt;/dev/null ; }
+-fi
+-
+-not() { eval &quot;$@&quot; ; test $? -ne 0 ; }
+-
+-case `echo -n` in
+-    -n)     _echo_n=        _echo_c='\c'    _echo_e=        ;; # SysV
+-    *)      _echo_n='-n '   _echo_c=        _echo_e='-e '   ;; # BSD
+-esac
+-
+-test -z &quot;$V&quot; &amp;&amp; V=0
+-test -z &quot;$C&quot; &amp;&amp; C=1
+-
+-init_colors() {
+-    if test &quot;$C&quot; -ne 1 ; then Bon= ; Boff= ; Red= ; Green=
+-    else Bon=&quot;[1m&quot; ; Boff=&quot;[0m&quot; ; Red=&quot;[31m&quot; ; Green=&quot;[32m&quot;
+-    fi
+-}
+-init_colors
+-
+-# Defaults
+-
+-PREFIX=/usr/local
+-DESTDIR=
+-CC=cc
+-action=
+-depsfile=./build.deps
+-configfile=./build.config
+-
+-# --------------------------------( CONFIGURE )--------------------------------
+-
+-die() { echo &quot;$1&quot; &gt;&amp;2 ; exit 1 ; }
+-
+-question() {
+-    case &quot;$1&quot; in
+-        ?) echo $_echo_n &quot;$1                : $_echo_c&quot; ;;
+-        ??) echo $_echo_n &quot;$1               : $_echo_c&quot; ;;
+-        ???) echo $_echo_n &quot;$1              : $_echo_c&quot; ;;
+-        ????) echo $_echo_n &quot;$1             : $_echo_c&quot; ;;
+-        ?????) echo $_echo_n &quot;$1            : $_echo_c&quot; ;;
+-        ??????) echo $_echo_n &quot;$1           : $_echo_c&quot; ;;
+-        ???????) echo $_echo_n &quot;$1          : $_echo_c&quot; ;;
+-        ????????) echo $_echo_n &quot;$1         : $_echo_c&quot; ;;
+-        ?????????) echo $_echo_n &quot;$1        : $_echo_c&quot; ;;
+-        ??????????) echo $_echo_n &quot;$1       : $_echo_c&quot; ;;
+-        ???????????) echo $_echo_n &quot;$1      : $_echo_c&quot; ;;
+-        ????????????) echo $_echo_n &quot;$1     : $_echo_c&quot; ;;
+-        ?????????????) echo $_echo_n &quot;$1    : $_echo_c&quot; ;;
+-        ??????????????) echo $_echo_n &quot;$1   : $_echo_c&quot; ;;
+-        ???????????????) echo $_echo_n &quot;$1  : $_echo_c&quot; ;;
+-        ???????????????*) echo $_echo_n &quot;$1 : $_echo_c&quot; ;;
+-    esac
+-}
+-
+-answer() {
+-    if   test &quot;$1&quot; = &quot;no&quot; ;  then   col=&quot;$Bon$Red&quot;
+-    elif test &quot;$1&quot; = &quot;yes&quot; ; then   col=&quot;$Bon$Green&quot;
+-    else                            col=&quot;$Bon&quot;
+-    fi
+-    test -n &quot;$1&quot; &amp;&amp; echo &quot;$col$1$Boff&quot; || echo &quot;&lt;none&gt;&quot;
+-}
+-
+-result() { test -n &quot;$2&quot; &amp;&amp; question &quot;$1&quot; &amp;&amp; answer &quot;$2&quot; ; }
+-
+-results() { while test -n &quot;$1&quot; ; do result &quot;$1&quot; &quot;$2&quot; ; shift 2 ; done ; }
+-
+-my_pkg_config() {
+-    question $1
+-    RES=`pkg-config --atleast-version=$4 $1 2&gt;/dev/null &amp;&amp; echo yes || echo no`
+-    answer $RES
+-    test &quot;$RES&quot; != yes &amp;&amp; die &quot;at least version $4 not found&quot;
+-    eval $2=\&quot;`pkg-config --cflags $1 2&gt;/dev/null`\&quot;
+-    eval $3=\&quot;`pkg-config --static --libs $1 2&gt;/dev/null`\&quot;
+-}
+-
+-find_program() {
+-    prog=$1; shift
+-    var=$1; shift
+-    mand=$1; shift
+-    question $prog
+-    for i in $@ NONE ; do
+-        if which $i 2&gt;/dev/null 1&gt;&amp;2 ; then break ; fi
+-    done
+-    eval $var=$i
+-    answer $i
+-    test &quot;$mand&quot; = &quot;mandatory&quot; &amp;&amp; test &quot;$i&quot; = &quot;NONE&quot; &amp;&amp; die &quot;$prog is $mand&quot;
+-}
+-
+-pad_with_zeroes() {
+-    while true; do
+-        read A
+-        case &quot;$A&quot; in
+-            ?)      echo 0000$A ;;
+-            ??)     echo 000$A  ;;
+-            ???)    echo 00$A   ;;
+-            ????)   echo 0$A    ;;
+-            ?????)  echo $A     ;;
+-            *)      break       ;;
+-        esac
+-    done
+-}
+-
+-get_svn_revision() {
+-    SVN_REV=`svn info * 2&gt;/dev/null | grep '^Revision:' \
+-        | cut -d ' ' -f 2 | pad_with_zeroes \
+-        | sort -r | _head 1 | sed 's/^0//; s/^0//; s/^0//;'`
+-    test $SVN_REV || SVN_REV=`grep revision .svn/entries 2&gt;/dev/null \
+-        | cut -d '&quot;' -f 2` | pad_with_zeroes \
+-        | sort -r | _head 1 | sed 's/^0//; s/^0//; s/^0//;'
+-    test $SVN_REV || SVN_REV=`sed -n -e '/^dir$/{n;p;q;}' \
+-        .svn/entries 2&gt;/dev/null`
+-    test $SVN_REV &amp;&amp; echo $SVN_REV || echo 0
+-}
+-
+-cc_conf() {
+-    WARN_FLAGS=&quot;$1&quot;
+-    OPT_FLAGS=&quot;$2&quot;
+-    STD_FLAGS=&quot;$3&quot;
+-    DEBUG_FLAGS=&quot;$4&quot;
+-    DEP_FLAGS=&quot;$5&quot;
+-    OBJ_OUT_FLAG=&quot;$6&quot;
+-    DONT_LINK_FLAG=&quot;$7&quot;
+-}
+-
+-mandatory_tools() {
+-    question tools
+-    for i in $@ ; do
+-        (which $i) 2&gt;/dev/null 1&gt;&amp;2 || die &quot;$i is mandatory&quot;
+-        echo $_echo_n &quot;$i $_echo_c&quot;
+-    done
+-    echo
+-}
+-
+-configure() {
+-    mandatory_tools which sed grep tr sort uniq cat test cut cp rm chmod
+-
+-    find_program compiler CC mandatory $CC cc gcc suncc icc tcc
+-    CC_DEP=$CC
+-
+-    question vendor
+-    CC_VENDOR=`$CC --help 2&gt;/dev/null | grep -q gcc &amp;&amp; echo gnu`
+-    if test &quot;$CC_VENDOR&quot; = &quot;gnu&quot; ; then
+-        CC_VERSION=`$CC -dumpversion`
+-    else
+-        CC_VENDOR=`$CC -flags 2&gt;/dev/null | grep -q sunperf &amp;&amp; echo sun`
+-        if test &quot;$CC_VENDOR&quot; = &quot;sun&quot; ; then
+-            CC_VERSION=`echo | $CC -E - | grep ident | cut -d ' ' -f 5`
+-        else
+-            CC_VENDOR=unknown
+-            CC_DEP=true
+-        fi
+-    fi
+-    CC_VERSION_MAJOR=`echo $CC_VERSION | cut -d '.' -f 1`
+-    CC_VERSION_MINOR=`echo $CC_VERSION | cut -d '.' -f 2`
+-    CC_VERSION_SUBMINOR=`echo $CC_VERSION | cut -d '.' -f 3`
+-    answer $CC_VENDOR
+-    result version $CC_VERSION
+-
+-    if test &quot;$CC_VENDOR&quot; = gnu ; then
+-        if test &quot;$CC_VERSION_MAJOR&quot; -le 2 ; then
+-            echo &quot;gcc version &lt; 3.x is not supported&quot;
+-            exit 1
+-        fi
+-    fi
+-
+-    case $CC_VENDOR in
+-        gnu)     cc_conf &quot;-Wall -W&quot; &quot;-O3&quot; &quot;-std=c99&quot; &quot;-g&quot; &quot;-MM&quot; &quot;-o&quot; &quot;-c&quot; ;;
+-        sun)     cc_conf &quot;&quot; &quot;-xO5&quot; &quot;-Xc&quot; &quot;-g&quot; &quot;-xM&quot; &quot;-o&quot; &quot;-c&quot; ;;
+-        unknown) cc_conf &quot;&quot; &quot;-O&quot; &quot;&quot; &quot;-g&quot; &quot;&quot; &quot;-o&quot; &quot;-c&quot; ;;
+-    esac
+-    results warnings &quot;$WARN_FLAGS&quot; optimize &quot;$OPT_FLAGS&quot; standards &quot;$STD_FLAGS&quot;
+-    results debug &quot;$DEBUG_FLAGS&quot; dependencies &quot;$DEP_FLAGS&quot;
+-    results &quot;object out&quot; &quot;$OBJ_OUT_FLAG&quot; &quot;do not link&quot; &quot;$DONT_LINK_FLAG&quot;
+-
+-    find_program pkg-config PKGCONFIG mandatory $PKGCONFIG pkg-config
+-
+-    my_pkg_config gtk+-2.0 GTK_CFLAGS GTK_LDFLAGS 2.0
+-    my_pkg_config gthread-2.0 GTHREAD_CFLAGS GTHREAD_LDFLAGS 2.0
+-
+-    if test &quot;$CC_VENDOR&quot; = &quot;sun&quot; ; then
+-        GTHREAD_CFLAGS=`echo xXx $GTHREAD_CFLAGS | sed 's/-pthread//; s/^xXx//'`
+-        GTHREAD_LDFLAGS=`echo xXx $GTHREAD_LDFLAGS | sed 's/-pthread//; s/^xXx//'`
+-    fi
+-
+-    question &quot;hmgen version&quot;
+-    DEFINES=
+-    X=&quot;#define HMG_VERSION_MAJOR&quot;
+-    VERMAJ=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
+-    X=&quot;#define HMG_VERSION_MINOR&quot;
+-    VERMIN=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
+-    X=&quot;#define HMG_VERSION_MICRO&quot;
+-    VERMIC=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
+-    VERBASE=&quot;`echo $VERMAJ`.`echo $VERMIN`.`echo $VERMIC`&quot;
+-    SVN_REV=`get_svn_revision`
+-    DEFINES=&quot;$DEFINES -DSVN_REVISION=$SVN_REV&quot;
+-    if test &quot;$SVN_REV&quot; -ne 0 ; then answer ${VERBASE}r$SVN_REV
+-    else                            answer ${VERBASE}
+-    fi
+-
+-    SYSTEM=`uname -s 2&gt;/dev/null`
+-    SYSTEM=`echo $SYSTEM | tr '[A-Z]' '[a-z]'`
+-    case &quot;$SYSTEM&quot; in
+-        linux*)     SYSTEM=linux ;;
+-        mingw*)     SYSTEM=mingw ;;
+-        *)          SYSTEM=&quot;$$SYSTEM_untested&quot; ;;
+-    esac
+-    result system $SYSTEM
+-
+-    SYS_LDFLAGS=
+-    if test &quot;$SYSTEM&quot; = &quot;mingw&quot; ; then
+-        if test &quot;$CC_VENDOR&quot; = &quot;gnu&quot; ; then
+-            SYS_LDFLAGS=-mwindows
+-        fi
+-    fi
+-    result &quot;system ldflags&quot; $SYS_LDFLAGS
+-
+-    EXESUF=
+-    if test &quot;$SYSTEM&quot; = &quot;mingw&quot; ; then
+-        EXESUF=.exe
+-    fi
+-    result &quot;exe suffix&quot; $EXESUF
+-
+-    OBJSUF=.o
+-    result &quot;obj suffix&quot; $OBJSUF
+-
+-    find_program ar AR mandatory $AR ar gar
+-
+-    AR_FLAGS=cru
+-    result &quot;ar flags&quot; $AR_FLAGS
+-
+-    find_program ranlib RANLIB  optional $RANLIB    ranlib true
+-    find_program strip  STRIP   optional $STRIP     strip true
+-    find_program awk    AWK     optional $AWK       mawk gawk nawk awk true
+-
+-    results &quot;install prefix&quot; &quot;$PREFIX&quot; &quot;install destdir&quot; &quot;$DESTDIR&quot;
+-}
+-
+-output_build_config() {
+-    echo writing $configfile
+-    CONFIGURE_DONE=yes
+-    for i in CC CC_DEP CC_VENDOR CC_VERSION CC_VERSION_MAJOR CC_VERSION_MINOR \
+-        CC_VERSION_SUBMINOR WARN_FLAGS OPT_FLAGS STD_FLAGS DEBUG_FLAGS \
+-        DEP_FLAGS OBJ_OUT_FLAG DONT_LINK_FLAG GTK_CFLAGS GTK_LDFLAGS VERBASE \
+-        GTHREAD_CFLAGS GTHREAD_LDFLAGS DEFINES SYSTEM SYS_LDFLAGS EXESUF AR \
+-        AR_FLAGS RANLIB STRIP OBJSUF AWK PREFIX DESTDIR CONFIGURE_DONE ; do
+-        eval echo &quot;$i=\\\&quot;\$$i\\\&quot;&quot; &gt;&gt; $configfile
+-    done
+-}
+-
+-# ----------------------------------( UTIL )-----------------------------------
+-
+-# unwrap lines --&gt; sort --&gt; uniq --&gt; merge equal target lines and change syntax
+-ccdeps_to_shdeps() {
+-    tr -d '\015' |
+-    $AWK '/[\\]$/ { $NF=&quot;&quot; ; ORS=&quot;&quot; ; print ; next} { ORS=&quot;\n&quot; ; print }' |
+-    sort |
+-    uniq |
+-    $AWK '
+-        BEGIN { save=&quot;&quot; }
+-        {   if (save==$1) {
+-                ORS=&quot;&quot; ;
+-                for (i=2; i &lt;= NF; i++) {
+-                    if ((substr($i,1,1) != &quot;/&quot;) &amp;&amp; (substr($i,2,2) != &quot;:/&quot;)) {
+-                        print &quot; &quot; $i
+-                    }
+-                }
+-            } else {
+-                if (save != &quot;&quot;) { ORS=&quot;\&quot;\n&quot; ; print &quot; &quot; }
+-                ORS=&quot;&quot; ; save=$1
+-                print &quot;deps_&quot;
+-                for (i=1; i &lt;= length($1) ; i++) {
+-                    c=substr($1,i,1) ;
+-                    if (c == &quot;.&quot;) { c = &quot;_&quot; }
+-                    if (c == &quot;/&quot;) { c = &quot;__&quot; }
+-                    if (c == &quot;:&quot;) { c = &quot;=\&quot;&quot; }
+-                    print c
+-                }
+-                for (i=2; i &lt;= NF; i++) {
+-                    if ((substr($i,1,1) != &quot;/&quot;) &amp;&amp; (substr($i,2,2) != &quot;:/&quot;)) {
+-                        print &quot; &quot; $i
+-                    }
+-                }
+-            }
+-        }
+-        END { if (save != &quot;&quot;) { ORS=&quot;\&quot;\n&quot; ; print &quot; &quot; } }'
+-}
+-
+-# ----------------------------------( MAKE )-----------------------------------
+-
+-make_init_default() {
+-    DEF_CFLAGS=&quot;$STD_FLAGS $WARN_FLAGS $OPT_FLAGS $DEBUG_FLAGS $DEFINES&quot;
+-    DEF_LDFLAGS=&quot;-lm $DEBUG_FLAGS $SYS_LDFLAGS&quot;
+-    CFLAGS=&quot;$DEF_CFLAGS&quot;
+-    LDFLAGS=&quot;$DEF_LDFLAGS&quot;
+-}
+-
+-make_exec() {
+-    if test &quot;$V&quot; = &quot;0&quot; ; then   echo &quot;$Bon$2$Boff $3&quot;
+-    else                        echo &quot;$1&quot;
+-    fi
+-    eval &quot;$1&quot; || die &quot;build failed&quot;
+-}
+-
+-make_exec2() {
+-    make_exec &quot;$1&quot; &quot;$2&quot; &quot;$1&quot;
+-}
+-
+-make_c_to_o() {
+-    c=`basename $1 $OBJSUF`.c
+-    make_exec &quot;$CC $DONT_LINK_FLAG $OBJ_OUT_FLAG $1 $c $CFLAGS&quot; &quot;compile&quot; &quot;$c&quot;
+-}
+-
+-make_link() {
+-    exe=$1 ; shift 1
+-    make_exec &quot;$CC $OBJ_OUT_FLAG $exe `echo $@` $LDFLAGS&quot; &quot;link&quot; &quot;$exe&quot;
+-    sleep 1
+-    touch -c $exe
+-}
+-
+-make_o_to_a() {
+-    a=$1 ; shift 1
+-    make_exec &quot;$AR $AR_FLAGS $a `echo $@`&quot; &quot;archive&quot; &quot;$a&quot;
+-    make_exec &quot;$RANLIB $a&quot; &quot;ranlib&quot; &quot;$a&quot;
+-    sleep 1
+-    touch -c $a
+-}
+-
+-addsuffix() {
+-    suf=$1 ; shift 1
+-    for i in $@ ; do echo $i$suf ; done
+-}
+-
+-up_to_date() {
+-    r=`ls -t1 $@ 2&gt;/dev/null | _head 1`
+-    test &quot;$r&quot; = &quot;$1&quot;
+-}
+-
+-mangle() {
+-    echo $1 | sed 's/\./_/g; s/\//__/g;' # change . and / into _ and __
+-}
+-
+-make_set_default_object_deps() {
+-    for i in $@ ; do
+-        j=`mangle $i`
+-        defdep=`basename $i $OBJSUF`.c
+-        eval deps_$j=$defdep
+-    done
+-}
+-
+-make_set_deps() {
+-    x=$1; shift 1
+-    x=`mangle $x`
+-    eval deps_$x=\&quot;$@\&quot;
+-}
+-
+-make_objects() {
+-    for i in $@ ; do
+-        j=`mangle $i`
+-        eval deps=\&quot;\$deps_$j\&quot;
+-        if not up_to_date $i $deps ; then
+-            make_c_to_o $i
+-        fi
+-    done
+-}
+-
+-make_lib() {
+-    lib=$1; shift
+-    libm=`mangle $lib`
+-    eval libdeps=\&quot;\$deps_$libm\&quot;
+-    make_objects $libdeps
+-    if not up_to_date $lib $libdeps ; then
+-        make_o_to_a $lib $libdeps
+-    fi
+-}
+-
+-make_exe() {
+-    t=$1; shift
+-    tm=`mangle $t`
+-    eval exedeps=\&quot;\$deps_$tm\&quot;
+-    for i in $exedeps ; do
+-        case $i in
+-            *$OBJSUF)   make_objects $i ;;
+-            *.a)        make_lib $i ;;
+-            *)          echo unknown dep $i ; exit 2 ;;
+-        esac
+-    done
+-    if not up_to_date $t $exedeps ; then
+-        make_link $t $exedeps
+-    fi
+-}
+-
+-make_deps() {
+-    if not grep -q deps_done=yes $depsfile 2&gt;/dev/null ; then
+-        &gt; $depsfile
+-        make_exec &quot;$CC_DEP $DEP_FLAGS $DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS `echo $libhmgen_srcs $cli_srcs $gui_srcs` 2&gt;/dev/null | ccdeps_to_shdeps &gt;&gt; $depsfile&quot; &quot;ccdep&quot; &quot;$depsfile&quot;
+-        echo &quot;deps_done=yes&quot; &gt;&gt; $depsfile
+-    fi
+-
+-    echo reading $depsfile
+-    . $depsfile
+-}
+-
+-make_configure() {
+-    if grep -q CONFIGURE_DONE=\&quot;yes\&quot; $configfile 2&gt;/dev/null ; then
+-        echo reading $configfile
+-        . $configfile
+-    else
+-        &gt; $configfile
+-        configure
+-        output_build_config
+-    fi
+-}
+-
+-# ---------------------------------( PROJECT )---------------------------------
+-
+-make_init_project() {
+-    make_init_default
+-
+-    libhmgen_basenames=&quot;lib_algo_ff lib_algo_mpd lib_algo_forge lib_postproc \
+-                        lib_util lib_hmgen lib_export&quot;
+-    libhmgen_objs=`addsuffix $OBJSUF $libhmgen_basenames`
+-    libhmgen_srcs=`addsuffix .c $libhmgen_basenames`
+-    libhmgen=libhmgen.a
+-
+-    cli_basenames=&quot;cli_main&quot;
+-    cli_objs=`addsuffix $OBJSUF $cli_basenames`
+-    cli_srcs=`addsuffix .c $cli_basenames`
+-    cli_g_exe=hmgen_g$EXESUF
+-    cli_exe=hmgen$EXESUF
+-
+-    gui_basenames=&quot;gui_main gui_callbacks gui_interface gui_support&quot;
+-    gui_objs=`addsuffix $OBJSUF $gui_basenames`
+-    gui_srcs=`addsuffix .c $gui_basenames`
+-    gui_g_exe=hmgengui_g$EXESUF
+-    gui_exe=hmgengui$EXESUF
+-
+-    make_set_default_object_deps $libhmgen_objs $cli_objs $gui_objs
+-    make_set_deps $libhmgen $libhmgen_objs
+-    make_set_deps $cli_g_exe $cli_objs $libhmgen
+-    make_set_deps $gui_g_exe $gui_objs $libhmgen
+-}
+-
+-make_conf_init_deps() {
+-    make_configure
+-    make_init_project
+-    make_deps
+-}
+-
+-make_cli() {
+-    make_exe $cli_g_exe
+-    if not up_to_date $cli_exe $cli_g_exe ; then
+-        make_exec &quot;cp $cli_g_exe $cli_exe&quot; &quot;copy&quot; &quot;$cli_g_exe $cli_exe&quot;
+-        make_exec &quot;$STRIP $cli_exe&quot; &quot;strip&quot; &quot;$cli_exe&quot;
+-    fi
+-}
+-
+-make_gui() {
+-    CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
+-    LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
+-    make_exe $gui_g_exe
+-    if not up_to_date $gui_exe $gui_g_exe ; then
+-        make_exec &quot;cp $gui_g_exe $gui_exe&quot; &quot;copy&quot; &quot;$gui_g_exe $gui_exe&quot;
+-        make_exec &quot;$STRIP $gui_exe&quot; &quot;strip&quot; &quot;$gui_exe&quot;
+-    fi
+-}
+-
+-make_all() {
+-    make_cli
+-    make_gui
+-}
+-
+-make_clean() {
+-    rm -f $libhmgen_objs $cli_objs $gui_objs $libhmgen
+-    rm -f $cli_g_exe $cli_exe $gui_g_exe $gui_exe
+-    rm -f *~
+-}
+-
+-make_distclean() {
+-    make_clean
+-    rm -f $configfile $depsfile hmgen-$VERBASE.tar.*
+-}
+-
+-make_install_cli() {
+-    make_cli
+-    make_exec2 &quot;mkdir -p \&quot;$DESTDIR/$PREFIX/bin\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;cp $cli_exe \&quot;$DESTDIR/$PREFIX/bin\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;chmod 755 \&quot;$DESTDIR/$PREFIX/bin/$cli_exe\&quot;&quot; &quot;install:&quot;
+-}
+-
+-make_install_gui() {
+-    make_gui
+-    make_exec2 &quot;mkdir -p \&quot;$DESTDIR/$PREFIX/bin\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;cp $gui_exe \&quot;$DESTDIR/$PREFIX/bin\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;chmod 755 \&quot;$DESTDIR/$PREFIX/bin/$gui_exe\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;mkdir -p \&quot;$DESTDIR/$PREFIX/share/hmgen\&quot;&quot; &quot;install:&quot;
+-    make_exec2 &quot;cp -a share/hmgen/* \&quot;$DESTDIR/$PREFIX/share/hmgen\&quot;&quot; &quot;install:&quot;
+-}
+-
+-make_install() {
+-    make_install_cli
+-    make_install_gui
+-}
+-
+-make_srcdist() {
+-    mandatory_tools svn tar cp mv rm
+-    find_program gzip GZIP optional gzip
+-    find_program bzip2 BZIP2 optional bzip2
+-    test &quot;$GZIP&quot; = &quot;NONE&quot; &amp;&amp; test &quot;$BZIP2&quot; = &quot;NONE&quot; &amp;&amp; die &quot;unable to comply&quot;
+-
+-    base=hmgen-$VERBASE
+-    set -e
+-    make_exec &quot;svn export -q <A HREF="http://svn.berlios.de/svnroot/repos/hmgen/trunk">http://svn.berlios.de/svnroot/repos/hmgen/trunk</A> $base&quot; &quot;svn&quot; &quot;export&quot;
+-    chown nobody:nogroup $base 2&gt;/dev/null &amp;&amp; make_exec &quot;chown -R nobody:nogroup $base&quot; &quot;chown&quot; &quot;nobody:nogroup&quot;
+-    if test &quot;$GZIP&quot; != &quot;NONE&quot; ; then
+-        make_exec &quot;tar cf - $base | $GZIP -9 &gt; $base.tar.gz&quot; &quot;targzip&quot; &quot;$base&quot;
+-    fi
+-    if test &quot;$GZIP&quot; != &quot;NONE&quot; ; then
+-        make_exec &quot;tar cf - $base | $BZIP2 -9 &gt; $base.tar.bz2&quot; &quot;tarbzip2&quot; &quot;$base&quot;
+-    fi
+-    rm -rf $base temp.tar
+-    set +e
+-}
+-
+-# ----------------------------------( MAIN )-----------------------------------
+-
+-optarg() {
+-    echo $1 | cut -d '=' -f 2
+-}
+-
+-for i in $@ ; do
+-    case &quot;$i&quot; in --help|-help|-h|-?) help ; exit ;; esac
+-done
+-
+-for arg in $@ ; do
+-    case &quot;$arg&quot; in
+-        --cc=*)         CC=`optarg $arg`      ;;
+-        --ar=*)         AR=`optarg $arg`      ;;
+-        --ranlib=*)     RANLIB=`optarg $arg`  ;;
+-        --strip=*)      STRIP=`optarg $arg`   ;;
+-        --awk=*)        AWK=`optarg $arg`     ;;
+-        --prefix=*)     PREFIX=`optarg $arg`  ;;
+-        --destdir=*)    DESTDIR=`optarg $arg` ;;
+-        --verbose)      V=1                 ;;
+-        --nocolor)      C=0 ; init_colors   ;;
+-        --configfile=*) configfile=`optarg $arg`  ;;
+-        --depsfile=*)   depsfile=`optarg $arg`    ;;
+-        configure)
+-            action=1
+-            &gt;$configfile
+-            make_configure
+-            ;;
+-        deps)
+-            action=1
+-            &gt;$depsfile
+-            make_conf_init_deps
+-            ;;
+-        lib)
+-            action=1
+-            make_conf_init_deps
+-            make_lib $libhmgen
+-            ;;
+-        cli|gui|all|clean|distclean|install_cli|install_gui|install|srcdist)
+-            action=1
+-            make_conf_init_deps
+-            make_$arg
+-            ;;
+-        -*)
+-            echo unknown option ; exit 1 ;;
+-        *)
+-            echo unknown action ; exit 1 ;;
+-    esac
+-done
+-
+-if test -z &quot;$action&quot; ; then make_conf_init_deps ; make_all ; fi
+-
+-echo &quot;done&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000201.html">[Hmgen-svnlog] r201 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000203.html">[Hmgen-svnlog] r203 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#202">[ date ]</a>
+              <a href="thread.html#202">[ thread ]</a>
+              <a href="subject.html#202">[ subject ]</a>
+              <a href="author.html#202">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

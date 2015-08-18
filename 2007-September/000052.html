@@ -1,0 +1,537 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r53 - in trunk: . assist
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r53%20-%20in%20trunk%3A%20.%20assist&In-Reply-To=%3C200709041220.l84CKTgA013260%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000051.html">
+   <LINK REL="Next"  HREF="000053.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r53 - in trunk: . assist</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r53%20-%20in%20trunk%3A%20.%20assist&In-Reply-To=%3C200709041220.l84CKTgA013260%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r53 - in trunk: . assist">ivop at mail.berlios.de
+       </A><BR>
+    <I>Tue Sep  4 14:20:29 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000051.html">[Hmgen-svnlog] r52 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000053.html">[Hmgen-svnlog] r54 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-04 14:20:29 +0200 (Tue, 04 Sep 2007)
+New Revision: 53
+
+Modified:
+   trunk/assist/hmgengui.glade
+   trunk/gui_callbacks.c
+   trunk/gui_callbacks.h
+   trunk/gui_interface.c
+Log:
+new export look
+
+
+Modified: trunk/assist/hmgengui.glade
+===================================================================
+--- trunk/assist/hmgengui.glade	2007-09-03 23:01:30 UTC (rev 52)
++++ trunk/assist/hmgengui.glade	2007-09-04 12:20:29 UTC (rev 53)
+@@ -2949,7 +2949,6 @@
+ 
+ 	  &lt;child&gt;
+ 	    &lt;widget class=&quot;GtkTable&quot; id=&quot;table13&quot;&gt;
+-	      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+ 	      &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
+ 	      &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
+ 	      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+@@ -2986,53 +2985,126 @@
+ 	  &lt;/child&gt;
+ 
+ 	  &lt;child&gt;
+-	    &lt;widget class=&quot;GtkTable&quot; id=&quot;table8&quot;&gt;
+-	      &lt;property name=&quot;border_width&quot;&gt;8&lt;/property&gt;
++	    &lt;widget class=&quot;GtkHPaned&quot; id=&quot;hpaned1&quot;&gt;
+ 	      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-	      &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
+-	      &lt;property name=&quot;n_columns&quot;&gt;4&lt;/property&gt;
+-	      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+-	      &lt;property name=&quot;row_spacing&quot;&gt;8&lt;/property&gt;
+-	      &lt;property name=&quot;column_spacing&quot;&gt;8&lt;/property&gt;
++	      &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++	      &lt;property name=&quot;position&quot;&gt;1000&lt;/property&gt;
+ 
+ 	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkLabel&quot; id=&quot;label31&quot;&gt;
++		&lt;widget class=&quot;GtkTable&quot; id=&quot;table8&quot;&gt;
++		  &lt;property name=&quot;border_width&quot;&gt;8&lt;/property&gt;
+ 		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;PGM&lt;/property&gt;
+-		  &lt;property name=&quot;use_underline&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;use_markup&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;justify&quot;&gt;GTK_JUSTIFY_LEFT&lt;/property&gt;
+-		  &lt;property name=&quot;wrap&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;selectable&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+-		  &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_NONE&lt;/property&gt;
+-		  &lt;property name=&quot;width_chars&quot;&gt;-1&lt;/property&gt;
+-		  &lt;property name=&quot;single_line_mode&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;angle&quot;&gt;0&lt;/property&gt;
++		  &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
++		  &lt;property name=&quot;n_columns&quot;&gt;2&lt;/property&gt;
++		  &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
++		  &lt;property name=&quot;row_spacing&quot;&gt;8&lt;/property&gt;
++		  &lt;property name=&quot;column_spacing&quot;&gt;8&lt;/property&gt;
++
++		  &lt;child&gt;
++		    &lt;widget class=&quot;GtkHBox&quot; id=&quot;hbox8&quot;&gt;
++		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++		      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
++		      &lt;property name=&quot;spacing&quot;&gt;8&lt;/property&gt;
++
++		      &lt;child&gt;
++			&lt;widget class=&quot;GtkLabel&quot; id=&quot;label50&quot;&gt;
++			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&lt;/property&gt;
++			  &lt;property name=&quot;use_underline&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;use_markup&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;justify&quot;&gt;GTK_JUSTIFY_LEFT&lt;/property&gt;
++			  &lt;property name=&quot;wrap&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;selectable&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
++			  &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
++			  &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
++			  &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
++			  &lt;property name=&quot;ellipsize&quot;&gt;PANGO_ELLIPSIZE_NONE&lt;/property&gt;
++			  &lt;property name=&quot;width_chars&quot;&gt;-1&lt;/property&gt;
++			  &lt;property name=&quot;single_line_mode&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;angle&quot;&gt;0&lt;/property&gt;
++			&lt;/widget&gt;
++			&lt;packing&gt;
++			  &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
++			  &lt;property name=&quot;expand&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;fill&quot;&gt;True&lt;/property&gt;
++			&lt;/packing&gt;
++		      &lt;/child&gt;
++
++		      &lt;child&gt;
++			&lt;widget class=&quot;GtkComboBox&quot; id=&quot;export_format_combobox&quot;&gt;
++			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;items&quot; translatable=&quot;yes&quot;&gt;PGM
++PPM
++&lt;/property&gt;
++			  &lt;property name=&quot;add_tearoffs&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
++			&lt;/widget&gt;
++			&lt;packing&gt;
++			  &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
++			  &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;fill&quot;&gt;True&lt;/property&gt;
++			&lt;/packing&gt;
++		      &lt;/child&gt;
++
++		      &lt;child&gt;
++			&lt;widget class=&quot;GtkButton&quot; id=&quot;export_save_button&quot;&gt;
++			  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;label&quot;&gt;gtk-save&lt;/property&gt;
++			  &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
++			  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
++			  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
++			&lt;/widget&gt;
++			&lt;packing&gt;
++			  &lt;property name=&quot;padding&quot;&gt;0&lt;/property&gt;
++			  &lt;property name=&quot;expand&quot;&gt;False&lt;/property&gt;
++			  &lt;property name=&quot;fill&quot;&gt;False&lt;/property&gt;
++			&lt;/packing&gt;
++		      &lt;/child&gt;
++		    &lt;/widget&gt;
++		    &lt;packing&gt;
++		      &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
++		      &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
++		      &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
++		      &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++		      &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
++		      &lt;property name=&quot;y_options&quot;&gt;fill&lt;/property&gt;
++		    &lt;/packing&gt;
++		  &lt;/child&gt;
++
++		  &lt;child&gt;
++		    &lt;widget class=&quot;GtkFileChooserWidget&quot; id=&quot;export_filechooserwidget&quot;&gt;
++		      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++		      &lt;property name=&quot;action&quot;&gt;GTK_FILE_CHOOSER_ACTION_SAVE&lt;/property&gt;
++		      &lt;property name=&quot;local_only&quot;&gt;True&lt;/property&gt;
++		      &lt;property name=&quot;select_multiple&quot;&gt;False&lt;/property&gt;
++		      &lt;property name=&quot;show_hidden&quot;&gt;False&lt;/property&gt;
++		    &lt;/widget&gt;
++		    &lt;packing&gt;
++		      &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
++		      &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
++		      &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++		      &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++		    &lt;/packing&gt;
++		  &lt;/child&gt;
+ 		&lt;/widget&gt;
+ 		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++		  &lt;property name=&quot;shrink&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;resize&quot;&gt;False&lt;/property&gt;
+ 		&lt;/packing&gt;
+ 	      &lt;/child&gt;
+ 
+ 	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkLabel&quot; id=&quot;label32&quot;&gt;
++		&lt;widget class=&quot;GtkLabel&quot; id=&quot;label51&quot;&gt;
+ 		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;PPM&lt;/property&gt;
++		  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;&lt;/property&gt;
+ 		  &lt;property name=&quot;use_underline&quot;&gt;False&lt;/property&gt;
+ 		  &lt;property name=&quot;use_markup&quot;&gt;False&lt;/property&gt;
+ 		  &lt;property name=&quot;justify&quot;&gt;GTK_JUSTIFY_LEFT&lt;/property&gt;
+ 		  &lt;property name=&quot;wrap&quot;&gt;False&lt;/property&gt;
+ 		  &lt;property name=&quot;selectable&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;xalign&quot;&gt;0&lt;/property&gt;
++		  &lt;property name=&quot;xalign&quot;&gt;0.5&lt;/property&gt;
+ 		  &lt;property name=&quot;yalign&quot;&gt;0.5&lt;/property&gt;
+ 		  &lt;property name=&quot;xpad&quot;&gt;0&lt;/property&gt;
+ 		  &lt;property name=&quot;ypad&quot;&gt;0&lt;/property&gt;
+@@ -3042,96 +3114,10 @@
+ 		  &lt;property name=&quot;angle&quot;&gt;0&lt;/property&gt;
+ 		&lt;/widget&gt;
+ 		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++		  &lt;property name=&quot;shrink&quot;&gt;True&lt;/property&gt;
++		  &lt;property name=&quot;resize&quot;&gt;True&lt;/property&gt;
+ 		&lt;/packing&gt;
+ 	      &lt;/child&gt;
+-
+-	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkButton&quot; id=&quot;pgm_save_as_button&quot;&gt;
+-		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;sensitive&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;label&quot;&gt;gtk-save&lt;/property&gt;
+-		  &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
+-		  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
+-		  &lt;signal name=&quot;clicked&quot; handler=&quot;on_pgm_save_as_button_clicked&quot; last_modification_time=&quot;Tue, 21 Aug 2007 13:31:07 GMT&quot;/&gt;
+-		&lt;/widget&gt;
+-		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-		&lt;/packing&gt;
+-	      &lt;/child&gt;
+-
+-	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkButton&quot; id=&quot;ppm_save_as_button&quot;&gt;
+-		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;sensitive&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;label&quot;&gt;gtk-save&lt;/property&gt;
+-		  &lt;property name=&quot;use_stock&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
+-		  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
+-		  &lt;signal name=&quot;clicked&quot; handler=&quot;on_ppm_save_as_button_clicked&quot; last_modification_time=&quot;Tue, 21 Aug 2007 13:30:57 GMT&quot;/&gt;
+-		&lt;/widget&gt;
+-		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;3&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+-		&lt;/packing&gt;
+-	      &lt;/child&gt;
+-
+-	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkFileChooserButton&quot; id=&quot;filechooserbutton1&quot;&gt;
+-		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;Select A File&lt;/property&gt;
+-		  &lt;property name=&quot;action&quot;&gt;GTK_FILE_CHOOSER_ACTION_OPEN&lt;/property&gt;
+-		  &lt;property name=&quot;local_only&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;show_hidden&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;do_overwrite_confirmation&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;width_chars&quot;&gt;32&lt;/property&gt;
+-		&lt;/widget&gt;
+-		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;fill&lt;/property&gt;
+-		&lt;/packing&gt;
+-	      &lt;/child&gt;
+-
+-	      &lt;child&gt;
+-		&lt;widget class=&quot;GtkFileChooserButton&quot; id=&quot;filechooserbutton2&quot;&gt;
+-		  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;title&quot; translatable=&quot;yes&quot;&gt;Select A File&lt;/property&gt;
+-		  &lt;property name=&quot;action&quot;&gt;GTK_FILE_CHOOSER_ACTION_OPEN&lt;/property&gt;
+-		  &lt;property name=&quot;local_only&quot;&gt;True&lt;/property&gt;
+-		  &lt;property name=&quot;show_hidden&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;do_overwrite_confirmation&quot;&gt;False&lt;/property&gt;
+-		  &lt;property name=&quot;width_chars&quot;&gt;32&lt;/property&gt;
+-		&lt;/widget&gt;
+-		&lt;packing&gt;
+-		  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-		  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+-		  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+-		  &lt;property name=&quot;y_options&quot;&gt;fill&lt;/property&gt;
+-		&lt;/packing&gt;
+-	      &lt;/child&gt;
+ 	    &lt;/widget&gt;
+ 	    &lt;packing&gt;
+ 	      &lt;property name=&quot;tab_expand&quot;&gt;False&lt;/property&gt;
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-03 23:01:30 UTC (rev 52)
++++ trunk/gui_callbacks.c	2007-09-04 12:20:29 UTC (rev 53)
+@@ -199,10 +199,8 @@
+     GtkWidget *widget;
+ 
+     gdk_threads_enter();
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;pgm_save_as_button&quot;);
++        widget = lookup_widget(GTK_WIDGET(args), &quot;export_save_button&quot;);
+         gtk_widget_set_sensitive (widget, TRUE);
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;ppm_save_as_button&quot;);
+-        gtk_widget_set_sensitive (widget, TRUE);
+     gdk_threads_leave();
+ }
+ 
+@@ -312,15 +310,6 @@
+     g_thread_create(generate_thread, button, FALSE, NULL);
+ }
+ 
+-void on_pgm_save_as_button_clicked(GtkButton *button,
+-                                   gpointer user_data HMG_ATTR_UNUSED) {
+-}
+-
+-
+-void on_ppm_save_as_button_clicked(GtkButton *button,
+-                                   gpointer user_data HMG_ATTR_UNUSED) {
+-}
+-
+ gboolean on_view_drawingarea_expose_event(GtkWidget *widget,
+                                           GdkEventExpose *event HMG_ATTR_UNUSED,
+                                           gpointer user_data HMG_ATTR_UNUSED) {
+
+Modified: trunk/gui_callbacks.h
+===================================================================
+--- trunk/gui_callbacks.h	2007-09-03 23:01:30 UTC (rev 52)
++++ trunk/gui_callbacks.h	2007-09-04 12:20:29 UTC (rev 53)
+@@ -9,8 +9,6 @@
+ void on_size_combobox_changed     (GtkComboBox *combobox, gpointer user_data);
+ 
+ void on_generate_button_clicked   (GtkButton *button, gpointer user_data);
+-void on_pgm_save_as_button_clicked(GtkButton *button, gpointer user_data);
+-void on_ppm_save_as_button_clicked(GtkButton *button, gpointer user_data);
+ void on_new_create_button_clicked (GtkButton *button, gpointer user_data);
+ void on_norm2_button_clicked      (GtkButton *button, gpointer user_data);
+ void on_blur2_button_clicked      (GtkButton *button, gpointer user_data);
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-03 23:01:30 UTC (rev 52)
++++ trunk/gui_interface.c	2007-09-04 12:20:29 UTC (rev 53)
+@@ -40,8 +40,7 @@
+   GtkWidget *mpd_seed_spinbutton, *mpd_label, *table4, *label23, *label24;
+   GtkWidget *label25, *forge_seed_spinbutton, *forge_fracdim_spinbutton;
+   GtkWidget *forge_powscale_spinbutton, *forge_label, *label8, *generate_label;
+-  GtkWidget *table8, *label31, *label32, *pgm_save_as_button;
+-  GtkWidget *ppm_save_as_button, *save_label, *vbox4, *image3;
++  GtkWidget *table8, *save_label, *vbox4, *image3;
+   GtkWidget *about_message, *about_label, *main_progressbar;
+   GtkWidget *hbox5, *view_sidepanel_notebook, *table9, *label39, *label40;
+   GtkWidget *new_width_spinbutton, *new_height_spinbutton, *new_create_button;
+@@ -60,7 +59,8 @@
+   GtkWidget *colormap_scale4, *colormap_scale5, *colormap_scale7;
+   GtkWidget *colormap_scale8, *table15, *colormap_auto_update_checkbutton;
+   GtkWidget *colormap_update_button, *colormap_redraw_2dview_button;
+-  GtkWidget *filechooserbutton1, *filechooserbutton2;
++  GtkWidget *hpaned1, *hbox8, *label50, *export_format_combobox;
++  GtkWidget *export_save_button, *export_filechooserwidget, *label51;
+ 
+   GtkObject *norm_min_spinbutton_adj, *norm_max_spinbutton_adj;
+   GtkObject *blur_sigma_spinbutton_adj, *blur_yradius_spinbutton_adj;
+@@ -945,54 +945,49 @@
+   gtk_widget_show (label42);
+   gtk_notebook_set_tab_label (GTK_NOTEBOOK (main_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (main_notebook), 3), label42);
+ 
+-  table8 = gtk_table_new (3, 4, FALSE);
++  hpaned1 = gtk_hpaned_new ();
++  gtk_widget_show (hpaned1);
++  gtk_container_add (GTK_CONTAINER (main_notebook), hpaned1);
++  gtk_paned_set_position (GTK_PANED (hpaned1), 1000);
++
++  table8 = gtk_table_new (3, 2, FALSE);
+   gtk_widget_show (table8);
+-  gtk_container_add (GTK_CONTAINER (main_notebook), table8);
++  gtk_paned_pack1 (GTK_PANED (hpaned1), table8, FALSE, TRUE);
+   gtk_container_set_border_width (GTK_CONTAINER (table8), 8);
+   gtk_table_set_row_spacings (GTK_TABLE (table8), 8);
+   gtk_table_set_col_spacings (GTK_TABLE (table8), 8);
+ 
+-  label31 = gtk_label_new (&quot;PGM&quot;);
+-  gtk_widget_show (label31);
+-  gtk_table_attach (GTK_TABLE (table8), label31, 0, 1, 0, 1,
++  hbox8 = gtk_hbox_new (FALSE, 8);
++  gtk_widget_show (hbox8);
++  gtk_table_attach (GTK_TABLE (table8), hbox8, 0, 1, 0, 1,
+                     (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (0), 0, 0);
+-  gtk_misc_set_alignment (GTK_MISC (label31), 0, 0.5);
++                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+ 
+-  label32 = gtk_label_new (&quot;PPM&quot;);
+-  gtk_widget_show (label32);
+-  gtk_table_attach (GTK_TABLE (table8), label32, 0, 1, 1, 2,
+-                    (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (0), 0, 0);
+-  gtk_misc_set_alignment (GTK_MISC (label32), 0, 0.5);
++  label50 = gtk_label_new (&quot;&quot;);
++  gtk_widget_show (label50);
++  gtk_box_pack_start (GTK_BOX (hbox8), label50, TRUE, TRUE, 0);
+ 
+-  pgm_save_as_button = gtk_button_new_from_stock (&quot;gtk-save&quot;);
+-  gtk_widget_show (pgm_save_as_button);
+-  gtk_table_attach (GTK_TABLE (table8), pgm_save_as_button, 2, 3, 0, 1,
+-                    (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (0), 0, 0);
+-  gtk_widget_set_sensitive (pgm_save_as_button, FALSE);
++  export_format_combobox = gtk_combo_box_new_text ();
++  gtk_widget_show (export_format_combobox);
++  gtk_box_pack_start (GTK_BOX (hbox8), export_format_combobox, FALSE, TRUE, 0);
++  gtk_combo_box_append_text (GTK_COMBO_BOX (export_format_combobox), &quot;PGM&quot;);
++  gtk_combo_box_append_text (GTK_COMBO_BOX (export_format_combobox), &quot;PPM&quot;);
++  gtk_combo_box_set_active(GTK_COMBO_BOX(export_format_combobox), 0);
+ 
+-  ppm_save_as_button = gtk_button_new_from_stock (&quot;gtk-save&quot;);
+-  gtk_widget_show (ppm_save_as_button);
+-  gtk_table_attach (GTK_TABLE (table8), ppm_save_as_button, 2, 3, 1, 2,
+-                    (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (0), 0, 0);
+-  gtk_widget_set_sensitive (ppm_save_as_button, FALSE);
++  export_save_button = gtk_button_new_from_stock (&quot;gtk-save&quot;);
++  gtk_widget_show (export_save_button);
++  gtk_box_pack_start (GTK_BOX (hbox8), export_save_button, FALSE, FALSE, 0);
++  gtk_widget_set_sensitive (export_save_button, FALSE);
+ 
+-  filechooserbutton1 = gtk_file_chooser_button_new (&quot;Select A File&quot;, GTK_FILE_CHOOSER_ACTION_OPEN);
+-  gtk_widget_show (filechooserbutton1);
+-  gtk_table_attach (GTK_TABLE (table8), filechooserbutton1, 1, 2, 0, 1,
+-                    (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+-  g_object_set (filechooserbutton1, &quot;show-hidden&quot;, TRUE, &quot;width-chars&quot;, 32, NULL);
++  export_filechooserwidget = gtk_file_chooser_widget_new (GTK_FILE_CHOOSER_ACTION_SAVE);
++  gtk_widget_show (export_filechooserwidget);
++  gtk_table_attach (GTK_TABLE (table8), export_filechooserwidget, 0, 1, 1, 2,
++                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
++                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+ 
+-  filechooserbutton2 = gtk_file_chooser_button_new (&quot;Select A File&quot;, GTK_FILE_CHOOSER_ACTION_OPEN);
+-  gtk_widget_show (filechooserbutton2);
+-  gtk_table_attach (GTK_TABLE (table8), filechooserbutton2, 1, 2, 1, 2,
+-                    (GtkAttachOptions) (GTK_FILL),
+-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+-  g_object_set (filechooserbutton2, &quot;show-hidden&quot;, TRUE, &quot;width-chars&quot;, 32, NULL);
++  label51 = gtk_label_new (&quot;&quot;);
++  gtk_widget_show (label51);
++  gtk_paned_pack2 (GTK_PANED (hpaned1), label51, TRUE, TRUE);
+ 
+   save_label = gtk_label_new (&quot;Export&quot;);
+   gtk_widget_show (save_label);
+@@ -1035,12 +1030,6 @@
+   g_signal_connect ((gpointer) generate_button, &quot;clicked&quot;,
+                     G_CALLBACK (on_generate_button_clicked),
+                     NULL);
+-  g_signal_connect ((gpointer) pgm_save_as_button, &quot;clicked&quot;,
+-                    G_CALLBACK (on_pgm_save_as_button_clicked),
+-                    NULL);
+-  g_signal_connect ((gpointer) ppm_save_as_button, &quot;clicked&quot;,
+-                    G_CALLBACK (on_ppm_save_as_button_clicked),
+-                    NULL);
+   g_signal_connect ((gpointer) new_create_button, &quot;clicked&quot;,
+                     G_CALLBACK (on_new_create_button_clicked),
+                     NULL);
+@@ -1148,8 +1137,6 @@
+   GLADE_HOOKUP_OBJECT (hmgengui, forge_powscale_spinbutton, &quot;forge_powscale_spinbutton&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, forge_label, &quot;forge_label&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, generate_label, &quot;generate_label&quot;);
+-  GLADE_HOOKUP_OBJECT (hmgengui, pgm_save_as_button, &quot;pgm_save_as_button&quot;);
+-  GLADE_HOOKUP_OBJECT (hmgengui, ppm_save_as_button, &quot;ppm_save_as_button&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, save_label, &quot;save_label&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, about_message, &quot;about_message&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, about_label, &quot;about_label&quot;);
+@@ -1188,8 +1175,9 @@
+   GLADE_HOOKUP_OBJECT (hmgengui, colormap_auto_update_checkbutton, &quot;colormap_auto_update_checkbutton&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, colormap_update_button, &quot;colormap_update_button&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, colormap_redraw_2dview_button, &quot;colormap_redraw_2dview_button&quot;);
+-  GLADE_HOOKUP_OBJECT (hmgengui, filechooserbutton1, &quot;filechooserbutton1&quot;);
+-  GLADE_HOOKUP_OBJECT (hmgengui, filechooserbutton2, &quot;filechooserbutton2&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, export_format_combobox, &quot;export_format_combobox&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, export_save_button, &quot;export_save_button&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, export_filechooserwidget, &quot;export_filechooserwidget&quot;);
+ 
+   gtk_notebook_set_current_page(GTK_NOTEBOOK(main_notebook), 1);
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000051.html">[Hmgen-svnlog] r52 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000053.html">[Hmgen-svnlog] r54 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

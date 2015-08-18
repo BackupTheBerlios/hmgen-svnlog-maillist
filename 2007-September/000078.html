@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r79 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r79%20-%20trunk&In-Reply-To=%3C200709072236.l87MawoC006262%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000077.html">
+   <LINK REL="Next"  HREF="000079.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r79 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r79%20-%20trunk&In-Reply-To=%3C200709072236.l87MawoC006262%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r79 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 00:36:58 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000077.html">[Hmgen-svnlog] r78 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000079.html">[Hmgen-svnlog] r80 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 00:36:58 +0200 (Sat, 08 Sep 2007)
+New Revision: 79
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+function to poll state of check_button's
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-07 22:15:10 UTC (rev 78)
++++ trunk/gui_callbacks.c	2007-09-07 22:36:58 UTC (rev 79)
+@@ -105,6 +105,11 @@
+     w = lookup_widget(GTK_WIDGET(widget), name);
+     return gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+ }
++static int get_check_button_active(void *widget, const char *name) {
++    GtkWidget *w;
++    w = lookup_widget(GTK_WIDGET(widget), name);
++    return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
++}
+ 
+ static void retrieve_settings_ff(GtkWidget *widget, char *buf, int len) {
+     unsigned int seed, init, nplates, up, down;
+@@ -238,27 +243,21 @@
+     // post-processing
+ 
+     gdk_threads_enter();
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;norm_first_checkbutton&quot;);
+-        normfirst = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;norm_last_checkbutton&quot;);
+-        normlast = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
++        normfirst   = get_check_button_active(args, &quot;norm_first_checkbutton&quot;);
++        normlast    = get_check_button_active(args, &quot;norm_last_checkbutton&quot;);
+         normmin = get_spin_button_int(args, &quot;norm_min_spinbutton&quot;);
+         normmax = get_spin_button_int(args, &quot;norm_max_spinbutton&quot;);
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;invert_checkbutton&quot;);
+-        inv = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;blur_checkbutton&quot;);
+-        blur = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
++        inv         = get_check_button_active(args, &quot;invert_checkbutton&quot;);
++        blur        = get_check_button_active(args, &quot;blur_checkbutton&quot;);
+         blurx     = get_spin_button_int  (args, &quot;blur_xradius_spinbutton&quot;);
+         blury     = get_spin_button_int  (args, &quot;blur_yradius_spinbutton&quot;);
+         blursigma = get_spin_button_float(args, &quot;blur_sigma_spinbutton&quot;);
+-        widget      = lookup_widget(GTK_WIDGET(args),&quot;crop_enable_checkbutton&quot;);
+-        crop        = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
++        crop        = get_check_button_active(args, &quot;crop_enable_checkbutton&quot;);
+         cropleft    = get_spin_button_int(args, &quot;crop_left_spinbutton&quot;);
+         cropright   = get_spin_button_int(args, &quot;crop_right_spinbutton&quot;);
+         croptop     = get_spin_button_int(args, &quot;crop_top_spinbutton&quot;);
+         cropbottom  = get_spin_button_int(args, &quot;crop_bottom_spinbutton&quot;);
+-        widget      = lookup_widget(GTK_WIDGET(args),&quot;clip_enable_checkbutton&quot;);
+-        clip        = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
++        clip        = get_check_button_active(args, &quot;clip_enable_checkbutton&quot;);
+         clipmin     = get_spin_button_int(args, &quot;clip_min_spinbutton&quot;);
+         clipmax     = get_spin_button_int(args, &quot;clip_max_spinbutton&quot;);
+     gdk_threads_leave();
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000077.html">[Hmgen-svnlog] r78 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000079.html">[Hmgen-svnlog] r80 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#78">[ date ]</a>
+              <a href="thread.html#78">[ thread ]</a>
+              <a href="subject.html#78">[ subject ]</a>
+              <a href="author.html#78">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

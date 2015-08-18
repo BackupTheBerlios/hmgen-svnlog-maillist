@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r146 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r146%20-%20trunk&In-Reply-To=%3C200709131049.l8DAnuQe021566%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000145.html">
+   <LINK REL="Next"  HREF="000147.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r146 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r146%20-%20trunk&In-Reply-To=%3C200709131049.l8DAnuQe021566%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r146 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep 13 12:49:56 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000145.html">[Hmgen-svnlog] r145 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000147.html">[Hmgen-svnlog] r147 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#146">[ date ]</a>
+              <a href="thread.html#146">[ thread ]</a>
+              <a href="subject.html#146">[ subject ]</a>
+              <a href="author.html#146">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-13 12:49:56 +0200 (Thu, 13 Sep 2007)
+New Revision: 146
+
+Modified:
+   trunk/build.sh
+Log:
+refactor
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-13 10:47:27 UTC (rev 145)
++++ trunk/build.sh	2007-09-13 10:49:56 UTC (rev 146)
+@@ -496,6 +496,12 @@
+     make_set_deps $gui_g_exe $gui_objs $libhmgen
+ }
+ 
++make_conf_init_deps() {
++    make_configure
++    make_init_project
++    make_deps
++}
++
+ make_cli() {
+     make_exe $cli_g_exe
+     if not up_to_date $cli_exe $cli_g_exe ; then
+@@ -561,29 +567,21 @@
+         deps)
+             action=1
+             &gt;$depsfile
+-            make_configure
+-            make_init_project
+-            make_deps
++            make_conf_init_deps
+             ;;
+         cli)
+             action=1
+-            make_configure
+-            make_init_project
+-            make_deps
++            make_conf_init_deps
+             make_cli
+             ;;
+         gui)
+             action=1
+-            make_configure
+-            make_init_project
+-            make_deps
++            make_conf_init_deps
+             make_gui
+             ;;
+         lib)
+             action=1
+-            make_configure
+-            make_init_project
+-            make_deps
++            make_conf_init_deps
+             make_lib $libhmgen
+             ;;
+         all)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000145.html">[Hmgen-svnlog] r145 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000147.html">[Hmgen-svnlog] r147 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#146">[ date ]</a>
+              <a href="thread.html#146">[ thread ]</a>
+              <a href="subject.html#146">[ subject ]</a>
+              <a href="author.html#146">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r2 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r2%20-%20trunk&In-Reply-To=%3C200708291157.l7TBvWlI026024%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000000.html">
+   <LINK REL="Next"  HREF="000002.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r2 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r2%20-%20trunk&In-Reply-To=%3C200708291157.l7TBvWlI026024%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r2 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Aug 29 13:57:32 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000000.html">[Hmgen-svnlog] r1 - / trunk
+</A></li>
+        <LI>Next message: <A HREF="000002.html">[Hmgen-svnlog] r3 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1">[ date ]</a>
+              <a href="thread.html#1">[ thread ]</a>
+              <a href="subject.html#1">[ subject ]</a>
+              <a href="author.html#1">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-29 13:57:31 +0200 (Wed, 29 Aug 2007)
+New Revision: 2
+
+Modified:
+   trunk/Makefile
+Log:
+cleaner silent/verbose handling
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-08-28 10:38:44 UTC (rev 1)
++++ trunk/Makefile	2007-08-29 11:57:31 UTC (rev 2)
+@@ -20,7 +20,7 @@
+ LIBHMGEN_SRCS = $(addsuffix .c, $(LIBHMGEN_BASENAMES))
+ 
+ SILENT ?= yes
+-SILENT_EXEC = test &quot;$(SILENT)&quot; = &quot;yes&quot; &amp;&amp; echo $$SHORT || echo $$LONG; $$LONG
++SILENT_EXEC = @test &quot;$(SILENT)&quot; = &quot;yes&quot; &amp;&amp; echo &quot;$(2)&quot; || echo $(1); $(1)
+ 
+ all: $(GUI) $(CLI)
+ 
+@@ -30,37 +30,35 @@
+ $(CLI)-verbose: SILENT=no
+ $(CLI)-verbose: $(CLI)
+ $(CLI): $(CLIg)
+-	@LONG=&quot;cp $(CLIg) $@&quot;; SHORT=&quot;CP $(CLIg) $@&quot;; $(SILENT_EXEC)
+-	@LONG=&quot;$(STRIP) $@&quot;; SHORT=&quot;STRIP $@&quot;; $(SILENT_EXEC)
++	$(call SILENT_EXEC,cp $(CLIg) $@,CP $(CLIg) $@)
++	$(call SILENT_EXEC,$(STRIP) $@,STRIP $@)
+ 
+ $(CLIg): CFLAGS = $(DEF_CFLAGS)
+ $(CLIg): LDFLAGS = $(DEF_LDFLAGS)
+ $(CLIg): $(LIBHMGEN) $(CLI_OBJS)
+-	@LONG=&quot;$(CC) -o $@ $(CLI_OBJS) $(LIBHMGEN) $(LDFLAGS)&quot;; SHORT=&quot;LD $@&quot;; \
+-		$(SILENT_EXEC)
++	$(call SILENT_EXEC,$(CC) -o $@ $(CLI_OBJS) $(LIBHMGEN) $(LDFLAGS),LD $@)
+ 
+ $(GUI)-verbose: SILENT=no
+ $(GUI)-verbose: $(GUI)
+ $(GUI): $(GUIg)
+-	@LONG=&quot;cp $(GUIg) $@&quot;; SHORT=&quot;CP $(GUIg) $@&quot;; $(SILENT_EXEC)
+-	@LONG=&quot;$(STRIP) $@&quot;; SHORT=&quot;STRIP $@&quot;; $(SILENT_EXEC)
++	$(call SILENT_EXEC,cp $(GUIg) $@,CP $(GUIg) $@)
++	$(call SILENT_EXEC,$(STRIP) $@,STRIP $@)
+ 
+ $(GUIg): CFLAGS = $(GTK_CFLAGS) $(DEF_CFLAGS)
+ $(GUIg): LDFLAGS = $(GTK_LDFLAGS) $(DEF_LDFLAGS)
+ $(GUIg): $(LIBHMGEN) $(GUI_OBJS)
+-	@LONG=&quot;$(CC) -o $@ $(GUI_OBJS) $(LIBHMGEN) $(LDFLAGS)&quot;; SHORT=&quot;LD $@&quot;; \
+-		$(SILENT_EXEC)
++	$(call SILENT_EXEC,$(CC) -o $@ $(GUI_OBJS) $(LIBHMGEN) $(LDFLAGS),LD $@)
+ 
+ $(LIBHMGEN)-verbose: SILENT=no
+ $(LIBHMGEN)-verbose: $(LIBHMGEN)
+ $(LIBHMGEN): CFLAGS = $(DEF_CFLAGS)
+ $(LIBHMGEN): LDFLAGS = $(DEF_LDFLAGS)
+ $(LIBHMGEN): $(LIBHMGEN_OBJS)
+-	@LONG=&quot;$(AR) $(AR_FLAGS) $@ $^&quot;; SHORT=&quot;AR $@&quot;; $(SILENT_EXEC)
+-	@LONG=&quot;$(RANLIB) $@&quot;; SHORT=&quot;RANLIB $@&quot;; $(SILENT_EXEC)
++	$(call SILENT_EXEC,$(AR) $(AR_FLAGS) $@ $^,AR $@)
++	$(call SILENT_EXEC,$(RANLIB) $@,RANLIB $@)
+ 
+ .c.o:
+-	@LONG=&quot;$(CC) -c -o $@ $&lt; $(CFLAGS)&quot;; SHORT=&quot;CC $&lt;&quot;; $(SILENT_EXEC)
++	$(call SILENT_EXEC,$(CC) -c -o $@ $&lt; $(CFLAGS),CC $&lt;)
+ 
+ clean:
+ 	rm -f $(CLI) $(CLIg) $(CLI_OBJS)
+@@ -73,8 +71,7 @@
+ depend-verbose dep-verbose: SILENT=no
+ depend-verbose dep-verbose: dep
+ depend dep: $(CLI_SRCS) $(LIBHMGEN_SRCS) $(GUI_SRCS)
+-	@LONG=&quot;$(CC_DEP) $(DEP_FLAGS) $(DEF_CFLAGS) $(GTK_CFLAGS) $^&quot;; \
+-		SHORT=&quot;CCDEP &gt;.depend&quot;; $(SILENT_EXEC) 1&gt;.depend
++	$(call SILENT_EXEC,$(CC_DEP) $(DEP_FLAGS) $(DEF_CFLAGS) $(GTK_CFLAGS) $^ 1&gt;.depend,CCDEP &gt;.depend)
+ 
+ size:
+ 	@wc -l *.[ch] Makefile *.mak | tail -1
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000000.html">[Hmgen-svnlog] r1 - / trunk
+</A></li>
+	<LI>Next message: <A HREF="000002.html">[Hmgen-svnlog] r3 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#1">[ date ]</a>
+              <a href="thread.html#1">[ thread ]</a>
+              <a href="subject.html#1">[ subject ]</a>
+              <a href="author.html#1">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

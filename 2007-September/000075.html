@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r76 - in trunk: . assist
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r76%20-%20in%20trunk%3A%20.%20assist&In-Reply-To=%3C200709072101.l87L1ePA006530%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000074.html">
+   <LINK REL="Next"  HREF="000076.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r76 - in trunk: . assist</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r76%20-%20in%20trunk%3A%20.%20assist&In-Reply-To=%3C200709072101.l87L1ePA006530%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r76 - in trunk: . assist">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Sep  7 23:01:40 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000074.html">[Hmgen-svnlog] r75 - in trunk: . assist
+</A></li>
+        <LI>Next message: <A HREF="000076.html">[Hmgen-svnlog] r77 - trunk/assist
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-07 23:01:39 +0200 (Fri, 07 Sep 2007)
+New Revision: 76
+
+Modified:
+   trunk/assist/hmgengui.glade
+   trunk/gui_interface.c
+Log:
+forgot enable checkbuttons for postprocessing settings
+
+
+Modified: trunk/assist/hmgengui.glade
+===================================================================
+--- trunk/assist/hmgengui.glade	2007-09-07 20:48:18 UTC (rev 75)
++++ trunk/assist/hmgengui.glade	2007-09-07 21:01:39 UTC (rev 76)
+@@ -1413,7 +1413,7 @@
+ 			    &lt;widget class=&quot;GtkTable&quot; id=&quot;table17&quot;&gt;
+ 			      &lt;property name=&quot;border_width&quot;&gt;8&lt;/property&gt;
+ 			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;n_rows&quot;&gt;5&lt;/property&gt;
++			      &lt;property name=&quot;n_rows&quot;&gt;6&lt;/property&gt;
+ 			      &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
+ 			      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+ 			      &lt;property name=&quot;row_spacing&quot;&gt;8&lt;/property&gt;
+@@ -1440,8 +1440,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1468,8 +1468,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1496,8 +1496,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1524,8 +1524,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1546,8 +1546,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1568,8 +1568,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1590,8 +1590,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -1612,12 +1612,34 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;3&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;4&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;4&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;5&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+ 			      &lt;/child&gt;
++
++			      &lt;child&gt;
++				&lt;widget class=&quot;GtkCheckButton&quot; id=&quot;crop_enable_checkbutton&quot;&gt;
++				  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Enable&lt;/property&gt;
++				  &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
++				  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;active&quot;&gt;False&lt;/property&gt;
++				  &lt;property name=&quot;inconsistent&quot;&gt;False&lt;/property&gt;
++				  &lt;property name=&quot;draw_indicator&quot;&gt;True&lt;/property&gt;
++				&lt;/widget&gt;
++				&lt;packing&gt;
++				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
++				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
++				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++				&lt;/packing&gt;
++			      &lt;/child&gt;
+ 			    &lt;/widget&gt;
+ 			    &lt;packing&gt;
+ 			      &lt;property name=&quot;tab_expand&quot;&gt;False&lt;/property&gt;
+@@ -2129,7 +2151,7 @@
+ 			    &lt;widget class=&quot;GtkTable&quot; id=&quot;table16&quot;&gt;
+ 			      &lt;property name=&quot;border_width&quot;&gt;8&lt;/property&gt;
+ 			      &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
+-			      &lt;property name=&quot;n_rows&quot;&gt;3&lt;/property&gt;
++			      &lt;property name=&quot;n_rows&quot;&gt;4&lt;/property&gt;
+ 			      &lt;property name=&quot;n_columns&quot;&gt;3&lt;/property&gt;
+ 			      &lt;property name=&quot;homogeneous&quot;&gt;False&lt;/property&gt;
+ 			      &lt;property name=&quot;row_spacing&quot;&gt;8&lt;/property&gt;
+@@ -2156,8 +2178,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -2184,8 +2206,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -2206,8 +2228,8 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+@@ -2228,12 +2250,34 @@
+ 				&lt;packing&gt;
+ 				  &lt;property name=&quot;left_attach&quot;&gt;1&lt;/property&gt;
+ 				  &lt;property name=&quot;right_attach&quot;&gt;2&lt;/property&gt;
+-				  &lt;property name=&quot;top_attach&quot;&gt;1&lt;/property&gt;
+-				  &lt;property name=&quot;bottom_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;2&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;3&lt;/property&gt;
+ 				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
+ 				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
+ 				&lt;/packing&gt;
+ 			      &lt;/child&gt;
++
++			      &lt;child&gt;
++				&lt;widget class=&quot;GtkCheckButton&quot; id=&quot;clip_enable_checkbutton&quot;&gt;
++				  &lt;property name=&quot;visible&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;can_focus&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;label&quot; translatable=&quot;yes&quot;&gt;Enable&lt;/property&gt;
++				  &lt;property name=&quot;use_underline&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;relief&quot;&gt;GTK_RELIEF_NORMAL&lt;/property&gt;
++				  &lt;property name=&quot;focus_on_click&quot;&gt;True&lt;/property&gt;
++				  &lt;property name=&quot;active&quot;&gt;False&lt;/property&gt;
++				  &lt;property name=&quot;inconsistent&quot;&gt;False&lt;/property&gt;
++				  &lt;property name=&quot;draw_indicator&quot;&gt;True&lt;/property&gt;
++				&lt;/widget&gt;
++				&lt;packing&gt;
++				  &lt;property name=&quot;left_attach&quot;&gt;0&lt;/property&gt;
++				  &lt;property name=&quot;right_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;top_attach&quot;&gt;0&lt;/property&gt;
++				  &lt;property name=&quot;bottom_attach&quot;&gt;1&lt;/property&gt;
++				  &lt;property name=&quot;x_options&quot;&gt;fill&lt;/property&gt;
++				  &lt;property name=&quot;y_options&quot;&gt;&lt;/property&gt;
++				&lt;/packing&gt;
++			      &lt;/child&gt;
+ 			    &lt;/widget&gt;
+ 			    &lt;packing&gt;
+ 			      &lt;property name=&quot;tab_expand&quot;&gt;False&lt;/property&gt;
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-07 20:48:18 UTC (rev 75)
++++ trunk/gui_interface.c	2007-09-07 21:01:39 UTC (rev 76)
+@@ -70,6 +70,7 @@
+   GtkWidget *crop_right_spinbutton, *crop_top_spinbutton;
+   GtkWidget *crop_bottom_spinbutton, *label52, *table16, *label56, *label57;
+   GtkWidget *clip_min_spinbutton, *clip_max_spinbutton, *label53;
++  GtkWidget *crop_enable_checkbutton, *clip_enable_checkbutton;
+ 
+   GtkObject *norm_min_spinbutton_adj, *norm_max_spinbutton_adj;
+   GtkObject *blur_sigma_spinbutton_adj, *blur_yradius_spinbutton_adj;
+@@ -513,7 +514,7 @@
+   gtk_widget_show (postprocessing_notebook);
+   gtk_container_add (GTK_CONTAINER (alignment2), postprocessing_notebook);
+ 
+-  table17 = gtk_table_new (5, 3, FALSE);
++  table17 = gtk_table_new (6, 3, FALSE);
+   gtk_widget_show (table17);
+   gtk_container_add (GTK_CONTAINER (postprocessing_notebook), table17);
+   gtk_container_set_border_width (GTK_CONTAINER (table17), 8);
+@@ -522,28 +523,28 @@
+ 
+   label61 = gtk_label_new (&quot;Left&quot;);
+   gtk_widget_show (label61);
+-  gtk_table_attach (GTK_TABLE (table17), label61, 0, 1, 0, 1,
++  gtk_table_attach (GTK_TABLE (table17), label61, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label61), 0, 0.5);
+ 
+   label62 = gtk_label_new (&quot;Right&quot;);
+   gtk_widget_show (label62);
+-  gtk_table_attach (GTK_TABLE (table17), label62, 0, 1, 1, 2,
++  gtk_table_attach (GTK_TABLE (table17), label62, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label62), 0, 0.5);
+ 
+   label63 = gtk_label_new (&quot;Top&quot;);
+   gtk_widget_show (label63);
+-  gtk_table_attach (GTK_TABLE (table17), label63, 0, 1, 2, 3,
++  gtk_table_attach (GTK_TABLE (table17), label63, 0, 1, 3, 4,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label63), 0, 0.5);
+ 
+   label64 = gtk_label_new (&quot;Bottom&quot;);
+   gtk_widget_show (label64);
+-  gtk_table_attach (GTK_TABLE (table17), label64, 0, 1, 3, 4,
++  gtk_table_attach (GTK_TABLE (table17), label64, 0, 1, 4, 5,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label64), 0, 0.5);
+@@ -551,31 +552,37 @@
+   crop_left_spinbutton_adj = gtk_adjustment_new (0, 0, 65536, 1, 10, 10);
+   crop_left_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (crop_left_spinbutton_adj), 1, 0);
+   gtk_widget_show (crop_left_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table17), crop_left_spinbutton, 1, 2, 0, 1,
++  gtk_table_attach (GTK_TABLE (table17), crop_left_spinbutton, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+   crop_right_spinbutton_adj = gtk_adjustment_new (0, 0, 65536, 1, 10, 10);
+   crop_right_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (crop_right_spinbutton_adj), 1, 0);
+   gtk_widget_show (crop_right_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table17), crop_right_spinbutton, 1, 2, 1, 2,
++  gtk_table_attach (GTK_TABLE (table17), crop_right_spinbutton, 1, 2, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+   crop_top_spinbutton_adj = gtk_adjustment_new (0, 0, 65536, 1, 10, 10);
+   crop_top_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (crop_top_spinbutton_adj), 1, 0);
+   gtk_widget_show (crop_top_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table17), crop_top_spinbutton, 1, 2, 2, 3,
++  gtk_table_attach (GTK_TABLE (table17), crop_top_spinbutton, 1, 2, 3, 4,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+   crop_bottom_spinbutton_adj = gtk_adjustment_new (0, 0, 65536, 1, 10, 10);
+   crop_bottom_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (crop_bottom_spinbutton_adj), 1, 0);
+   gtk_widget_show (crop_bottom_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table17), crop_bottom_spinbutton, 1, 2, 3, 4,
++  gtk_table_attach (GTK_TABLE (table17), crop_bottom_spinbutton, 1, 2, 4, 5,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
++  crop_enable_checkbutton = gtk_check_button_new_with_mnemonic (&quot;Enable&quot;);
++  gtk_widget_show (crop_enable_checkbutton);
++  gtk_table_attach (GTK_TABLE (table17), crop_enable_checkbutton, 0, 1, 0, 1,
++                    (GtkAttachOptions) (GTK_FILL),
++                    (GtkAttachOptions) (0), 0, 0);
++
+   label52 = gtk_label_new (&quot;Crop&quot;);
+   gtk_widget_show (label52);
+   gtk_notebook_set_tab_label (GTK_NOTEBOOK (postprocessing_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (postprocessing_notebook), 0), label52);
+@@ -707,7 +714,7 @@
+   gtk_widget_show (invert_label);
+   gtk_notebook_set_tab_label (GTK_NOTEBOOK (postprocessing_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (postprocessing_notebook), 3), invert_label);
+ 
+-  table16 = gtk_table_new (3, 3, FALSE);
++  table16 = gtk_table_new (4, 3, FALSE);
+   gtk_widget_show (table16);
+   gtk_container_add (GTK_CONTAINER (postprocessing_notebook), table16);
+   gtk_container_set_border_width (GTK_CONTAINER (table16), 8);
+@@ -716,14 +723,14 @@
+ 
+   label56 = gtk_label_new (&quot;Minimum&quot;);
+   gtk_widget_show (label56);
+-  gtk_table_attach (GTK_TABLE (table16), label56, 0, 1, 0, 1,
++  gtk_table_attach (GTK_TABLE (table16), label56, 0, 1, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label56), 0, 0.5);
+ 
+   label57 = gtk_label_new (&quot;Maximum&quot;);
+   gtk_widget_show (label57);
+-  gtk_table_attach (GTK_TABLE (table16), label57, 0, 1, 1, 2,
++  gtk_table_attach (GTK_TABLE (table16), label57, 0, 1, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+   gtk_misc_set_alignment (GTK_MISC (label57), 0, 0.5);
+@@ -731,17 +738,23 @@
+   clip_min_spinbutton_adj = gtk_adjustment_new (0, 0, 255, 1, 10, 10);
+   clip_min_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (clip_min_spinbutton_adj), 1, 0);
+   gtk_widget_show (clip_min_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table16), clip_min_spinbutton, 1, 2, 0, 1,
++  gtk_table_attach (GTK_TABLE (table16), clip_min_spinbutton, 1, 2, 1, 2,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
+   clip_max_spinbutton_adj = gtk_adjustment_new (255, 0, 255, 1, 10, 10);
+   clip_max_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (clip_max_spinbutton_adj), 1, 0);
+   gtk_widget_show (clip_max_spinbutton);
+-  gtk_table_attach (GTK_TABLE (table16), clip_max_spinbutton, 1, 2, 1, 2,
++  gtk_table_attach (GTK_TABLE (table16), clip_max_spinbutton, 1, 2, 2, 3,
+                     (GtkAttachOptions) (GTK_FILL),
+                     (GtkAttachOptions) (0), 0, 0);
+ 
++  clip_enable_checkbutton = gtk_check_button_new_with_mnemonic (&quot;Enable&quot;);
++  gtk_widget_show (clip_enable_checkbutton);
++  gtk_table_attach (GTK_TABLE (table16), clip_enable_checkbutton, 0, 1, 0, 1,
++                    (GtkAttachOptions) (GTK_FILL),
++                    (GtkAttachOptions) (0), 0, 0);
++
+   label53 = gtk_label_new (&quot;Clip&quot;);
+   gtk_widget_show (label53);
+   gtk_notebook_set_tab_label (GTK_NOTEBOOK (postprocessing_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (postprocessing_notebook), 4), label53);
+@@ -1439,7 +1452,10 @@
+   GLADE_HOOKUP_OBJECT (hmgengui, crop_bottom_spinbutton, &quot;crop_bottom_spinbutton&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, clip_min_spinbutton, &quot;clip_min_spinbutton&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, clip_max_spinbutton, &quot;clip_max_spinbutton&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, crop_enable_checkbutton, &quot;crop_enable_checkbutton&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, clip_enable_checkbutton, &quot;clip_enable_checkbutton&quot;);
+ 
++
+   gtk_notebook_set_current_page(GTK_NOTEBOOK(main_notebook), 1);
+ 
+   return hmgengui;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000074.html">[Hmgen-svnlog] r75 - in trunk: . assist
+</A></li>
+	<LI>Next message: <A HREF="000076.html">[Hmgen-svnlog] r77 - trunk/assist
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#75">[ date ]</a>
+              <a href="thread.html#75">[ thread ]</a>
+              <a href="subject.html#75">[ subject ]</a>
+              <a href="author.html#75">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

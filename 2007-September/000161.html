@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r161 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r161%20-%20trunk&In-Reply-To=%3C200709141341.l8EDfEW0025506%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000160.html">
+   <LINK REL="Next"  HREF="000162.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r161 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r161%20-%20trunk&In-Reply-To=%3C200709141341.l8EDfEW0025506%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r161 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Sep 14 15:41:14 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000160.html">[Hmgen-svnlog] r160 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000162.html">[Hmgen-svnlog] r162 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#161">[ date ]</a>
+              <a href="thread.html#161">[ thread ]</a>
+              <a href="subject.html#161">[ subject ]</a>
+              <a href="author.html#161">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-14 15:41:14 +0200 (Fri, 14 Sep 2007)
+New Revision: 161
+
+Modified:
+   trunk/build.sh
+Log:
+cosmetics
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-14 11:58:14 UTC (rev 160)
++++ trunk/build.sh	2007-09-14 13:41:14 UTC (rev 161)
+@@ -71,10 +71,7 @@
+     _tail() { tail -n $1 2&gt;/dev/null ; }
+ fi
+ 
+-not() {
+-    eval &quot;$@&quot;
+-    test $? -ne 0
+-}
++not() { eval &quot;$@&quot; ; test $? -ne 0 ; }
+ 
+ case `echo -n` in
+     -n)     _echo_n=        _echo_c='\c'    _echo_e=        ;; # SysV
+@@ -89,7 +86,6 @@
+     else Bon=&quot;[1m&quot; ; Boff=&quot;[0m&quot; ; Red=&quot;[31m&quot; ; Green=&quot;[32m&quot;
+     fi
+ }
+-
+ init_colors
+ 
+ # Defaults
+@@ -103,10 +99,7 @@
+ 
+ # --------------------------------( CONFIGURE )--------------------------------
+ 
+-die() {
+-    echo &quot;$1&quot; &gt;&amp;2
+-    exit 1
+-}
++die() { echo &quot;$1&quot; &gt;&amp;2 ; exit 1 ; }
+ 
+ question() {
+     case &quot;$1&quot; in
+@@ -130,16 +123,14 @@
+ }
+ 
+ answer() {
+-    if test &quot;$1&quot; = &quot;no&quot; ; then      col=&quot;$Bon$Red&quot;
++    if   test &quot;$1&quot; = &quot;no&quot; ;  then   col=&quot;$Bon$Red&quot;
+     elif test &quot;$1&quot; = &quot;yes&quot; ; then   col=&quot;$Bon$Green&quot;
+     else                            col=&quot;$Bon&quot;
+     fi
+     test -n &quot;$1&quot; &amp;&amp; echo &quot;$col$1$Boff&quot; || echo &quot;&lt;none&gt;&quot;
+ }
+ 
+-result() {
+-    test -n &quot;$2&quot; &amp;&amp; question &quot;$1&quot; &amp;&amp; answer &quot;$2&quot;
+-}
++result() { test -n &quot;$2&quot; &amp;&amp; question &quot;$1&quot; &amp;&amp; answer &quot;$2&quot; }
+ 
+ my_pkg_config() {
+     question $1
+@@ -415,9 +406,7 @@
+ 
+ addsuffix() {
+     suf=$1 ; shift 1
+-    for i in $@ ; do
+-        echo $i$suf
+-    done
++    for i in $@ ; do echo $i$suf ; done
+ }
+ 
+ up_to_date() {
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000160.html">[Hmgen-svnlog] r160 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000162.html">[Hmgen-svnlog] r162 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#161">[ date ]</a>
+              <a href="thread.html#161">[ thread ]</a>
+              <a href="subject.html#161">[ subject ]</a>
+              <a href="author.html#161">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

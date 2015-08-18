@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r129 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r129%20-%20trunk&In-Reply-To=%3C200709121621.l8CGLQtP025802%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000127.html">
+   <LINK REL="Next"  HREF="000129.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r129 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r129%20-%20trunk&In-Reply-To=%3C200709121621.l8CGLQtP025802%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r129 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 18:21:26 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000127.html">[Hmgen-svnlog] r128 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000129.html">[Hmgen-svnlog] r130 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#128">[ date ]</a>
+              <a href="thread.html#128">[ thread ]</a>
+              <a href="subject.html#128">[ subject ]</a>
+              <a href="author.html#128">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 18:21:26 +0200 (Wed, 12 Sep 2007)
+New Revision: 129
+
+Modified:
+   trunk/build.sh
+Log:
+shorter way of writing out build.config
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 16:16:48 UTC (rev 128)
++++ trunk/build.sh	2007-09-12 16:21:26 UTC (rev 129)
+@@ -268,36 +268,14 @@
+ 
+ output_build_config() {
+     echo writing $configfile
+-    cat &gt;&gt; $configfile &lt;&lt; __EOF__
+-CC=&quot;$CC&quot;
+-CC_DEP=&quot;$CC_DEP&quot;
+-CC_VENDOR=&quot;$CC_VENDOR&quot;
+-CC_VERSION=&quot;$CC_VERSION&quot;
+-CC_VERSION_MAJOR=&quot;$CC_VERSION_MAJOR&quot;
+-CC_VERSION_MINOR=&quot;$CC_VERSION_MINOR&quot;
+-CC_VERSION_SUBMINOR=&quot;$CC_VERSION_SUBMINOR&quot;
+-WARN_FLAGS=&quot;$WARN_FLAGS&quot;
+-OPT_FLAGS=&quot;$OPT_FLAGS&quot;
+-STD_FLAGS=&quot;$STD_FLAGS&quot;
+-DEBUG_FLAGS=&quot;$DEBUG_FLAGS&quot;
+-DEP_FLAGS=&quot;$DEP_FLAGS&quot;
+-OBJ_OUT_FLAG=&quot;$OBJ_OUT_FLAG&quot;
+-DONT_LINK_FLAG=&quot;$DONT_LINK_FLAG&quot;
+-GTK_CFLAGS=&quot;$GTK_CFLAGS&quot;
+-GTK_LDFLAGS=&quot;$GTK_LDFLAGS&quot;
+-GTHREAD_CFLAGS=&quot;$GTHREAD_CFLAGS&quot;
+-GTHREAD_LDFLAGS=&quot;$GTHREAD_LDFLAGS&quot;
+-DEFINES=&quot;-DSVN_REVISION=$SVN_REV&quot;
+-SYSTEM=&quot;$SYSTEM&quot;
+-SYS_LDFLAGS=&quot;$SYS_LDFLAGS&quot;
+-EXESUF=&quot;$EXESUF&quot;
+-AR=&quot;$AR&quot;
+-AR_FLAGS=&quot;$AR_FLAGS&quot;
+-RANLIB=&quot;$RANLIB&quot;
+-STRIP=&quot;$STRIP&quot;
+-OBJSUF=&quot;$OBJSUF&quot;
+-CONFIGURE_DONE=yes
+-__EOF__
++    CONFIGURE_DONE=yes
++    for i in CC CC_DEP CC_VENDOR CC_VERSION CC_VERSION_MAJOR CC_VERSION_MINOR \
++        CC_VERSION_SUBMINOR WARN_FLAGS OPT_FLAGS STD_FLAGS DEBUG_FLAGS \
++        DEP_FLAGS OBJ_OUT_FLAG DONT_LINK_FLAG GTK_CFLAGS GTK_LDFLAGS \
++        GTHREAD_CFLAGS GTHREAD_LDFLAGS DEFINES SYSTEM SYS_LDFLAGS EXESUF AR \
++        AR_FLAGS RANLIB STRIP OBJSUF CONFIGURE_DONE ; do
++        eval echo &quot;$i=\&quot;\$$i\&quot;&quot; &gt;&gt; $configfile
++    done
+ }
+ 
+ # ----------------------------------( UTIL )-----------------------------------
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000127.html">[Hmgen-svnlog] r128 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000129.html">[Hmgen-svnlog] r130 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#128">[ date ]</a>
+              <a href="thread.html#128">[ thread ]</a>
+              <a href="subject.html#128">[ subject ]</a>
+              <a href="author.html#128">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

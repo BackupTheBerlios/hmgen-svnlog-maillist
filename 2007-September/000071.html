@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r72 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r72%20-%20trunk&In-Reply-To=%3C200709071552.l87FqH2x007294%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000070.html">
+   <LINK REL="Next"  HREF="000072.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r72 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r72%20-%20trunk&In-Reply-To=%3C200709071552.l87FqH2x007294%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r72 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Sep  7 17:52:17 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000070.html">[Hmgen-svnlog] r71 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000072.html">[Hmgen-svnlog] r73 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-07 17:52:16 +0200 (Fri, 07 Sep 2007)
+New Revision: 72
+
+Modified:
+   trunk/cli_main.c
+   trunk/lib_hmgen.h
+   trunk/lib_postproc.c
+Log:
+postprocessing, cropping
+
+
+Modified: trunk/cli_main.c
+===================================================================
+--- trunk/cli_main.c	2007-09-07 11:53:41 UTC (rev 71)
++++ trunk/cli_main.c	2007-09-07 15:52:16 UTC (rev 72)
+@@ -20,7 +20,8 @@
+ static double blursigma = DEF_BLURSIGMA;
+ static int normmin = DEF_NORMMIN, normmax = DEF_NORMMAX,
+            normfirst = 0, normlast = 0, inv = 0, clip = 0,
+-           clipmin = DEF_CLIPMIN, clipmax = DEF_CLIPMAX;
++           clipmin = DEF_CLIPMIN, clipmax = DEF_CLIPMAX,
++           crop = 0, cropleft = 0, cropright = 0, croptop = 0, cropbottom = 0;
+ static unsigned int w, h;
+ static char *outfile = NULL;
+ static char *colfile = NULL;
+@@ -71,6 +72,11 @@
+ &quot;-clip          postprocess, clip [default: no]\n&quot;
+ &quot;-clipmin INT   clip minimum (0-255) [default: %i]\n&quot;
+ &quot;-clipmax INT   clip maximum (0-255) [default: %i]\n&quot;
++&quot;-crop              postprocess, crop [default: no]\n&quot;
++&quot;-cropleft INT      crop left margin (0-..) [default: 0]\n&quot;
++&quot;-cropright INT     crop right margin (0-..) [default: 0]\n&quot;
++&quot;-croptop INT       crop top margin (0-..) [default: 0]\n&quot;
++&quot;-cropbottom INT    crop bottom margin (0-..) [default: 0]\n&quot;
+ &quot;\n&quot;,
+         HMG_VERSION_STRING, HMG_COPYRIGHT_STRING, argv[0],
+         DEF_NORMMIN, DEF_NORMMAX,
+@@ -148,6 +154,20 @@
+         } else if (!strcmp(argv[a], &quot;-clipmax&quot;)) {
+             if (!test_argument(a, argc, argv)) return 0;
+             clipmax = atoi(argv[++a]);
++        } else if (!strcmp(argv[a], &quot;-crop&quot;)) {
++            crop = 1;
++        } else if (!strcmp(argv[a], &quot;-cropleft&quot;)) {
++            if (!test_argument(a, argc, argv)) return 0;
++            cropleft = atoi(argv[++a]);
++        } else if (!strcmp(argv[a], &quot;-cropright&quot;)) {
++            if (!test_argument(a, argc, argv)) return 0;
++            cropright = atoi(argv[++a]);
++        } else if (!strcmp(argv[a], &quot;-croptop&quot;)) {
++            if (!test_argument(a, argc, argv)) return 0;
++            croptop = atoi(argv[++a]);
++        } else if (!strcmp(argv[a], &quot;-cropbottom&quot;)) {
++            if (!test_argument(a, argc, argv)) return 0;
++            cropbottom = atoi(argv[++a]);
+         } else {
+             fprintf(stderr, &quot;unknown option: %s\n&quot;, argv[a]);
+             return 0;
+@@ -163,6 +183,7 @@
+         fprintf(stderr, &quot;size is smaller than 1 or larger than 16\n&quot;);
+         return 0;
+     }
++    w = h = exp2(size) + 1;
+     if (algo&lt;ALGO_FF || algo&gt;=ALGO_LAST) {
+         fprintf(stderr, &quot;algo is smaller then %i or larger than %i\n&quot;,
+                 ALGO_FF, ALGO_LAST-1);
+@@ -192,6 +213,14 @@
+         fprintf(stderr, &quot;clipmax is larger than 255\n&quot;);
+         return 0;
+     }
++    if ((croptop + cropbottom + 3U) &gt; h) {
++        fprintf(stderr, &quot;vertical cropping beyond width\n&quot;);
++        return 0;
++    }
++    if ((cropleft + cropright + 3U) &gt; w) {
++        fprintf(stderr, &quot;horizontal cropping beyond width\n&quot;);
++        return 0;
++    }
+     return 1;
+ }
+ 
+@@ -229,6 +258,8 @@
+ 
+     hmg_algorithms[algo]-&gt;func(map, tempmap, w, h);
+ 
++    if (crop)
++        hmg_crop(map, &amp;w, &amp;h, cropleft, cropright, croptop, cropbottom);
+     if (normfirst)
+         hmg_normalize(map, normmin, normmax, w, h);
+     if (blur)
+
+Modified: trunk/lib_hmgen.h
+===================================================================
+--- trunk/lib_hmgen.h	2007-09-07 11:53:41 UTC (rev 71)
++++ trunk/lib_hmgen.h	2007-09-07 15:52:16 UTC (rev 72)
+@@ -41,6 +41,11 @@
+               unsigned int clipmin, unsigned int clipmax,
+               unsigned int w, unsigned int h);
+ 
++void hmg_crop(unsigned char *map,
++              unsigned int *width, unsigned int *height,
++              unsigned int left, unsigned int right,
++              unsigned int top, unsigned int bottom);
++
+ extern unsigned char hmg_colormap[256][3];
+ 
+ typedef struct hmg_colormap_settings_s {
+
+Modified: trunk/lib_postproc.c
+===================================================================
+--- trunk/lib_postproc.c	2007-09-07 11:53:41 UTC (rev 71)
++++ trunk/lib_postproc.c	2007-09-07 15:52:16 UTC (rev 72)
+@@ -131,3 +131,28 @@
+     }
+     progress_meter(-1);
+ }
++
++#undef  HMGEN_MODULE
++#define HMGEN_MODULE &quot;Crop&quot;
++
++void hmg_crop(unsigned char *map,
++              unsigned int *width, unsigned int *height,
++              unsigned int left, unsigned int right,
++              unsigned int top, unsigned int bottom) {
++    unsigned int y, w = *width, h = *height;
++    unsigned char *src = map;
++
++    src += left;
++    src += top * w;
++
++    for (y=0; y&lt;(h-top-bottom); y++) {
++        progress_meter((int)round(y*100.0/(h-1-top-bottom)));
++        memcpy(map, src, w-left-right);
++        map += w-left-right;
++        src += w;
++    }
++
++    *width = w-left-right;
++    *height = h-top-bottom;
++    progress_meter(-1);
++}
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000070.html">[Hmgen-svnlog] r71 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000072.html">[Hmgen-svnlog] r73 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#71">[ date ]</a>
+              <a href="thread.html#71">[ thread ]</a>
+              <a href="subject.html#71">[ subject ]</a>
+              <a href="author.html#71">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

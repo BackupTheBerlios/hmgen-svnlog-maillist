@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r18 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r18%20-%20trunk&In-Reply-To=%3C200708301721.l7UHLFet005937%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000016.html">
+   <LINK REL="Next"  HREF="000018.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r18 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r18%20-%20trunk&In-Reply-To=%3C200708301721.l7UHLFet005937%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r18 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Aug 30 19:21:15 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000016.html">[Hmgen-svnlog] r17 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000018.html">[Hmgen-svnlog] r19 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#17">[ date ]</a>
+              <a href="thread.html#17">[ thread ]</a>
+              <a href="subject.html#17">[ subject ]</a>
+              <a href="author.html#17">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-30 19:21:14 +0200 (Thu, 30 Aug 2007)
+New Revision: 18
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+refactor spin_button value look-up
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-08-30 16:47:51 UTC (rev 17)
++++ trunk/gui_callbacks.c	2007-08-30 17:21:14 UTC (rev 18)
+@@ -109,21 +109,27 @@
+     generate_button_sensitivity(combobox);
+ }
+ 
+-static void retrieve_settings_ff(GtkWidget *widget, char *buf, int len) {
++/* not thread safe; wrap it yourself */
++static int get_spin_button_int(void *widget, const char *name) {
+     GtkWidget *w;
++    w = lookup_widget(GTK_WIDGET(widget), name);
++    return gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
++}
++static float get_spin_button_float(void *widget, const char *name) {
++    GtkWidget *w;
++    w = lookup_widget(GTK_WIDGET(widget), name);
++    return gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
++}
++
++static void retrieve_settings_ff(GtkWidget *widget, char *buf, int len) {
+     unsigned int seed, init, nplates, up, down;
+ 
+     gdk_threads_enter();
+-        w = lookup_widget(widget, &quot;ff_seed_spinbutton&quot;);
+-        seed = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;ff_init_spinbutton&quot;);
+-        init = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;ff_nplates_spinbutton&quot;);
+-        nplates = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;ff_upfactor_spinbutton&quot;);
+-        up = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;ff_downfactor_spinbutton&quot;);
+-        down = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
++        seed    = get_spin_button_int(widget, &quot;ff_seed_spinbutton&quot;);
++        init    = get_spin_button_int(widget, &quot;ff_init_spinbutton&quot;);
++        nplates = get_spin_button_int(widget, &quot;ff_nplates_spinbutton&quot;);
++        up      = get_spin_button_int(widget, &quot;ff_upfactor_spinbutton&quot;);
++        down    = get_spin_button_int(widget, &quot;ff_downfactor_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     snprintf(buf, len, &quot;seed=%u:init=%u:n=%u:up=%u:down=%u&quot;, seed, init,
+@@ -131,25 +137,17 @@
+ }
+ 
+ static void retrieve_settings_mpd(GtkWidget *widget, char *buf, int len) {
+-    GtkWidget *w;
+     unsigned int seed, tl, tr, bl, br, d;
+     float r;
+ 
+     gdk_threads_enter();
+-        w = lookup_widget(widget, &quot;mpd_seed_spinbutton&quot;);
+-        seed = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_tl_spinbutton&quot;);
+-        tl = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_tr_spinbutton&quot;);
+-        tr = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_bl_spinbutton&quot;);
+-        bl = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_br_spinbutton&quot;);
+-        br = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_displacement_spinbutton&quot;);
+-        d = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;mpd_roughness_spinbutton&quot;);
+-        r = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
++        seed = get_spin_button_int  (widget, &quot;mpd_seed_spinbutton&quot;);
++        tl   = get_spin_button_int  (widget, &quot;mpd_tl_spinbutton&quot;);
++        tr   = get_spin_button_int  (widget, &quot;mpd_tr_spinbutton&quot;);
++        bl   = get_spin_button_int  (widget, &quot;mpd_bl_spinbutton&quot;);
++        br   = get_spin_button_int  (widget, &quot;mpd_br_spinbutton&quot;);
++        d    = get_spin_button_int  (widget, &quot;mpd_displacement_spinbutton&quot;);
++        r    = get_spin_button_float(widget, &quot;mpd_roughness_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     snprintf(buf, len, &quot;seed=%u:tl=%u:tr=%u:bl=%u:br=%u:d=%u:r=%0.2f&quot;, seed,
+@@ -157,17 +155,13 @@
+ }
+ 
+ static void retrieve_settings_forge(GtkWidget *widget, char *buf, int len) {
+-    GtkWidget *w;
+     unsigned int seed;
+     float fracdim, powscale;
+ 
+     gdk_threads_enter();
+-        w = lookup_widget(widget, &quot;forge_seed_spinbutton&quot;);
+-        seed = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;forge_fracdim_spinbutton&quot;);
+-        fracdim = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+-        w = lookup_widget(widget, &quot;forge_powscale_spinbutton&quot;);
+-        powscale = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
++        seed     = get_spin_button_int  (widget, &quot;forge_seed_spinbutton&quot;);
++        fracdim  = get_spin_button_float(widget, &quot;forge_fracdim_spinbutton&quot;);
++        powscale = get_spin_button_float(widget, &quot;forge_powscale_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     snprintf(buf, len, &quot;seed=%u:fracdim=%0.2f:powscale=%0.2f&quot;, seed, fracdim,
+@@ -252,20 +246,15 @@
+         normfirst = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+         widget = lookup_widget(GTK_WIDGET(args), &quot;norm_last_checkbutton&quot;);
+         normlast = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;norm_min_spinbutton&quot;);
+-        normmin = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;norm_max_spinbutton&quot;);
+-        normmax = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
++        normmin = get_spin_button_int(args, &quot;norm_min_spinbutton&quot;);
++        normmax = get_spin_button_int(args, &quot;norm_max_spinbutton&quot;);
+         widget = lookup_widget(GTK_WIDGET(args), &quot;invert_checkbutton&quot;);
+         inv = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+         widget = lookup_widget(GTK_WIDGET(args), &quot;blur_checkbutton&quot;);
+         blur = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;blur_xradius_spinbutton&quot;);
+-        blurx = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;blur_yradius_spinbutton&quot;);
+-        blury = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;blur_sigma_spinbutton&quot;);
+-        blursigma = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(widget));
++        blurx     = get_spin_button_int  (args, &quot;blur_xradius_spinbutton&quot;);
++        blury     = get_spin_button_int  (args, &quot;blur_yradius_spinbutton&quot;);
++        blursigma = get_spin_button_float(args, &quot;blur_sigma_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     if (normfirst)
+@@ -342,7 +331,6 @@
+ }
+ 
+ static void *new_create_thread(void *args) {
+-    GtkWidget *widget;
+     unsigned int level;
+ 
+     set_main_progressbar(args);
+@@ -350,12 +338,9 @@
+     hmg_progress_meter = gui_progress_meter;
+ 
+     gdk_threads_enter();
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;new_width_spinbutton&quot;);
+-        map_width = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;new_height_spinbutton&quot;);
+-        map_height = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+-        widget = lookup_widget(GTK_WIDGET(args), &quot;new_level_spinbutton&quot;);
+-        level = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
++        map_width  = get_spin_button_int(args, &quot;new_width_spinbutton&quot;);
++        map_height = get_spin_button_int(args, &quot;new_height_spinbutton&quot;);
++        level      = get_spin_button_int(args, &quot;new_level_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     unref_map_pixbuf();
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000016.html">[Hmgen-svnlog] r17 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000018.html">[Hmgen-svnlog] r19 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#17">[ date ]</a>
+              <a href="thread.html#17">[ thread ]</a>
+              <a href="subject.html#17">[ subject ]</a>
+              <a href="author.html#17">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

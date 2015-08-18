@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r140 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r140%20-%20trunk&In-Reply-To=%3C200709122248.l8CMmnLW013878%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000139.html">
+   <LINK REL="Next"  HREF="000141.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r140 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r140%20-%20trunk&In-Reply-To=%3C200709122248.l8CMmnLW013878%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r140 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep 13 00:48:49 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000139.html">[Hmgen-svnlog] r139 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000141.html">[Hmgen-svnlog] r141 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#140">[ date ]</a>
+              <a href="thread.html#140">[ thread ]</a>
+              <a href="subject.html#140">[ subject ]</a>
+              <a href="author.html#140">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-13 00:48:48 +0200 (Thu, 13 Sep 2007)
+New Revision: 140
+
+Modified:
+   trunk/build.sh
+Log:
+check for tools mandatory for correct operation of build.sh
+find_program awk
+cosmetics, align
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 22:22:33 UTC (rev 139)
++++ trunk/build.sh	2007-09-12 22:48:48 UTC (rev 140)
+@@ -1,13 +1,8 @@
+ #! /bin/sh
+ 
+-# Experiment #2
+-#
+-# Instead of putting configure inside the Makefile, which is basically calling
+-# sh all the time, put 'make' functionality inside configure :) The previous
+-# experiment needed a POSIX environment anyway and on top of that, it depended
+-# heavily on GNU make (which is bad) and recursive make (which is worse).
+-# This experiment just needs a POSIX environment and nothing more.
+-# Or perhaps not even POSIX ;)
++# Experimental configure/make script
++# Copyright (C) 2007 Ivo van Poorten
++# See LICENSE for licensing details
+ 
+ # ----------------------------------( USAGE )----------------------------------
+ 
+@@ -152,6 +147,13 @@
+ }
+ 
+ configure() {
++    echo $_echo_n&quot;tools            : $_echo_c&quot;
++    for i in which printf sed grep tr sort uniq cat test ; do
++        (which $i) 2&gt;/dev/null 1&gt;&amp;2 || die &quot;$i is mandatory&quot;
++        echo $_echo_n&quot;$i $_echo_c&quot;
++    done
++    echo
++
+     find_program compiler CC mandatory $CC cc gcc suncc icc tcc
+     CC_DEP=$CC
+ 
+@@ -279,9 +281,9 @@
+     AR_FLAGS=cru
+     result &quot;ar flags&quot; $AR_FLAGS
+ 
+-    find_program ranlib RANLIB optional $RANLIB ranlib true
+-
+-    find_program strip STRIP optional $STRIP strip true
++    find_program ranlib RANLIB  optional $RANLIB    ranlib true
++    find_program strip  STRIP   optional $STRIP     strip true
++    find_program awk    AWK     optional $AWK       mawk gawk nawk awk true
+ }
+ 
+ output_build_config() {
+@@ -301,10 +303,10 @@
+ # unwrap lines --&gt; sort --&gt; uniq --&gt; merge equal target lines and change syntax
+ ccdeps_to_shdeps() {
+     tr -d '\015' |
+-    awk '/[\\]$/ { $NF=&quot;&quot; ; printf(&quot;%s&quot;,$0) ; next } { print }' |
++    $AWK '/[\\]$/ { $NF=&quot;&quot; ; printf(&quot;%s&quot;,$0) ; next } { print }' |
+     sort |
+     uniq |
+-    awk '
++    $AWK '
+         BEGIN { save=&quot;&quot; }
+         {   if (save==$1) {
+                 ORS=&quot;&quot; ;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000139.html">[Hmgen-svnlog] r139 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000141.html">[Hmgen-svnlog] r141 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#140">[ date ]</a>
+              <a href="thread.html#140">[ thread ]</a>
+              <a href="subject.html#140">[ subject ]</a>
+              <a href="author.html#140">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

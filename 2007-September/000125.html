@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r126 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r126%20-%20trunk&In-Reply-To=%3C200709121206.l8CC64Cw008208%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000124.html">
+   <LINK REL="Next"  HREF="000126.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r126 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r126%20-%20trunk&In-Reply-To=%3C200709121206.l8CC64Cw008208%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r126 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 14:06:04 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000124.html">[Hmgen-svnlog] r125 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000126.html">[Hmgen-svnlog] r127 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 14:06:04 +0200 (Wed, 12 Sep 2007)
+New Revision: 126
+
+Modified:
+   trunk/build.sh
+Log:
+verbose mode and nocolor mode
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 11:53:26 UTC (rev 125)
++++ trunk/build.sh	2007-09-12 12:06:04 UTC (rev 126)
+@@ -20,6 +20,8 @@
+ 
+ --cc=CC             specify C compiler
+ --prefix=PREFIX     installation prefix [default: $prefix]
++--verbose           verbose compilation
++--nocolor           disable colors for terminals w/o VT100 capabilities
+ --help              print this message
+ 
+ actions:
+@@ -83,10 +85,15 @@
+ 
+ test -z &quot;$V&quot; &amp;&amp; V=0
+ test -z &quot;$C&quot; &amp;&amp; C=1
+-if test &quot;$C&quot; -ne 1 ; then Bon= ; Boff= ; Red= ; Green=
+-else Bon=&quot;[1m&quot; ; Boff=&quot;[0m&quot; ; Red=&quot;[31m&quot; ; Green=&quot;[32m&quot;
+-fi
+ 
++init_colors() {
++    if test &quot;$C&quot; -ne 1 ; then Bon= ; Boff= ; Red= ; Green=
++    else Bon=&quot;[1m&quot; ; Boff=&quot;[0m&quot; ; Red=&quot;[31m&quot; ; Green=&quot;[32m&quot;
++    fi
++}
++
++init_colors
++
+ # Defaults
+ 
+ prefix=/usr/local
+@@ -538,6 +545,8 @@
+     case &quot;$i&quot; in
+         --cc=*)         CC=`optarg $i`      ;;
+         --prefix=*)     prefix=`optarg $i`  ;;
++        --verbose)      V=1                 ;;
++        --nocolor)      C=0 ; init_colors   ;;
+         configure)
+             action=1
+             &gt;$configfile
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000124.html">[Hmgen-svnlog] r125 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000126.html">[Hmgen-svnlog] r127 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#125">[ date ]</a>
+              <a href="thread.html#125">[ thread ]</a>
+              <a href="subject.html#125">[ subject ]</a>
+              <a href="author.html#125">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

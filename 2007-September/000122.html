@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r123 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r123%20-%20trunk&In-Reply-To=%3C200709121144.l8CBirIx004682%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000121.html">
+   <LINK REL="Next"  HREF="000123.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r123 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r123%20-%20trunk&In-Reply-To=%3C200709121144.l8CBirIx004682%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r123 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Wed Sep 12 13:44:53 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000121.html">[Hmgen-svnlog] r122 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000123.html">[Hmgen-svnlog] r124 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#122">[ date ]</a>
+              <a href="thread.html#122">[ thread ]</a>
+              <a href="subject.html#122">[ subject ]</a>
+              <a href="author.html#122">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-12 13:44:53 +0200 (Wed, 12 Sep 2007)
+New Revision: 123
+
+Modified:
+   trunk/build.sh
+Log:
+move fairly generic make stuff to make section
+split project section
+options/actions loop
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 11:11:36 UTC (rev 122)
++++ trunk/build.sh	2007-09-12 11:44:53 UTC (rev 123)
+@@ -92,6 +92,8 @@
+ prefix=/usr/local
+ CC=cc
+ action=
++depsfile=build.deps
++configfile=build.config
+ 
+ # --------------------------------( CONFIGURE )--------------------------------
+ 
+@@ -258,8 +260,8 @@
+ }
+ 
+ output_build_config() {
+-   echo writing build.config
+-    cat &gt;&gt; build.config &lt;&lt; __EOF__
++   echo writing $configfile
++    cat &gt;&gt; $configfile &lt;&lt; __EOF__
+ CC=&quot;$CC&quot;
+ CC_DEP=&quot;$CC_DEP&quot;
+ CC_VENDOR=&quot;$CC_VENDOR&quot;
+@@ -431,11 +433,37 @@
+     fi
+ }
+ 
+-make_dep() {
+-    make_exec &quot;$CC_DEP $DEP_FLAGS $DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS `echo $@` | ccdeps_to_shdeps &gt;&gt; build.dep&quot; &quot;ccdep&quot; &quot;build.dep&quot;
++_make_deps() {
++    make_exec &quot;$CC_DEP $DEP_FLAGS $DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS `echo $@` 2&gt;/dev/null | ccdeps_to_shdeps &gt;&gt; $depsfile&quot; &quot;ccdep&quot; &quot;$depsfile&quot;
+ }
+ 
++make_deps() {
++    if not grep -q deps_done=yes $depsfile 2&gt;/dev/null ; then
++        &gt; $depsfile
++        _make_deps $libhmgen_srcs $cli_srcs $gui_srcs
++        echo &quot;deps_done=yes&quot; &gt;&gt; $depsfile
++    fi
++
++    echo reading $depsfile
++    . $depsfile
++}
++
++make_configure() {
++    if grep -q CONFIGURE_DONE=yes $configfile 2&gt;/dev/null ; then
++        echo reading $configfile
++        . $configfile
++    else
++        &gt; $configfile
++        configure
++        output_build_config
++    fi
++}
++
++# ---------------------------------( PROJECT )---------------------------------
++
+ make_init_project() {
++    make_init_default
++
+     libhmgen_basenames=&quot;lib_algo_ff lib_algo_mpd lib_algo_forge lib_postproc \
+                         lib_util lib_hmgen lib_export&quot;
+     libhmgen_objs=`addsuffix $OBJSUF $libhmgen_basenames`
+@@ -460,36 +488,7 @@
+     make_set_deps $gui_g_exe $gui_objs $libhmgen
+ }
+ 
+-# ----------------------------------( MAIN )-----------------------------------
+-
+-do_configure() {
+-    if grep -q CONFIGURE_DONE=yes build.config 2&gt;/dev/null ; then
+-        echo reading build.config
+-        . build.config
+-    else
+-        &gt; build.config
+-        configure
+-        output_build_config
+-    fi
+-}
+-
+-do_make_init() {
+-    make_init_default
+-    make_init_project
+-}
+-
+-do_deps() {
+-    if not grep -q deps_done=yes build.dep 2&gt;/dev/null ; then
+-        &gt; build.dep
+-        make_dep $libhmgen_srcs $cli_srcs $gui_srcs
+-        echo &quot;deps_done=yes&quot; &gt;&gt; build.dep
+-    fi
+-
+-    echo reading build.dep
+-    . build.dep
+-}
+-
+-do_make_cli() {
++make_cli() {
+     make_exe $cli_g_exe
+     if not up_to_date $cli_exe $cli_g_exe ; then
+         make_exec &quot;cp $cli_g_exe $cli_exe&quot; &quot;copy&quot; &quot;$cli_g_exe $cli_exe&quot;
+@@ -497,7 +496,7 @@
+     fi
+ }
+ 
+-do_make_gui() {
++make_gui() {
+     CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
+     LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
+     make_exe $gui_g_exe
+@@ -507,14 +506,72 @@
+     fi
+ }
+ 
++make_all() {
++    make_configure
++    make_init_project
++    make_deps
++    make_cli
++    make_gui
++}
++
++# ----------------------------------( MAIN )-----------------------------------
++
++optarg() {
++    echo $1 | cut -d '=' -f 2
++}
++
+ for i in $@ ; do
+     case &quot;$i&quot; in --help|-help|-h|-?) help ; exit ;; esac
+ done
+ 
+-do_configure
+-do_make_init
+-do_deps
+-do_make_cli
+-do_make_gui
++for i in $@ ; do
++    case &quot;$i&quot; in
++        --cc=*)         CC=`optarg $i`      ;;
++        --prefix=*)     prefix=`optarg $i`  ;;
++        configure)
++            action=1
++            &gt;$configfile
++            make_configure
++            ;;
++        deps)
++            action=1
++            &gt;$depsfile
++            make_configure
++            make_init_project
++            make_deps
++            ;;
++        cli)
++            action=1
++            make_configure
++            make_init_project
++            make_deps
++            make_cli
++            ;;
++        gui)
++            action=1
++            make_configure
++            make_init_project
++            make_deps
++            make_gui
++            ;;
++        lib)
++            action=1
++            make_configure
++            make_init_project
++            make_deps
++            make_lib $libhmgen
++            ;;
++        all)
++            action=1
++            make_all
++            ;;
++        --*)
++            echo unknown option ; exit 1 ;;
++        *)
++            echo unknown action ; exit 1 ;;
++    esac
++done
+ 
++if test -z &quot;$action&quot; ; then make_all ; fi
++
+ echo &quot;done&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000121.html">[Hmgen-svnlog] r122 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000123.html">[Hmgen-svnlog] r124 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#122">[ date ]</a>
+              <a href="thread.html#122">[ thread ]</a>
+              <a href="subject.html#122">[ subject ]</a>
+              <a href="author.html#122">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

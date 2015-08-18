@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r81 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r81%20-%20trunk&In-Reply-To=%3C200709072250.l87MoFNH020728%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000079.html">
+   <LINK REL="Next"  HREF="000081.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r81 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r81%20-%20trunk&In-Reply-To=%3C200709072250.l87MoFNH020728%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r81 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 00:50:15 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000079.html">[Hmgen-svnlog] r80 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000081.html">[Hmgen-svnlog] r82 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#80">[ date ]</a>
+              <a href="thread.html#80">[ thread ]</a>
+              <a href="subject.html#80">[ subject ]</a>
+              <a href="author.html#80">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 00:50:14 +0200 (Sat, 08 Sep 2007)
+New Revision: 81
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+enable postprocessing crop and clip
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-07 22:38:11 UTC (rev 80)
++++ trunk/gui_callbacks.c	2007-09-07 22:50:14 UTC (rev 81)
+@@ -262,6 +262,27 @@
+         clipmax     = get_spin_button_int    (args, &quot;clip_max_spinbutton&quot;);
+     gdk_threads_leave();
+ 
++    if (crop) {
++        /* sanitize crop settings if necessary */
++        if (cropleft &gt; map_width-3)
++            cropleft = map_width-3;
++        if (cropright &gt; map_width-3)
++            cropright = map_width-3;
++        if ((cropright+cropleft) &gt; map_width-3) {
++            cropright = 0;
++            cropleft = map_width-3;
++        }
++        if (croptop &gt; map_height-3)
++            croptop = map_height-3;
++        if (cropbottom &gt; map_height-3)
++            cropbottom = map_height-3;
++        if ((cropbottom+croptop) &gt; map_height-3) {
++            cropbottom = 0;
++            croptop = map_height-3;
++        }
++        hmg_crop(&amp;map, &amp;map_width, &amp;map_height, cropleft, cropright,
++                croptop, cropbottom);
++    }
+     if (normfirst)
+         hmg_normalize(map, normmin, normmax, map_width, map_height);
+     if (blur)
+@@ -269,6 +290,8 @@
+                                                                 map_height);
+     if (inv)
+         hmg_invert(map, map_width, map_height);
++    if (clip)
++        hmg_clip(map, clipmin, clipmax, map_width, map_height);
+     if (normlast)
+         hmg_normalize(map, normmin, normmax, map_width, map_height);
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000079.html">[Hmgen-svnlog] r80 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000081.html">[Hmgen-svnlog] r82 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#80">[ date ]</a>
+              <a href="thread.html#80">[ thread ]</a>
+              <a href="subject.html#80">[ subject ]</a>
+              <a href="author.html#80">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

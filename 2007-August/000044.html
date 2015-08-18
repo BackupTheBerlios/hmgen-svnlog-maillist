@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r45 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r45%20-%20trunk&In-Reply-To=%3C200708312109.l7VL9AMP021982%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000043.html">
+   <LINK REL="Next"  HREF="000045.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r45 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r45%20-%20trunk&In-Reply-To=%3C200708312109.l7VL9AMP021982%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r45 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Aug 31 23:09:10 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000043.html">[Hmgen-svnlog] r44 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000045.html">[Hmgen-svnlog] r46 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#44">[ date ]</a>
+              <a href="thread.html#44">[ thread ]</a>
+              <a href="subject.html#44">[ subject ]</a>
+              <a href="author.html#44">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-31 23:09:09 +0200 (Fri, 31 Aug 2007)
+New Revision: 45
+
+Modified:
+   trunk/gui_callbacks.c
+   trunk/gui_callbacks.h
+   trunk/gui_interface.c
+Log:
+make colormap's auto update work
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-08-31 20:49:03 UTC (rev 44)
++++ trunk/gui_callbacks.c	2007-08-31 21:09:09 UTC (rev 45)
+@@ -15,6 +15,7 @@
+ static unsigned int map_width = 0, map_height = 0;
+ static GtkProgressBar *main_progressbar = NULL;
+ static unsigned int algo_combo_set = 0, size_combo_set = 0;
++static unsigned int colormap_auto_adjust = 0;
+ 
+ static void gui_progress_meter(char *context, int p) {
+     static char *prevcontext = NULL;
+@@ -503,6 +504,11 @@
+         if (v&lt;val)
+             gtk_range_set_value(GTK_RANGE(w), val);
+     }
++
++    /* the button is not used as a button inside the update function, so we
++     * can safely convert our range to a button */
++    if (colormap_auto_adjust)
++        on_colormap_update_button_clicked(GTK_BUTTON(range), NULL);
+ }
+ 
+ void on_colormap_scale1_value_changed(GtkRange *range,
+@@ -594,3 +600,9 @@
+     deactivate_main_notebook(button);
+     g_thread_create(rerender_thread, button, FALSE, (void*)button);
+ }
++
++void on_colormap_auto_update_checkbutton_toggled(GtkToggleButton *togglebutton,
++                                                 gpointer user_data
++                                                 HMG_ATTR_UNUSED) {
++    colormap_auto_adjust = gtk_toggle_button_get_active(togglebutton);
++}
+
+Modified: trunk/gui_callbacks.h
+===================================================================
+--- trunk/gui_callbacks.h	2007-08-31 20:49:03 UTC (rev 44)
++++ trunk/gui_callbacks.h	2007-08-31 21:09:09 UTC (rev 45)
+@@ -18,6 +18,8 @@
+ void on_colormap_update_button_clicked(GtkButton *button, gpointer user_data);
+ void on_colormap_redraw_2dview_button_clicked(GtkButton *button,
+                                               gpointer user_data);
++void on_colormap_auto_update_checkbutton_toggled(GtkToggleButton *togglebutton,
++                                                 gpointer user_data);
+ 
+ gboolean on_view_drawingarea_expose_event (GtkWidget *widget,
+                                     GdkEventExpose *event, gpointer user_data);
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-08-31 20:49:03 UTC (rev 44)
++++ trunk/gui_interface.c	2007-08-31 21:09:09 UTC (rev 45)
+@@ -1085,6 +1085,9 @@
+   g_signal_connect ((gpointer) colormap_redraw_2dview_button, &quot;clicked&quot;,
+                     G_CALLBACK (on_colormap_redraw_2dview_button_clicked),
+                     NULL);
++  g_signal_connect ((gpointer) colormap_auto_update_checkbutton, &quot;toggled&quot;,
++                    G_CALLBACK (on_colormap_auto_update_checkbutton_toggled),
++                    NULL);
+ 
+   /* Store pointers to all widgets, for use by lookup_widget(). */
+   GLADE_HOOKUP_OBJECT_NO_REF (hmgengui, hmgengui, &quot;hmgengui&quot;);
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000043.html">[Hmgen-svnlog] r44 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000045.html">[Hmgen-svnlog] r46 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#44">[ date ]</a>
+              <a href="thread.html#44">[ thread ]</a>
+              <a href="subject.html#44">[ subject ]</a>
+              <a href="author.html#44">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

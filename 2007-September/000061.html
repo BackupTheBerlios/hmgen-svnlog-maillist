@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r62 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r62%20-%20trunk&In-Reply-To=%3C200709052256.l85MuQAm005879%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000060.html">
+   <LINK REL="Next"  HREF="000062.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r62 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r62%20-%20trunk&In-Reply-To=%3C200709052256.l85MuQAm005879%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r62 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep  6 00:56:26 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000060.html">[Hmgen-svnlog] r61 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000062.html">[Hmgen-svnlog] r63 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#61">[ date ]</a>
+              <a href="thread.html#61">[ thread ]</a>
+              <a href="subject.html#61">[ subject ]</a>
+              <a href="author.html#61">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-06 00:56:25 +0200 (Thu, 06 Sep 2007)
+New Revision: 62
+
+Modified:
+   trunk/Makefile
+Log:
+-o and -c compiler flags configure dependent
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-09-05 22:44:22 UTC (rev 61)
++++ trunk/Makefile	2007-09-05 22:56:25 UTC (rev 62)
+@@ -81,7 +81,8 @@
+ $(CLIg): CFLAGS = $(DEF_CFLAGS)
+ $(CLIg): LDFLAGS = $(DEF_LDFLAGS)
+ $(CLIg): $(LIBHMGEN) $(CLI_OBJS)
+-	$(call SILENT_EXEC,$(CC) -o $@ $(CLI_OBJS) $(LIBHMGEN) $(LDFLAGS),link,$@)
++	$(call SILENT_EXEC,$(CC) $(OBJ_OUT_FLAG) $@ $(CLI_OBJS) $(LIBHMGEN) \
++		$(LDFLAGS),link,$@)
+ 
+ $(GUI)-verbose: SILENT=no
+ $(GUI)-verbose: $(GUI)
+@@ -92,7 +93,8 @@
+ $(GUIg): CFLAGS = $(GTK_CFLAGS) $(GTHREAD_CFLAGS) $(DEF_CFLAGS)
+ $(GUIg): LDFLAGS = $(GTK_LDFLAGS) $(GTHREAD_LDFLAGS) $(DEF_LDFLAGS)
+ $(GUIg): $(LIBHMGEN) $(GUI_OBJS)
+-	$(call SILENT_EXEC,$(CC) -o $@ $(GUI_OBJS) $(LIBHMGEN) $(LDFLAGS),link,$@)
++	$(call SILENT_EXEC,$(CC) $(OBJ_OUT_FLAG) $@ $(GUI_OBJS) $(LIBHMGEN) \
++		$(LDFLAGS),link,$@)
+ 
+ $(LIBHMGEN)-verbose: SILENT=no
+ $(LIBHMGEN)-verbose: $(LIBHMGEN)
+@@ -103,7 +105,8 @@
+ 	$(call SILENT_EXEC,$(RANLIB) $@,ranlib,$@)
+ 
+ .c.o:
+-	$(call SILENT_EXEC,$(CC) -c -o $@ $&lt; $(CFLAGS),compile,$&lt;)
++	$(call SILENT_EXEC,$(CC) $(DONT_LINK_FLAG) $(OBJ_OUT_FLAG) $@ $&lt; $(CFLAGS)\
++		,compile,$&lt;)
+ 
+ depend-verbose dep-verbose: SILENT=no
+ depend-verbose dep-verbose: dep
+@@ -188,6 +191,8 @@
+ 			STD_FLAGS=&quot;-std=c99&quot; ; \
+ 			DEBUG_FLAGS=&quot;-g&quot; ; \
+ 			DEP_FLAGS=&quot;-MM&quot; ; \
++			OBJ_OUT_FLAG=&quot;-o&quot; ; \
++			DONT_LINK_FLAG=&quot;-c&quot; ; \
+ 			;; \
+ 		sun) \
+ 			WARN_FLAGS= ; \
+@@ -195,6 +200,8 @@
+ 			STD_FLAGS=&quot;-Xc&quot; ; \
+ 			DEBUG_FLAGS=&quot;-g&quot; ; \
+ 			DEP_FLAGS=&quot;-xM&quot; ; \
++			OBJ_OUT_FLAG=&quot;-o&quot; ; \
++			DONT_LINK_FLAG=&quot;-c&quot; ; \
+ 			;; \
+ 	esac ; \
+ 	echo WARN_FLAGS=$$WARN_FLAGS &gt;&gt; config.mak ; \
+@@ -202,11 +209,15 @@
+ 	echo STD_FLAGS=$$STD_FLAGS &gt;&gt; config.mak ; \
+ 	echo DEBUG_FLAGS=$$DEBUG_FLAGS &gt;&gt; config.mak ; \
+ 	echo DEP_FLAGS=$$DEP_FLAGS &gt;&gt; config.mak ; \
++	echo OBJ_OUT_FLAG=$$OBJ_OUT_FLAG &gt;&gt; config.mak ; \
++	echo DONT_LINK_FLAG=$$DONT_LINK_FLAG &gt;&gt; config.mak ; \
+ 	$(call config-print-result,warnings,$$WARN_FLAGS) ; \
+ 	$(call config-print-result,optimize,$$OPT_FLAGS) ; \
+ 	$(call config-print-result,standards,$$STD_FLAGS) ; \
+ 	$(call config-print-result,debug,$$DEBUG_FLAGS) ; \
+-	$(call config-print-result,dependencies,$$DEP_FLAGS) ;
++	$(call config-print-result,dependencies,$$DEP_FLAGS) ; \
++	$(call config-print-result,object out,$$OBJ_OUT_FLAG) ; \
++	$(call config-print-result,do not link,$$DONT_LINK_FLAG) ;
+ 
+ config-pkg-config:
+ 	@TMP=`pkg-config --version 2&gt;/dev/null 1&gt;&amp;2 &amp;&amp; echo yes || echo no` ; \
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000060.html">[Hmgen-svnlog] r61 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000062.html">[Hmgen-svnlog] r63 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#61">[ date ]</a>
+              <a href="thread.html#61">[ thread ]</a>
+              <a href="subject.html#61">[ subject ]</a>
+              <a href="author.html#61">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r102 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r102%20-%20trunk&In-Reply-To=%3C200709101221.l8ACLIsD028969%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000100.html">
+   <LINK REL="Next"  HREF="000102.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r102 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r102%20-%20trunk&In-Reply-To=%3C200709101221.l8ACLIsD028969%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r102 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Mon Sep 10 14:21:18 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000100.html">[Hmgen-svnlog] r101 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000102.html">[Hmgen-svnlog] r103 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#101">[ date ]</a>
+              <a href="thread.html#101">[ thread ]</a>
+              <a href="subject.html#101">[ subject ]</a>
+              <a href="author.html#101">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-10 14:21:18 +0200 (Mon, 10 Sep 2007)
+New Revision: 102
+
+Modified:
+   trunk/build.sh
+Log:
+fix the same problem for ar, ranlib, etc... on first call of build.sh
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-10 12:17:43 UTC (rev 101)
++++ trunk/build.sh	2007-09-10 12:21:18 UTC (rev 102)
+@@ -166,6 +166,18 @@
+ 
+     OBJSUF=.o
+     result &quot;obj suffix&quot; $OBJSUF
++
++    AR=ar
++    result &quot;ar&quot; $AR
++
++    AR_FLAGS=cru
++    result &quot;ar flags&quot; $AR_FLAGS
++
++    RANLIB=ranlib
++    result &quot;ranlib&quot; $RANLIB
++
++    STRIP=strip
++    result &quot;strip&quot; $STRIP
+ }
+ 
+ output_build_config() {
+@@ -192,11 +204,11 @@
+ SYSTEM=&quot;$SYSTEM&quot;
+ SYS_LDFLAGS=&quot;$SYS_LDFLAGS&quot;
+ EXESUF=&quot;$EXESUF&quot;
+-AR=ar
+-RANLIB=ranlib
+-STRIP=strip
++AR=&quot;$AR&quot;
++AR_FLAGS=&quot;$AR_FLAGS&quot;
++RANLIB=&quot;$RANLIB&quot;
++STRIP=&quot;$STRIP&quot;
+ OBJSUF=&quot;$OBJSUF&quot;
+-AR_FLAGS=cru
+ CONFIGURE_DONE=yes
+ __EOF__
+ }
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000100.html">[Hmgen-svnlog] r101 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000102.html">[Hmgen-svnlog] r103 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#101">[ date ]</a>
+              <a href="thread.html#101">[ thread ]</a>
+              <a href="subject.html#101">[ subject ]</a>
+              <a href="author.html#101">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

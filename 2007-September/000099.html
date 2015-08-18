@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r100 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r100%20-%20trunk&In-Reply-To=%3C200709101210.l8ACA4MR028365%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000098.html">
+   <LINK REL="Next"  HREF="000100.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r100 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r100%20-%20trunk&In-Reply-To=%3C200709101210.l8ACA4MR028365%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r100 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Mon Sep 10 14:10:04 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000098.html">[Hmgen-svnlog] r99 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000100.html">[Hmgen-svnlog] r101 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#99">[ date ]</a>
+              <a href="thread.html#99">[ thread ]</a>
+              <a href="subject.html#99">[ subject ]</a>
+              <a href="author.html#99">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-10 14:10:04 +0200 (Mon, 10 Sep 2007)
+New Revision: 100
+
+Modified:
+   trunk/build.sh
+Log:
+deps work, compilation works, todo: archiving and linking
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-09 22:37:40 UTC (rev 99)
++++ trunk/build.sh	2007-09-10 12:10:04 UTC (rev 100)
+@@ -8,6 +8,8 @@
+ # heavily on GNU make (which is bad) and recursive make (which is worse).
+ # This experiment just needs a POSIX environment and nothing more.
+ 
++# FIXME head/tail -1/-n 1 stuff
++
+ # ----------------------------------( INIT )-----------------------------------
+ 
+ export LC_ALL=C
+@@ -139,7 +141,7 @@
+         .svn/entries 2&gt;/dev/null`
+     test $SVN_REV || SVN_REV=0
+ 
+-    SYSTEM=`uname -s`
++    SYSTEM=`uname -s 2&gt;/dev/null`
+     SYSTEM=`echo $SYSTEM | tr '[A-Z]' '[a-z]'`
+     case &quot;$SYSTEM&quot; in
+         linux*)     SYSTEM=linux ;;
+@@ -196,8 +198,52 @@
+ __EOF__
+ }
+ 
++# ----------------------------------( UTIL )-----------------------------------
++
++# unwrap lines --&gt; sort --&gt; uniq --&gt; merge equal target lines and change syntax
++ccdeps_to_shdeps() {
++    awk '/[\\]$/ { $NF=&quot;&quot; ; printf(&quot;%s&quot;,$0) ; next } { print }' |
++    sort |
++    uniq |
++    awk '
++        BEGIN { save=&quot;&quot; }
++        {   if (save==$1) {
++                ORS=&quot;&quot; ;
++                for (i=2; i &lt;= NF; i++) {
++                    if (substr($i,1,1) != &quot;/&quot;) { print &quot; &quot; $i }
++                }
++            } else {
++                if (save != &quot;&quot;) { ORS=&quot;\&quot;\n&quot; ; print &quot; &quot; }
++                ORS=&quot;&quot; ; save=$1
++                print &quot;deps_&quot;
++                for (i=1; i &lt;= length($1) ; i++) {
++                    c=substr($1,i,1) ;
++                    if (c == &quot;.&quot;) { c = &quot;_&quot; }
++                    if (c == &quot;/&quot;) { c = &quot;__&quot; }
++                    if (c == &quot;:&quot;) { c = &quot;=\&quot;&quot; }
++                    print c
++                }
++                for (i=2; i &lt;= NF; i++) {
++                    if (substr($i,1,1) != &quot;/&quot;) { print &quot; &quot; $i }
++                }
++            }
++        }
++        END { if (save != &quot;&quot;) { ORS=&quot;\&quot;\n&quot; ; print &quot; &quot; } }'
++}
++
+ # ----------------------------------( MAKE )-----------------------------------
+ 
++# &quot;docs&quot;:
++#
++# make_exec     &quot;command&quot;       &quot;short text&quot;    &quot;short text argument&quot;
++# make_c_to_o   filename.o
++# make_link     exefilename     filename.o      libraries ...
++# make_o_to_a   filename.a      object ...
++# addsuffix     suffix          basenames ...
++# up_to_date    target          deps ...
++#
++# make_init_object_deps objects ...
++
+ make_init() {
+     DEF_CFLAGS=&quot;$STD_FLAGS $WARN_FLAGS $OPT_FLAGS $DEBUG_FLAGS $DEFINES&quot;
+     DEF_LDFLAGS=&quot;-lm $DEBUG_FLAGS $SYS_LDFLAGS&quot;
+@@ -205,7 +251,6 @@
+     LDFLAGS=&quot;$DEF_LDFLAGS&quot;
+ }
+ 
+-# make_exec &quot;command&quot; &quot;short text&quot; &quot;short text argument&quot;
+ make_exec() {
+     if test &quot;$V&quot; = &quot;0&quot; ; then   printf &quot;$Bon%s$Boff %s\n&quot; &quot;$2&quot; &quot;$3&quot;
+     else                        echo &quot;$1&quot;
+@@ -213,34 +258,103 @@
+     eval &quot;$1&quot;
+ }
+ 
+-# make_c_to_o filename.o
+ make_c_to_o() {
+     c=`basename $1 $OBJSUF`.c
+-    make_exec &quot;$CC $DONT_LINK_FLAG $OBJ_OUT_FLAG $1 $c $CFLAGS&quot; \
+-        &quot;compile&quot; &quot;$c&quot;
++    make_exec &quot;$CC $DONT_LINK_FLAG $OBJ_OUT_FLAG $1 $c $CFLAGS&quot; &quot;compile&quot; &quot;$c&quot;
+ }
+ 
+-# make_link exefilename filename.o libraries ...
+ make_link() {
+     exe=$1$EXESUF ; shift 1
+     make_exec &quot;$CC $OBJ_OUT_FLAG $exe $@&quot; &quot;link&quot; &quot;$exe&quot;
+ }
+ 
+-# make_o_to_a filename.a object ...
+ make_o_to_a() {
+     a=$1 ; shift 1
+     make_exec &quot;$AR $AR_FLAGS $a $@&quot; &quot;archive&quot; &quot;$a&quot;
+ }
+ 
++addsuffix() {
++    suf=$1 ; shift 1
++    for i in $@ ; do
++        echo $i$suf
++    done
++}
++
++up_to_date() {
++    r=`ls -t1 $@ 2&gt;/dev/null | head -1`
++    case $r in
++        $1) true ;;
++        *)  false ;;
++    esac
++}
++
++mangle() {
++    echo $1 | sed 's/\./_/g; s/\//__/g;' # change . and / into _ and __
++}
++
++make_init_object_deps() {
++    for i in $@ ; do
++        j=`mangle $i`
++        defdep=`basename $i $OBJSUF`.c
++        eval deps_$j=$defdep
++    done
++}
++
++make_check_objects() {
++    for i in $@ ; do
++        j=`mangle $i`
++        eval deps=\&quot;\$deps_$j\&quot;
++        if up_to_date $i $deps ; then
++            :
++        else
++            make_c_to_o $i
++        fi
++    done
++}
++
++make_dep() {
++    make_exec &quot;$CC_DEP $DEP_FLAGS $DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS `echo $@` | ccdeps_to_shdeps &gt;&gt; build.dep&quot; &quot;ccdep&quot; &quot;build.dep&quot;
++}
++
++make_init_project() {
++    libhmgen_basenames=&quot;lib_algo_ff lib_algo_mpd lib_algo_forge lib_postproc \
++                        lib_util lib_hmgen lib_export&quot;
++    libhmgen_objs=`addsuffix $OBJSUF $libhmgen_basenames`
++    libhmgen_srcs=`addsuffix .c $libhmgen_basenames`
++
++    cli_basenames=&quot;cli_main&quot;
++    cli_objs=`addsuffix $OBJSUF $cli_basenames`
++    cli_srcs=`addsuffix .c $cli_basenames`
++
++    gui_basenames=&quot;gui_main gui_callbacks gui_interface gui_support&quot;
++    gui_objs=`addsuffix $OBJSUF $gui_basenames`
++    gui_srcs=`addsuffix .c $gui_basenames`
++
++    make_init_object_deps $libhmgen_objs $cli_objs $gui_objs
++}
++
+ # ----------------------------------( MAIN )-----------------------------------
+ 
+ if grep -q CONFIGURE_DONE=yes build.config 2&gt;/dev/null ; then
++    result &quot;previous config&quot; &quot;build.config&quot;
+     . build.config
+ else
+-    &gt;build.config
++    &gt; build.config
+     configure
+     output_build_config
+ fi
+ 
+ make_init
++make_init_project
+ 
++if ! grep -q deps_done=yes build.dep 2&gt;/dev/null ; then
++    &gt; build.dep
++    make_dep $libhmgen_srcs $cli_srcs $gui_srcs
++    echo &quot;deps_done=yes&quot; &gt;&gt; build.dep
++fi
++
++. build.dep
++
++make_check_objects $libhmgen_objs
++make_check_objects $cli_objs
++
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000098.html">[Hmgen-svnlog] r99 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000100.html">[Hmgen-svnlog] r101 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#99">[ date ]</a>
+              <a href="thread.html#99">[ thread ]</a>
+              <a href="subject.html#99">[ subject ]</a>
+              <a href="author.html#99">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

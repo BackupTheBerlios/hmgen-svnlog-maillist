@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r20 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r20%20-%20trunk&In-Reply-To=%3C200708301728.l7UHSuGj006918%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000018.html">
+   <LINK REL="Next"  HREF="000020.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r20 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r20%20-%20trunk&In-Reply-To=%3C200708301728.l7UHSuGj006918%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r20 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Aug 30 19:28:56 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000018.html">[Hmgen-svnlog] r19 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000020.html">[Hmgen-svnlog] r21 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-30 19:28:56 +0200 (Thu, 30 Aug 2007)
+New Revision: 20
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+some unused attributes
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-08-30 17:23:23 UTC (rev 19)
++++ trunk/gui_callbacks.c	2007-08-30 17:28:56 UTC (rev 20)
+@@ -92,7 +92,8 @@
+     }
+ }
+ 
+-void on_algorithm_combobox_changed(GtkComboBox *combobox, gpointer user_data) {
++void on_algorithm_combobox_changed(GtkComboBox *combobox,
++                                   gpointer user_data HMG_ATTR_UNUSED) {
+     gint active;
+     GtkWidget *w;
+ 
+@@ -105,7 +106,8 @@
+     gtk_notebook_set_current_page(GTK_NOTEBOOK(w), active);
+ }
+ 
+-void on_size_combobox_changed(GtkComboBox *combobox, gpointer user_data) {
++void on_size_combobox_changed(GtkComboBox *combobox,
++                              gpointer user_data HMG_ATTR_UNUSED) {
+     size_combo_set = 1;
+     generate_button_sensitivity(combobox);
+ }
+@@ -287,21 +289,24 @@
+     gtk_widget_set_sensitive (widget, FALSE);
+ }
+ 
+-void on_generate_button_clicked(GtkButton *button, gpointer user_data) {
++void on_generate_button_clicked(GtkButton *button,
++                                gpointer user_data HMG_ATTR_UNUSED) {
+     deactivate_main_notebook(button);
+     g_thread_create(generate_thread, button, FALSE, NULL);
+ }
+ 
+-void on_pgm_save_as_button_clicked(GtkButton *button, gpointer user_data) {
++void on_pgm_save_as_button_clicked(GtkButton *button,
++                                   gpointer user_data HMG_ATTR_UNUSED) {
+ }
+ 
+ 
+-void on_ppm_save_as_button_clicked(GtkButton *button, gpointer user_data) {
++void on_ppm_save_as_button_clicked(GtkButton *button,
++                                   gpointer user_data HMG_ATTR_UNUSED) {
+ }
+ 
+ gboolean on_view_drawingarea_expose_event(GtkWidget *widget,
+-                                          GdkEventExpose *event,
+-                                          gpointer user_data) {
++                                          GdkEventExpose *event HMG_ATTR_UNUSED,
++                                          gpointer user_data HMG_ATTR_UNUSED) {
+     GdkDrawable *drawable = widget-&gt;window;
+     GdkGC *gc = widget-&gt;style-&gt;fg_gc[GTK_WIDGET_STATE (widget)];
+     gint width, height;
+@@ -320,7 +325,8 @@
+     return FALSE;
+ }
+ 
+-void gui_quit(GtkWidget *widget, gpointer user_data) {
++void gui_quit(GtkWidget *widget HMG_ATTR_UNUSED,
++              gpointer user_data HMG_ATTR_UNUSED) {
+     if (map_pixbuf)
+         g_object_unref(map_pixbuf);
+     if (map)
+@@ -371,25 +377,29 @@
+     return NULL;
+ }
+ 
+-void on_new_create_button_clicked(GtkButton *button, gpointer user_data) {
++void on_new_create_button_clicked(GtkButton *button,
++                                  gpointer user_data HMG_ATTR_UNUSED) {
+     deactivate_main_notebook(button);
+     g_thread_create(new_create_thread, button, FALSE, NULL);
+ }
+ 
+-void on_norm2_button_clicked(GtkButton *button, gpointer user_data) {
++void on_norm2_button_clicked(GtkButton *button,
++                             gpointer user_data HMG_ATTR_UNUSED) {
+ }
+ 
+-void on_blur2_button_clicked(GtkButton *button, gpointer user_data) {
++void on_blur2_button_clicked(GtkButton *button,
++                             gpointer user_data HMG_ATTR_UNUSED) {
+ }
+ 
+-void on_invert2_button_clicked(GtkButton *button, gpointer user_data) {
++void on_invert2_button_clicked(GtkButton *button,
++                               gpointer user_data HMG_ATTR_UNUSED) {
+     deactivate_main_notebook(button);
+     g_thread_create(new_invert_thread, button, FALSE, NULL);
+ }
+ 
+ gboolean on_colormap_display_expose_event(GtkWidget *widget,
+-                                          GdkEventExpose *event,
+-                                          gpointer user_data) {
++                                          GdkEventExpose *event HMG_ATTR_UNUSED,
++                                          gpointer user_data HMG_ATTR_UNUSED) {
+     GdkDrawable *drawable = widget-&gt;window;
+     GdkGC *gc = gdk_gc_new(drawable);
+     unsigned int width = 514, height = 32, x;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000018.html">[Hmgen-svnlog] r19 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000020.html">[Hmgen-svnlog] r21 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#19">[ date ]</a>
+              <a href="thread.html#19">[ thread ]</a>
+              <a href="subject.html#19">[ subject ]</a>
+              <a href="author.html#19">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

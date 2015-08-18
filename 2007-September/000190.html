@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r190 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r190%20-%20trunk&In-Reply-To=%3C200709301634.l8UGYPRR029718%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000189.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r190 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r190%20-%20trunk&In-Reply-To=%3C200709301634.l8UGYPRR029718%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r190 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sun Sep 30 18:34:25 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000189.html">[Hmgen-svnlog] r189 - trunk
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#190">[ date ]</a>
+              <a href="thread.html#190">[ thread ]</a>
+              <a href="subject.html#190">[ subject ]</a>
+              <a href="author.html#190">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-30 18:34:23 +0200 (Sun, 30 Sep 2007)
+New Revision: 190
+
+Modified:
+   trunk/README
+   trunk/build.sh
+   trunk/version.h
+Log:
+revise version numbering
+
+
+Modified: trunk/README
+===================================================================
+--- trunk/README	2007-09-30 16:20:33 UTC (rev 189)
++++ trunk/README	2007-09-30 16:34:23 UTC (rev 190)
+@@ -51,14 +51,12 @@
+ Version numbering scheme
+ ========================
+ 
+-0.8.x   alpha release(s)
+-0.9.x   beta release(s)
++0.9.x   alpha/beta release(s)
+ 1.0.0   first stable release
+-1.0.x
+-1.1.0   second stable release
++1.0.x   bug fix releases
++1.1.0   first unstable release
++1.1.x   bug fix releases
++1.2.0   second stable release
+ et cetera
+ 
+-For in-between, bug-fix releases, x will be &lt; 10
+-For Subversion builds, developer builds, unstable releases, x will be the
+-subversion revision number.
+-
++Developer builds will have r&lt;REV&gt; postpended to the actual version number
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-30 16:20:33 UTC (rev 189)
++++ trunk/build.sh	2007-09-30 16:34:23 UTC (rev 190)
+@@ -261,9 +261,15 @@
+     VERMAJ=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
+     X=&quot;#define HMG_VERSION_MINOR&quot;
+     VERMIN=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
++    X=&quot;#define HMG_VERSION_MICRO&quot;
++    VERMIC=`grep &quot;$X&quot; version.h | sed &quot;s/$X//&quot;`
+     SVN_REV=`get_svn_revision`
+     DEFINES=&quot;$DEFINES -DSVN_REVISION=$SVN_REV&quot;
+-    answer `echo $VERMAJ`.`echo $VERMIN`.$SVN_REV
++    if test &quot;$SVN_REV&quot; -ne 0 ; then
++        answer `echo $VERMAJ`.`echo $VERMIN`.`echo $VERMIC`r$SVN_REV
++    else
++        answer `echo $VERMAJ`.`echo $VERMIN`.`echo $VERMIC`r$SVN_REV
++    fi
+ 
+     SYSTEM=`uname -s 2&gt;/dev/null`
+     SYSTEM=`echo $SYSTEM | tr '[A-Z]' '[a-z]'`
+
+Modified: trunk/version.h
+===================================================================
+--- trunk/version.h	2007-09-30 16:20:33 UTC (rev 189)
++++ trunk/version.h	2007-09-30 16:34:23 UTC (rev 190)
+@@ -5,14 +5,23 @@
+ #define HMG_TOSTRING(s)     #s
+ 
+ #define HMG_VERSION_MAJOR       0
+-#define HMG_VERSION_MINOR       8
+-#define HMG_VERSION_MICRO       SVN_REVISION
+-#define HMG_VERSION_INT         ((HMG_VERSION_MAJOR&lt;&lt;8) + \
+-                                 (HMG_VERSION_MINOR&lt;&lt;4) + \
+-                                  HMG_VERSION_MICRO)
++#define HMG_VERSION_MINOR       9
++#define HMG_VERSION_MICRO       0
++#define HMG_VERSION_REV         SVN_REVISION
++#define HMG_VERSION_INT         ((HMG_VERSION_MAJOR&lt;&lt;24) + \
++                                 (HMG_VERSION_MINOR&lt;&lt;20) + \
++                                 (HMG_VERSION_MICRO&lt;&lt;16) + \
++                                  HMG_VERSION_REV)
++#if HMG_VERSION_REV &gt; 100
+ #define HMG_VERSION_STRING      &quot;Version &quot; HMG_STRINGIFY(HMG_VERSION_MAJOR) \
+                                 &quot;.&quot;        HMG_STRINGIFY(HMG_VERSION_MINOR) \
++                                &quot;.&quot;        HMG_STRINGIFY(HMG_VERSION_MICRO) \
++                                &quot;r&quot;        HMG_STRINGIFY(HMG_VERSION_REV)
++#else
++#define HMG_VERSION_STRING      &quot;Version &quot; HMG_STRINGIFY(HMG_VERSION_MAJOR) \
++                                &quot;.&quot;        HMG_STRINGIFY(HMG_VERSION_MINOR) \
+                                 &quot;.&quot;        HMG_STRINGIFY(HMG_VERSION_MICRO)
++#endif
+ #define HMG_COPYRIGHT_STRING    &quot;Copyright (C) 2007 Ivo van Poorten&quot;
+ 
+ #endif
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000189.html">[Hmgen-svnlog] r189 - trunk
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#190">[ date ]</a>
+              <a href="thread.html#190">[ thread ]</a>
+              <a href="subject.html#190">[ subject ]</a>
+              <a href="author.html#190">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

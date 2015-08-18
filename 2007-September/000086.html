@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r87 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r87%20-%20trunk&In-Reply-To=%3C200709081221.l88CLCtg029470%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000085.html">
+   <LINK REL="Next"  HREF="000087.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r87 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r87%20-%20trunk&In-Reply-To=%3C200709081221.l88CLCtg029470%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r87 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 14:21:12 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000085.html">[Hmgen-svnlog] r86 - in trunk: . assist
+</A></li>
+        <LI>Next message: <A HREF="000087.html">[Hmgen-svnlog] r88 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#86">[ date ]</a>
+              <a href="thread.html#86">[ thread ]</a>
+              <a href="subject.html#86">[ subject ]</a>
+              <a href="author.html#86">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 14:21:11 +0200 (Sat, 08 Sep 2007)
+New Revision: 87
+
+Modified:
+   trunk/gui_callbacks.c
+   trunk/gui_callbacks.h
+   trunk/gui_interface.c
+Log:
+enable gui level adjustment
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-08 11:52:26 UTC (rev 86)
++++ trunk/gui_callbacks.c	2007-09-08 12:21:11 UTC (rev 87)
+@@ -230,7 +230,8 @@
+     unsigned int dims[] = { 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049, 4097, 8193, 16385 };
+     unsigned int normmin, normmax, normfirst, normlast, inv, blurx, blury;
+     unsigned int blur, crop, cropleft, cropright, croptop, cropbottom;
+-    unsigned int clip, clipmin, clipmax;
++    unsigned int clip, clipmin, clipmax, level;
++    int adjust;
+     double blursigma;
+     char *settings;
+  
+@@ -283,6 +284,8 @@
+         clip        = get_check_button_active(args, &quot;clip_enable_checkbutton&quot;);
+         clipmin     = get_spin_button_int    (args, &quot;clip_min_spinbutton&quot;);
+         clipmax     = get_spin_button_int    (args, &quot;clip_max_spinbutton&quot;);
++        level       = get_check_button_active(args, &quot;level_enable_checkbutton&quot;);
++        adjust      = get_spin_button_int    (args, &quot;level_adjust_spinbutton&quot;);
+     gdk_threads_leave();
+ 
+     if (crop) {
+@@ -299,6 +302,8 @@
+         hmg_invert(map, map_width, map_height);
+     if (clip)
+         hmg_clip(map, clipmin, clipmax, map_width, map_height);
++    if (level)
++        hmg_level(map, adjust, map_width, map_height);
+     if (normlast)
+         hmg_normalize(map, normmin, normmax, map_width, map_height);
+ 
+@@ -718,3 +723,26 @@
+     deactivate_main_notebook(button);
+     g_thread_create(crop2_thread, button, FALSE, NULL);
+ }
++
++static void *level2_thread(void *args) {
++    int adjust;
++
++    set_main_progressbar(args);
++    hmg_progress_meter = gui_progress_meter;
++
++    gdk_threads_enter();
++        adjust = get_spin_button_int  (args, &quot;level2_adjust_spinbutton&quot;);
++    gdk_threads_leave();
++
++    hmg_level(map, adjust, map_width, map_height);
++    render_map(args);
++
++    activate_main_notebook(args, 1);
++    return NULL;
++}
++
++void on_level2_button_clicked(GtkButton *button,
++                                   gpointer user_data HMG_ATTR_UNUSED) {
++    deactivate_main_notebook(button);
++    g_thread_create(level2_thread, button, FALSE, NULL);
++}
+
+Modified: trunk/gui_callbacks.h
+===================================================================
+--- trunk/gui_callbacks.h	2007-09-08 11:52:26 UTC (rev 86)
++++ trunk/gui_callbacks.h	2007-09-08 12:21:11 UTC (rev 87)
+@@ -14,6 +14,7 @@
+ void on_invert2_button_clicked    (GtkButton *button, gpointer user_data);
+ void on_clip_button_clicked       (GtkButton *button, gpointer user_data);
+ void on_crop_button_clicked       (GtkButton *button, gpointer user_data);
++void on_level2_button_clicked     (GtkButton *button, gpointer user_data);
+ void on_export_save_button_clicked(GtkButton *button, gpointer user_data);
+ void on_colormap_update_button_clicked(GtkButton *button, gpointer user_data);
+ void on_colormap_redraw_2dview_button_clicked(GtkButton *button,
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-08 11:52:26 UTC (rev 86)
++++ trunk/gui_interface.c	2007-09-08 12:21:11 UTC (rev 87)
+@@ -1420,6 +1420,8 @@
+                     G_CALLBACK (on_clip_button_clicked), NULL);
+   g_signal_connect ((gpointer) crop_button, &quot;clicked&quot;,
+                     G_CALLBACK (on_crop_button_clicked), NULL);
++  g_signal_connect ((gpointer) level2_adjust_button, &quot;clicked&quot;,
++                    G_CALLBACK (on_level2_button_clicked), NULL);
+ 
+   /* Store pointers to all widgets, for use by lookup_widget(). */
+   GLADE_HOOKUP_OBJECT_NO_REF (hmgengui, hmgengui, &quot;hmgengui&quot;);
+@@ -1523,7 +1525,7 @@
+   GLADE_HOOKUP_OBJECT (hmgengui, level2_adjust_spinbutton, &quot;level2_adjust_spinbutton&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, level2_adjust_button, &quot;level2_adjust_button&quot;);
+   GLADE_HOOKUP_OBJECT (hmgengui, level_enable_checkbutton, &quot;level_enable_checkbutton&quot;);
+-  GLADE_HOOKUP_OBJECT (hmgengui, level_adjustment_spinbutton, &quot;level_adjustment_spinbutton&quot;);
++  GLADE_HOOKUP_OBJECT (hmgengui, level_adjustment_spinbutton, &quot;level_adjust_spinbutton&quot;);
+ 
+   gtk_notebook_set_current_page(GTK_NOTEBOOK(main_notebook), 1);
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000085.html">[Hmgen-svnlog] r86 - in trunk: . assist
+</A></li>
+	<LI>Next message: <A HREF="000087.html">[Hmgen-svnlog] r88 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#86">[ date ]</a>
+              <a href="thread.html#86">[ thread ]</a>
+              <a href="subject.html#86">[ subject ]</a>
+              <a href="author.html#86">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

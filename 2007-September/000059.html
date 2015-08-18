@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r60 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r60%20-%20trunk&In-Reply-To=%3C200709052242.l85MgUrZ024654%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000058.html">
+   <LINK REL="Next"  HREF="000060.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r60 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r60%20-%20trunk&In-Reply-To=%3C200709052242.l85MgUrZ024654%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r60 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep  6 00:42:30 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000058.html">[Hmgen-svnlog] r59 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000060.html">[Hmgen-svnlog] r61 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#59">[ date ]</a>
+              <a href="thread.html#59">[ thread ]</a>
+              <a href="subject.html#59">[ subject ]</a>
+              <a href="author.html#59">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-06 00:42:29 +0200 (Thu, 06 Sep 2007)
+New Revision: 60
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+display error on failure
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-05 22:35:47 UTC (rev 59)
++++ trunk/gui_callbacks.c	2007-09-05 22:42:29 UTC (rev 60)
+@@ -589,7 +589,7 @@
+ 
+ static void *export_thread(void *args) {
+     GtkWidget *w;
+-    int format;
++    unsigned int format, ret;
+     char *filename;
+ 
+     set_main_progressbar(args);
+@@ -602,16 +602,20 @@
+ 
+     switch (format) {
+     case 0:
+-        hmg_export_pgm(filename, map, map_width, map_height);
++        ret = hmg_export_pgm(filename, map, map_width, map_height);
+         break;
+     case 1:
+-        hmg_export_ppm(filename, map, map_width, map_height);
++        ret = hmg_export_ppm(filename, map, map_width, map_height);
+         break;
+     default:
+         assert(0);
+         break;
+     }
+ 
++    // FIXME: add some sort of hmg_errno and hmg_strerror or similar
++    if (!ret)
++        hmg_progress_meter(&quot;Error! Could not export to file!&quot;, 42);
++
+     activate_main_notebook(args, 0);
+     return NULL;
+ }
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000058.html">[Hmgen-svnlog] r59 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000060.html">[Hmgen-svnlog] r61 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#59">[ date ]</a>
+              <a href="thread.html#59">[ thread ]</a>
+              <a href="subject.html#59">[ subject ]</a>
+              <a href="author.html#59">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

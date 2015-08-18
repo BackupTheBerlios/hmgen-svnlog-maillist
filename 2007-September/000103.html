@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r104 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r104%20-%20trunk&In-Reply-To=%3C200709111253.l8BCr74I018334%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000102.html">
+   <LINK REL="Next"  HREF="000104.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r104 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r104%20-%20trunk&In-Reply-To=%3C200709111253.l8BCr74I018334%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r104 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Tue Sep 11 14:53:07 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000102.html">[Hmgen-svnlog] r103 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000104.html">[Hmgen-svnlog] r105 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#103">[ date ]</a>
+              <a href="thread.html#103">[ thread ]</a>
+              <a href="subject.html#103">[ subject ]</a>
+              <a href="author.html#103">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-11 14:53:07 +0200 (Tue, 11 Sep 2007)
+New Revision: 104
+
+Modified:
+   trunk/build.sh
+Log:
+finish build procedure
+up_to_date seems to fail on arhives and objects; save first, fix later
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-10 12:29:34 UTC (rev 103)
++++ trunk/build.sh	2007-09-11 12:53:07 UTC (rev 104)
+@@ -280,12 +280,12 @@
+ 
+ make_link() {
+     exe=$1$EXESUF ; shift 1
+-    make_exec &quot;$CC $OBJ_OUT_FLAG $exe $@&quot; &quot;link&quot; &quot;$exe&quot;
++    make_exec &quot;$CC $OBJ_OUT_FLAG $exe `echo $@` $LDFLAGS&quot; &quot;link&quot; &quot;$exe&quot;
+ }
+ 
+ make_o_to_a() {
+     a=$1 ; shift 1
+-    make_exec &quot;$AR $AR_FLAGS $a $@&quot; &quot;archive&quot; &quot;$a&quot;
++    make_exec &quot;$AR $AR_FLAGS $a `echo $@`&quot; &quot;archive&quot; &quot;$a&quot;
+ }
+ 
+ addsuffix() {
+@@ -304,7 +304,7 @@
+     echo $1 | sed 's/\./_/g; s/\//__/g;' # change . and / into _ and __
+ }
+ 
+-make_init_object_deps() {
++make_set_default_object_deps() {
+     for i in $@ ; do
+         j=`mangle $i`
+         defdep=`basename $i $OBJSUF`.c
+@@ -312,18 +312,48 @@
+     done
+ }
+ 
+-make_check_objects() {
++make_set_deps() {
++    x=$1; shift 1
++    x=`mangle $x`
++    eval deps_$x=\&quot;$@\&quot;
++}
++
++make_objects() {
+     for i in $@ ; do
+         j=`mangle $i`
+         eval deps=\&quot;\$deps_$j\&quot;
+-        if up_to_date $i $deps ; then
+-            :
+-        else
++        if ! up_to_date $i $deps ; then
+             make_c_to_o $i
+         fi
+     done
+ }
+ 
++make_lib() {
++    lib=$1; shift
++    libm=`mangle $lib`
++    eval libdeps=\&quot;\$deps_$libm\&quot;
++    make_objects $libdeps
++    if ! up_to_date $lib $libdeps ; then
++        make_o_to_a $lib $libdeps
++    fi
++}
++
++make_exe() {
++    t=$1; shift
++    tm=`mangle $t`
++    eval exedeps=\&quot;\$deps_$tm\&quot;
++    for i in $exedeps ; do
++        case $i in
++            *$OBJSUF)   make_objects $i ;;
++            *.a)        make_lib $i ;;
++            *)          echo unknown dep $i !! ; exit 2 ;;
++        esac
++    done
++    if ! up_to_date $t $exedeps ; then
++        make_link $t $exedeps
++    fi
++}
++
+ make_dep() {
+     make_exec &quot;$CC_DEP $DEP_FLAGS $DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS `echo $@` | ccdeps_to_shdeps &gt;&gt; build.dep&quot; &quot;ccdep&quot; &quot;build.dep&quot;
+ }
+@@ -333,16 +363,22 @@
+                         lib_util lib_hmgen lib_export&quot;
+     libhmgen_objs=`addsuffix $OBJSUF $libhmgen_basenames`
+     libhmgen_srcs=`addsuffix .c $libhmgen_basenames`
++    libhmgen=libhmgen.a
+ 
+     cli_basenames=&quot;cli_main&quot;
+     cli_objs=`addsuffix $OBJSUF $cli_basenames`
+     cli_srcs=`addsuffix .c $cli_basenames`
++    cli_exe=hmgen_g$EXESUF
+ 
+     gui_basenames=&quot;gui_main gui_callbacks gui_interface gui_support&quot;
+     gui_objs=`addsuffix $OBJSUF $gui_basenames`
+     gui_srcs=`addsuffix .c $gui_basenames`
++    gui_exe=hmgengui_g$EXESUF
+ 
+-    make_init_object_deps $libhmgen_objs $cli_objs $gui_objs
++    make_set_default_object_deps $libhmgen_objs $cli_objs $gui_objs
++    make_set_deps $libhmgen $libhmgen_objs
++    make_set_deps $cli_exe $cli_objs $libhmgen
++    make_set_deps $gui_exe $gui_objs $libhmgen
+ }
+ 
+ # ----------------------------------( MAIN )-----------------------------------
+@@ -367,6 +403,10 @@
+ 
+ . build.dep
+ 
+-make_check_objects $libhmgen_objs
+-make_check_objects $cli_objs
++make_exe $cli_exe
+ 
++CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
++LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
++make_exe $gui_exe
++
++echo &quot;done&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000102.html">[Hmgen-svnlog] r103 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000104.html">[Hmgen-svnlog] r105 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#103">[ date ]</a>
+              <a href="thread.html#103">[ thread ]</a>
+              <a href="subject.html#103">[ subject ]</a>
+              <a href="author.html#103">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

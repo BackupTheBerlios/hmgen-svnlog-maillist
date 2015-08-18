@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r114 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r114%20-%20trunk&In-Reply-To=%3C200709111509.l8BF9P1j026799%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000112.html">
+   <LINK REL="Next"  HREF="000114.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r114 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r114%20-%20trunk&In-Reply-To=%3C200709111509.l8BF9P1j026799%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r114 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Tue Sep 11 17:09:25 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000112.html">[Hmgen-svnlog] r113 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000114.html">[Hmgen-svnlog] r115 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#113">[ date ]</a>
+              <a href="thread.html#113">[ thread ]</a>
+              <a href="subject.html#113">[ subject ]</a>
+              <a href="author.html#113">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-11 17:09:25 +0200 (Tue, 11 Sep 2007)
+New Revision: 114
+
+Modified:
+   trunk/build.sh
+Log:
+fix svn revision define
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-11 15:01:28 UTC (rev 113)
++++ trunk/build.sh	2007-09-11 15:09:25 UTC (rev 114)
+@@ -129,6 +129,7 @@
+         GTHREAD_LDFLAGS=`echo xXx $GTHREAD_LDFLAGS | sed 's/-pthread//; s/^xXx//'`
+     fi
+ 
++    DEFINES=
+     SVN_REV=`svn info * 2&gt;/dev/null | grep ^Revision: \
+         | cut -d ' ' -f 2 | xargs -n 1 -iX printf &quot;%05i\n&quot; X \
+         | sort -r | head -n 1 | sed 's/^0//' | sed 's/^0//' \
+@@ -140,6 +141,7 @@
+     test $SVN_REV || SVN_REV=`sed -n -e '/^dir$/{n;p;q;}' \
+         .svn/entries 2&gt;/dev/null`
+     test $SVN_REV || SVN_REV=0
++    DEFINES=&quot;$DEFINES -DSVN_REVISION=$SVN_REV&quot;
+ 
+     SYSTEM=`uname -s 2&gt;/dev/null`
+     SYSTEM=`echo $SYSTEM | tr '[A-Z]' '[a-z]'`
+@@ -201,7 +203,7 @@
+ GTK_LDFLAGS=&quot;$GTK_LDFLAGS&quot;
+ GTHREAD_CFLAGS=&quot;$GTHREAD_CFLAGS&quot;
+ GTHREAD_LDFLAGS=&quot;$GTHREAD_LDFLAGS&quot;
+-DEFINES=-DSVN_REVISION=&quot;$SVN_REV&quot;
++DEFINES=&quot;-DSVN_REVISION=$SVN_REV&quot;
+ SYSTEM=&quot;$SYSTEM&quot;
+ SYS_LDFLAGS=&quot;$SYS_LDFLAGS&quot;
+ EXESUF=&quot;$EXESUF&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000112.html">[Hmgen-svnlog] r113 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000114.html">[Hmgen-svnlog] r115 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#113">[ date ]</a>
+              <a href="thread.html#113">[ thread ]</a>
+              <a href="subject.html#113">[ subject ]</a>
+              <a href="author.html#113">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

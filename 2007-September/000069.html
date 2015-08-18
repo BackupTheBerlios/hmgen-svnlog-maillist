@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r70 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r70%20-%20trunk&In-Reply-To=%3C200709071119.l87BJA42010643%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000068.html">
+   <LINK REL="Next"  HREF="000070.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r70 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r70%20-%20trunk&In-Reply-To=%3C200709071119.l87BJA42010643%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r70 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Sep  7 13:19:10 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000068.html">[Hmgen-svnlog] r69 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000070.html">[Hmgen-svnlog] r71 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#69">[ date ]</a>
+              <a href="thread.html#69">[ thread ]</a>
+              <a href="subject.html#69">[ subject ]</a>
+              <a href="author.html#69">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-07 13:19:09 +0200 (Fri, 07 Sep 2007)
+New Revision: 70
+
+Modified:
+   trunk/Makefile
+Log:
+fairly decent defaults which probably will work for unknown compilers
+no deps, but do not fail on make dep either
+
+
+Modified: trunk/Makefile
+===================================================================
+--- trunk/Makefile	2007-09-07 11:14:17 UTC (rev 69)
++++ trunk/Makefile	2007-09-07 11:19:09 UTC (rev 70)
+@@ -160,6 +160,7 @@
+ 			CC_VERSION=`echo | $(CC) -E - | grep ident | cut -d ' ' -f 5` ; \
+ 		else \
+ 			CC_VENDOR=unknown; \
++			echo CC_DEP=true &gt;&gt; config.mak; \
+ 		fi ; \
+ 	fi ; \
+ 	echo CC_VENDOR=$$CC_VENDOR &gt;&gt; config.mak ; \
+@@ -203,6 +204,15 @@
+ 			OBJ_OUT_FLAG=&quot;-o&quot; ; \
+ 			DONT_LINK_FLAG=&quot;-c&quot; ; \
+ 			;; \
++		unknown) \
++			WARN_FLAGS= ; \
++			OPT_FLAGS=&quot;-O&quot; ; \
++			STD_FLAGS= ; \
++			DEBUG_FLAGS=&quot;-g&quot; ; \
++			DEP_FLAGS= ; \
++			OBJ_OUT_FLAG=&quot;-o&quot; ; \
++			DONT_LINK_FLAG=&quot;-c&quot; ; \
++			;; \
+ 	esac ; \
+ 	echo WARN_FLAGS=$$WARN_FLAGS &gt;&gt; config.mak ; \
+ 	echo OPT_FLAGS=$$OPT_FLAGS &gt;&gt; config.mak ; \
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000068.html">[Hmgen-svnlog] r69 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000070.html">[Hmgen-svnlog] r71 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#69">[ date ]</a>
+              <a href="thread.html#69">[ thread ]</a>
+              <a href="subject.html#69">[ subject ]</a>
+              <a href="author.html#69">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

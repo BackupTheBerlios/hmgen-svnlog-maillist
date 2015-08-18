@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r63 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r63%20-%20trunk&In-Reply-To=%3C200709061019.l86AJZKw023941%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000061.html">
+   <LINK REL="Next"  HREF="000063.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r63 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r63%20-%20trunk&In-Reply-To=%3C200709061019.l86AJZKw023941%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r63 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep  6 12:19:35 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000061.html">[Hmgen-svnlog] r62 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000063.html">[Hmgen-svnlog] r64 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#62">[ date ]</a>
+              <a href="thread.html#62">[ thread ]</a>
+              <a href="subject.html#62">[ subject ]</a>
+              <a href="author.html#62">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-06 12:19:35 +0200 (Thu, 06 Sep 2007)
+New Revision: 63
+
+Modified:
+   trunk/gui_callbacks.c
+   trunk/gui_interface.c
+   trunk/lib_export.c
+   trunk/lib_hmgen.h
+Log:
+export to BMP files
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-05 22:56:25 UTC (rev 62)
++++ trunk/gui_callbacks.c	2007-09-06 10:19:35 UTC (rev 63)
+@@ -607,6 +607,9 @@
+     case 1:
+         ret = hmg_export_ppm(filename, map, map_width, map_height);
+         break;
++    case 2:
++        ret = hmg_export_bmp(filename, map, map_width, map_height);
++        break;
+     default:
+         assert(0);
+         break;
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-05 22:56:25 UTC (rev 62)
++++ trunk/gui_interface.c	2007-09-06 10:19:35 UTC (rev 63)
+@@ -975,6 +975,8 @@
+           &quot;Heightmap as PGM image (grayscale)&quot;);
+   gtk_combo_box_append_text (GTK_COMBO_BOX (export_format_combobox),
+           &quot;Heightmap as PPM image (color)&quot;);
++  gtk_combo_box_append_text (GTK_COMBO_BOX (export_format_combobox),
++          &quot;Heightmap as BMP image (8-bit palette, uncompressed)&quot;);
+   gtk_combo_box_set_active(GTK_COMBO_BOX(export_format_combobox), 0);
+ 
+   export_save_button = gtk_button_new_from_stock (&quot;gtk-save&quot;);
+
+Modified: trunk/lib_export.c
+===================================================================
+--- trunk/lib_export.c	2007-09-05 22:56:25 UTC (rev 62)
++++ trunk/lib_export.c	2007-09-06 10:19:35 UTC (rev 63)
+@@ -73,3 +73,61 @@
+     return 0;
+ }
+ 
++#define S16(a)  (a)&amp;0xff, (a&gt;&gt;8)&amp;0xff
++#define S32(a)  (a)&amp;0xff, (a&gt;&gt;8)&amp;0xff, (a&gt;&gt;16)&amp;0xff, (a&gt;&gt;24)&amp;0xff
++#define C32     &quot;%c%c%c%c&quot;
++#define C16     &quot;%c%c&quot;
++#define C8      &quot;%c&quot;
++
++unsigned int hmg_export_bmp(const char *filename, unsigned char *map,
++                            unsigned int width, unsigned int height) {
++    FILE *fp;
++    unsigned int x, wr, fsize;
++    int y, ret;
++
++    wr = width &amp; ~3;
++    if (wr != width)
++        wr += 4;
++
++    fsize = 14 + 40 + 1024 + height * wr;
++
++    fp = fopen(filename, &quot;wb&quot;);
++
++    if (!fp)
++        return 0;
++
++    ret = fprintf(fp, &quot;%2s&quot; C32 C32 C32, &quot;BM&quot;, S32(fsize), S32(0), S32(1078));
++    if (ret &lt; 0)
++        goto err_out;
++
++    ret = fprintf(fp, C32 C32 C32 C16 C16 C32 C32 C32 C32 C32 C32,
++            S32(40), S32(width), S32(height), S16(1), S16(8), S32(0), S32(0),
++            S32(0), S32(0), S32(0), S32(0));
++    if (ret &lt; 0)
++        goto err_out;
++
++    for (x=0; x&lt;256; x++) {
++        ret = fprintf(fp, C32, hmg_colormap[x][2], hmg_colormap[x][1],
++                                                        hmg_colormap[x][0], 0);
++        if (ret &lt; 0)
++            goto err_out;
++    }
++
++    for (y=height-1; y&gt;=0; y--) {
++        progress_meter((height-y)*100.0/height);
++        if (fwrite(map+y*width, width, 1, fp) != 1)
++            goto err_out;
++        for (x=0; x&lt;(wr-width); x++)
++            if (fputc(0, fp) &lt; 0)
++                goto err_out;
++    }
++
++    progress_meter(-1);
++
++    return !fclose(fp);
++
++err_out:
++    fclose(fp);
++    progress_meter(-1);
++    return 0;
++}
+
+Modified: trunk/lib_hmgen.h
+===================================================================
+--- trunk/lib_hmgen.h	2007-09-05 22:56:25 UTC (rev 62)
++++ trunk/lib_hmgen.h	2007-09-06 10:19:35 UTC (rev 63)
+@@ -53,6 +53,8 @@
+                             unsigned int width, unsigned int height);
+ unsigned int hmg_export_ppm(const char *filename, unsigned char *map,
+                             unsigned int width, unsigned int height);
++unsigned int hmg_export_bmp(const char *filename, unsigned char *map,
++                            unsigned int width, unsigned int height);
+ 
+ #ifdef __GNUC__
+ #define HMG_ATTR_UNUSED     __attribute__((unused))
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000061.html">[Hmgen-svnlog] r62 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000063.html">[Hmgen-svnlog] r64 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#62">[ date ]</a>
+              <a href="thread.html#62">[ thread ]</a>
+              <a href="subject.html#62">[ subject ]</a>
+              <a href="author.html#62">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

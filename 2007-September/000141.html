@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r141 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r141%20-%20trunk&In-Reply-To=%3C200709122300.l8CN0Kjo024911%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000140.html">
+   <LINK REL="Next"  HREF="000142.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r141 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r141%20-%20trunk&In-Reply-To=%3C200709122300.l8CN0Kjo024911%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r141 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep 13 01:00:20 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000140.html">[Hmgen-svnlog] r140 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000142.html">[Hmgen-svnlog] r142 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#141">[ date ]</a>
+              <a href="thread.html#141">[ thread ]</a>
+              <a href="subject.html#141">[ subject ]</a>
+              <a href="author.html#141">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-13 01:00:19 +0200 (Thu, 13 Sep 2007)
+New Revision: 141
+
+Modified:
+   trunk/build.sh
+Log:
+write AWK to build.config
+more portable continuing lines concattenating awk script
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-12 22:48:48 UTC (rev 140)
++++ trunk/build.sh	2007-09-12 23:00:19 UTC (rev 141)
+@@ -293,7 +293,7 @@
+         CC_VERSION_SUBMINOR WARN_FLAGS OPT_FLAGS STD_FLAGS DEBUG_FLAGS \
+         DEP_FLAGS OBJ_OUT_FLAG DONT_LINK_FLAG GTK_CFLAGS GTK_LDFLAGS \
+         GTHREAD_CFLAGS GTHREAD_LDFLAGS DEFINES SYSTEM SYS_LDFLAGS EXESUF AR \
+-        AR_FLAGS RANLIB STRIP OBJSUF CONFIGURE_DONE ; do
++        AR_FLAGS RANLIB STRIP OBJSUF AWK CONFIGURE_DONE ; do
+         eval echo &quot;$i=\\\&quot;\$$i\\\&quot;&quot; &gt;&gt; $configfile
+     done
+ }
+@@ -303,7 +303,7 @@
+ # unwrap lines --&gt; sort --&gt; uniq --&gt; merge equal target lines and change syntax
+ ccdeps_to_shdeps() {
+     tr -d '\015' |
+-    $AWK '/[\\]$/ { $NF=&quot;&quot; ; printf(&quot;%s&quot;,$0) ; next } { print }' |
++    $AWK '/[\\]$/ { $NF=&quot;&quot; ; ORS=&quot;&quot; ; print ; next} { ORS=&quot;\n&quot; ; print }' |
+     sort |
+     uniq |
+     $AWK '
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000140.html">[Hmgen-svnlog] r140 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000142.html">[Hmgen-svnlog] r142 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#141">[ date ]</a>
+              <a href="thread.html#141">[ thread ]</a>
+              <a href="subject.html#141">[ subject ]</a>
+              <a href="author.html#141">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

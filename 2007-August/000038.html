@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r39 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-August/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r39%20-%20trunk&In-Reply-To=%3C200708311522.l7VFMk01019996%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000037.html">
+   <LINK REL="Next"  HREF="000039.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r39 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r39%20-%20trunk&In-Reply-To=%3C200708311522.l7VFMk01019996%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r39 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Fri Aug 31 17:22:46 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000037.html">[Hmgen-svnlog] r38 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000039.html">[Hmgen-svnlog] r40 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#38">[ date ]</a>
+              <a href="thread.html#38">[ thread ]</a>
+              <a href="subject.html#38">[ subject ]</a>
+              <a href="author.html#38">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-08-31 17:22:46 +0200 (Fri, 31 Aug 2007)
+New Revision: 39
+
+Modified:
+   trunk/gui_callbacks.c
+   trunk/gui_callbacks.h
+   trunk/gui_interface.c
+Log:
+colormap scales; auto-adjust other scales so the next one is always &gt;= current
+one
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-08-31 12:48:14 UTC (rev 38)
++++ trunk/gui_callbacks.c	2007-08-31 15:22:46 UTC (rev 39)
+@@ -482,3 +482,65 @@
+     return FALSE;
+ }
+ 
++static void adjust_other_scales(GtkRange *range, int curscale, double val) {
++    double v;
++    GtkWidget *w;
++    int c;
++    char name[] = &quot;colormap_scalex&quot;;
++    char nums[] = &quot;0123456789&quot;;
++
++    for (c=curscale-1; c&gt;0; c--) {
++        name[14] = nums[c];
++        w = lookup_widget(GTK_WIDGET(range), name);
++        v = gtk_range_get_value(GTK_RANGE(w));
++        if (v&gt;val)
++            gtk_range_set_value(GTK_RANGE(w), val);
++    }
++    for (c=curscale+1; c&lt;9; c++) {
++        name[14] = nums[c];
++        w = lookup_widget(GTK_WIDGET(range), name);
++        v = gtk_range_get_value(GTK_RANGE(w));
++        if (v&lt;val)
++            gtk_range_set_value(GTK_RANGE(w), val);
++    }
++}
++
++void on_colormap_scale1_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 1, gtk_range_get_value(range));
++}
++
++void on_colormap_scale2_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 2, gtk_range_get_value(range));
++}
++
++void on_colormap_scale3_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 3, gtk_range_get_value(range));
++}
++
++void on_colormap_scale4_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 4, gtk_range_get_value(range));
++}
++
++void on_colormap_scale5_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 5, gtk_range_get_value(range));
++}
++
++void on_colormap_scale6_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 6, gtk_range_get_value(range));
++}
++
++void on_colormap_scale7_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 7, gtk_range_get_value(range));
++}
++
++void on_colormap_scale8_value_changed(GtkRange *range,
++                                      gpointer user_data HMG_ATTR_UNUSED) {
++    adjust_other_scales(range, 8, gtk_range_get_value(range));
++}
+
+Modified: trunk/gui_callbacks.h
+===================================================================
+--- trunk/gui_callbacks.h	2007-08-31 12:48:14 UTC (rev 38)
++++ trunk/gui_callbacks.h	2007-08-31 15:22:46 UTC (rev 39)
+@@ -21,4 +21,13 @@
+ gboolean on_colormap_display_expose_event (GtkWidget *widget,
+                                     GdkEventExpose *event, gpointer user_data);
+ 
++void on_colormap_scale1_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale2_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale3_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale4_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale5_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale6_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale7_value_changed(GtkRange *range, gpointer user_data);
++void on_colormap_scale8_value_changed(GtkRange *range, gpointer user_data);
++
+ #endif
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-08-31 12:48:14 UTC (rev 38)
++++ trunk/gui_interface.c	2007-08-31 15:22:46 UTC (rev 39)
+@@ -1055,6 +1055,30 @@
+   g_signal_connect ((gpointer) colormap_display, &quot;expose_event&quot;,
+                     G_CALLBACK (on_colormap_display_expose_event),
+                     NULL);
++  g_signal_connect ((gpointer) colormap_scale1, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale1_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale2, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale2_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale3, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale3_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale4, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale4_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale5, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale5_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale6, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale6_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale7, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale7_value_changed),
++                    NULL);
++  g_signal_connect ((gpointer) colormap_scale8, &quot;value_changed&quot;,
++                    G_CALLBACK (on_colormap_scale8_value_changed),
++                    NULL);
+ 
+   /* Store pointers to all widgets, for use by lookup_widget(). */
+   GLADE_HOOKUP_OBJECT_NO_REF (hmgengui, hmgengui, &quot;hmgengui&quot;);
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000037.html">[Hmgen-svnlog] r38 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000039.html">[Hmgen-svnlog] r40 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#38">[ date ]</a>
+              <a href="thread.html#38">[ thread ]</a>
+              <a href="subject.html#38">[ subject ]</a>
+              <a href="author.html#38">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

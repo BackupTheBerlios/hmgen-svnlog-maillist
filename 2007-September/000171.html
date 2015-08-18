@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r171 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r171%20-%20trunk&In-Reply-To=%3C200709151458.l8FEwoQg007103%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000170.html">
+   <LINK REL="Next"  HREF="000172.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r171 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r171%20-%20trunk&In-Reply-To=%3C200709151458.l8FEwoQg007103%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r171 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep 15 16:58:50 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000170.html">[Hmgen-svnlog] r170 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000172.html">[Hmgen-svnlog] r172 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#171">[ date ]</a>
+              <a href="thread.html#171">[ thread ]</a>
+              <a href="subject.html#171">[ subject ]</a>
+              <a href="author.html#171">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-15 16:58:50 +0200 (Sat, 15 Sep 2007)
+New Revision: 171
+
+Modified:
+   trunk/build.sh
+Log:
+typo's
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-15 14:54:23 UTC (rev 170)
++++ trunk/build.sh	2007-09-15 14:58:50 UTC (rev 171)
+@@ -236,8 +236,8 @@
+         unknown) cc_conf &quot;&quot; &quot;-O&quot; &quot;&quot; &quot;-g&quot; &quot;&quot; &quot;-o&quot; &quot;-c&quot; ;;
+     esac
+     results warnings &quot;$WARN_FLAGS&quot; optimize &quot;$OPT_FLAGS&quot; standards &quot;$STD_FLAGS&quot;
+-    result debug &quot;$DEBUG_FLAGS&quot; dependencies &quot;$DEP_FLAGS&quot;
+-    result &quot;object out&quot; &quot;$OBJ_OUT_FLAG&quot; &quot;do not link&quot; &quot;$DONT_LINK_FLAG&quot;
++    results debug &quot;$DEBUG_FLAGS&quot; dependencies &quot;$DEP_FLAGS&quot;
++    results &quot;object out&quot; &quot;$OBJ_OUT_FLAG&quot; &quot;do not link&quot; &quot;$DONT_LINK_FLAG&quot;
+ 
+     find_program pkg-config PKGCONFIG mandatory $PKGCONFIG pkg-config
+ 
+@@ -294,7 +294,7 @@
+     find_program strip  STRIP   optional $STRIP     strip true
+     find_program awk    AWK     optional $AWK       mawk gawk nawk awk true
+ 
+-    result &quot;install prefix&quot; &quot;$PREFIX&quot; &quot;install destdir&quot; &quot;$DESTDIR&quot;
++    results &quot;install prefix&quot; &quot;$PREFIX&quot; &quot;install destdir&quot; &quot;$DESTDIR&quot;
+ }
+ 
+ output_build_config() {
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000170.html">[Hmgen-svnlog] r170 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000172.html">[Hmgen-svnlog] r172 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#171">[ date ]</a>
+              <a href="thread.html#171">[ thread ]</a>
+              <a href="subject.html#171">[ subject ]</a>
+              <a href="author.html#171">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

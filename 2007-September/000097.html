@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r98 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r98%20-%20trunk&In-Reply-To=%3C200709092231.l89MV7kb009747%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000096.html">
+   <LINK REL="Next"  HREF="000098.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r98 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r98%20-%20trunk&In-Reply-To=%3C200709092231.l89MV7kb009747%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r98 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Mon Sep 10 00:31:07 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000096.html">[Hmgen-svnlog] r97 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000098.html">[Hmgen-svnlog] r99 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#97">[ date ]</a>
+              <a href="thread.html#97">[ thread ]</a>
+              <a href="subject.html#97">[ subject ]</a>
+              <a href="author.html#97">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-10 00:31:01 +0200 (Mon, 10 Sep 2007)
+New Revision: 98
+
+Added:
+   trunk/build.sh
+Log:
+New experiment, make inside shell script
+
+
+Added: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-09 12:07:02 UTC (rev 97)
++++ trunk/build.sh	2007-09-09 22:31:01 UTC (rev 98)
+@@ -0,0 +1,246 @@
++#! /bin/sh
++
++# Experiment #2
++#
++# Instead of putting configure inside the Makefile, which is basically calling
++# sh all the time, put 'make' functionality inside configure :) The previous
++# experiment needed a POSIX environment anyway and on top of that, it depended
++# heavily on GNU make (which is bad) and recursive make (which is worse).
++# This experiment just needs a POSIX environment and nothing more.
++
++# ----------------------------------( INIT )-----------------------------------
++
++export LC_ALL=C
++if test &quot;$NOCOLOR&quot; ; then Bon= ; Boff= ; Red= ; Green=
++else Bon=&quot;[1m&quot; ; Boff=&quot;[0m&quot; ; Red=&quot;[31m&quot; ; Green=&quot;[32m&quot;
++fi
++test -z &quot;$V&quot; &amp;&amp; V=0
++
++# --------------------------------( CONFIGURE )--------------------------------
++
++result() {
++    if test &quot;$2&quot; = &quot;no&quot; ; then      col=&quot;$Bon$Red&quot;
++    elif test &quot;$2&quot; = &quot;yes&quot; ; then   col=&quot;$Bon$Green&quot;
++    else                            col=&quot;$Bon&quot;
++    fi
++    if test -n &quot;$2&quot; ; then
++        printf &quot;%-16s : $col%s$Boff\n&quot; &quot;$1&quot; &quot;$2&quot;
++    fi
++}
++
++my_pkg_config() {
++    RES=`pkg-config --atleast-version=$4 $1 2&gt;/dev/null &amp;&amp; echo yes || echo no`
++    result $1 $RES
++    if test &quot;$RES&quot; != &quot;yes&quot; ; then
++        echo &quot;$1, at least version $4, not found.&quot;
++        echo &quot;Perhaps you need to install the dev(el) packages?&quot;
++        exit 1
++    fi
++    eval $2=\&quot;`pkg-config --cflags $1 2&gt;/dev/null`\&quot;
++    eval $3=\&quot;`pkg-config --static --libs $1 2&gt;/dev/null`\&quot;
++}
++
++configure() {
++    for i in $CC cc gcc suncc icc tcc ; do
++        if which $i 2&gt;/dev/null 1&gt;&amp;2 ; then
++            break
++        fi
++    done
++    CC=$i
++    CC_DEP=$i
++    result compiler $CC
++
++    CC_VENDOR=`$CC --help 2&gt;/dev/null | grep -q gcc &amp;&amp; echo gnu`
++    if test &quot;$CC_VENDOR&quot; = &quot;gnu&quot; ; then
++        CC_VERSION=`$CC -dumpversion`
++    else
++        CC_VENDOR=`$CC -flags 2&gt;/dev/null | grep -q sunperf &amp;&amp; echo sun`
++        if test &quot;$CC_VENDOR&quot; = &quot;sun&quot; ; then
++            CC_VERSION=`echo | $CC -E - | grep ident | cut -d ' ' -f 5`
++        else
++            CC_VENDOR=unknown
++            CC_DEP=true
++        fi
++    fi
++    CC_VERSION_MAJOR=`echo $CC_VERSION | cut -d '.' -f 1`
++    CC_VERSION_MINOR=`echo $CC_VERSION | cut -d '.' -f 2`
++    CC_VERSION_SUBMINOR=`echo $CC_VERSION | cut -d '.' -f 3`
++    result vendor $CC_VENDOR
++    result version $CC_VERSION
++
++    if test &quot;$CC_VENDOR&quot; = gnu ; then
++        if test &quot;$CC_VERSION_MAJOR&quot; -le 2 ; then
++            echo &quot;gcc version &lt; 3.x is not supported&quot;
++            exit 1
++        fi
++    fi
++
++    case $CC_VENDOR in
++        gnu)
++            WARN_FLAGS=&quot;-Wall -W&quot;
++            OPT_FLAGS=&quot;-O3&quot;
++            STD_FLAGS=&quot;-std=c99&quot;
++            DEBUG_FLAGS=&quot;-g&quot;
++            DEP_FLAGS=&quot;-MM&quot;
++            OBJ_OUT_FLAG=&quot;-o&quot;
++            DONT_LINK_FLAG=&quot;-c&quot;
++            ;;
++        sun)
++            WARN_FLAGS=
++            OPT_FLAGS=&quot;-xO5&quot;
++            STD_FLAGS=&quot;-Xc&quot;
++            DEBUG_FLAGS=&quot;-g&quot;
++            DEP_FLAGS=&quot;-xM&quot;
++            OBJ_OUT_FLAG=&quot;-o&quot;
++            DONT_LINK_FLAG=&quot;-c&quot;
++            ;;
++        unknown)
++            WARN_FLAGS=
++            OPT_FLAGS=&quot;-O&quot;
++            STD_FLAGS=
++            DEBUG_FLAGS=&quot;-g&quot;
++            DEP_FLAGS=
++            OBJ_OUT_FLAG=&quot;-o&quot;
++            DONT_LINK_FLAG=&quot;-c&quot;
++            ;;
++    esac
++    result warnings $WARN_FLAGS
++    result optimize $OPT_FLAGS
++    result standards $STD_FLAGS
++    result debug $DEBUG_FLAGS
++    result dependencies $DEP_FLAGS
++    result &quot;object out&quot; $OBJ_OUT_FLAG
++    result &quot;do not link&quot; $DONT_LINK_FLAG
++
++    RES=`pkg-config --version 2&gt;/dev/null 1&gt;&amp;2 &amp;&amp; echo yes || echo no`
++    result pkg-config $RES
++    if test &quot;$RES&quot; != &quot;yes&quot; ; then
++        echo &quot;pkg-config not found&quot;
++        exit 1
++    fi
++
++    my_pkg_config gtk+-2.0 GTK_CFLAGS GTK_LDFLAGS 2.0
++    my_pkg_config gthread-2.0 GTHREAD_CFLAGS GTHREAD_LDFLAGS 2.0
++
++    if test &quot;$CC_VENDOR&quot; = &quot;sun&quot; ; then
++        GTHREAD_CFLAGS=`echo xXx $GTHREAD_CFLAGS | sed 's/-pthread//; s/^xXx//'`
++        GTHREAD_LDFLAGS=`echo xXx $GTHREAD_LDFLAGS | sed 's/-pthread//; s/^xXx//'`
++    fi
++
++    SVN_REV=`svn info * 2&gt;/dev/null | grep ^Revision: \
++        | cut -d ' ' -f 2 | xargs -n 1 -iX printf &quot;%05i\n&quot; X \
++        | sort -r | head -n 1 | sed 's/^0//' | sed 's/^0//' \
++        | sed 's/^0//'`
++    test $SVN_REV || SVN_REV=`grep revision .svn/entries 2&gt;/dev/null \
++        | cut -d '&quot;' -f 2` | xargs -n 1 -iX printf &quot;%05i\n&quot; X \
++        | sort -r | head -n 1 | sed 's/^0//' | sed 's/^0//' \
++        | sed 's/^0//'
++    test $SVN_REV || SVN_REV=`sed -n -e '/^dir$/{n;p;q;}' \
++        .svn/entries 2&gt;/dev/null`
++    test $SVN_REV || SVN_REV=0
++
++    SYSTEM=`uname -s`
++    SYSTEM=`echo $SYSTEM | tr '[A-Z]' '[a-z]'`
++    case &quot;$SYSTEM&quot; in
++        linux*)     SYSTEM=linux ;;
++        mingw*)     SYSTEM=mingw ;;
++        *)          SYSTEM=&quot;$$SYSTEM_untested&quot; ;;
++    esac
++    result system $SYSTEM
++
++    SYS_LDFLAGS=
++    if test &quot;$SYSTEM&quot; = &quot;mingw&quot; ; then
++        if test &quot;$CC_VENDOR&quot; = &quot;gnu&quot; ; then
++            SYS_LDFLAGS=-mwindows
++        fi
++    fi
++    result &quot;system ldflags&quot; $SYS_LDFLAGS
++
++    EXESUF=
++    if test &quot;$SYSTEM&quot; = &quot;mingw&quot; ; then
++        EXESUF=.exe
++    fi
++    result &quot;exe suffix&quot; $EXESUF
++}
++
++output_build_config() {
++    cat &gt;&gt; build.config &lt;&lt; __EOF__
++CC=&quot;$CC&quot;
++CC_DEP=&quot;$CC_DEP&quot;
++CC_VENDOR=&quot;$CC_VENDOR&quot;
++CC_VERSION=&quot;$CC_VERSION&quot;
++CC_VERSION_MAJOR=&quot;$CC_VERSION_MAJOR&quot;
++CC_VERSION_MINOR=&quot;$CC_VERSION_MINOR&quot;
++CC_VERSION_SUBMINOR=&quot;$CC_VERSION_SUBMINOR&quot;
++WARN_FLAGS=&quot;$WARN_FLAGS&quot;
++OPT_FLAGS=&quot;$OPT_FLAGS&quot;
++STD_FLAGS=&quot;$STD_FLAGS&quot;
++DEBUG_FLAGS=&quot;$DEBUG_FLAGS&quot;
++DEP_FLAGS=&quot;$DEP_FLAGS&quot;
++OBJ_OUT_FLAG=&quot;$OBJ_OUT_FLAG&quot;
++DONT_LINK_FLAG=&quot;$DONT_LINK_FLAG&quot;
++GTK_CFLAGS=&quot;$GTK_CFLAGS&quot;
++GTK_LDFLAGS=&quot;$GTK_LDFLAGS&quot;
++GTHREAD_CFLAGS=&quot;$GTHREAD_CFLAGS&quot;
++GTHREAD_LDFLAGS=&quot;$GTHREAD_LDFLAGS&quot;
++DEFINES=-DSVN_REVISION=&quot;$SVN_REV&quot;
++SYSTEM=&quot;$SYSTEM&quot;
++SYS_LDFLAGS=&quot;$SYS_LDFLAGS&quot;
++EXESUF=&quot;$EXESUF&quot;
++AR=ar
++RANLIB=ranlib
++STRIP=strip
++OBJSUF=.o
++AR_FLAGS=cru
++CONFIGURE_DONE=yes
++__EOF__
++}
++
++# ----------------------------------( MAKE )-----------------------------------
++
++make_init() {
++    DEF_CFLAGS=&quot;$STD_FLAGS $WARN_FLAGS $OPT_FLAGS $DEBUG_FLAGS $DEFINES&quot;
++    DEF_LDFLAGS=&quot;-lm $DEBUG_FLAGS $SYS_LDFLAGS&quot;
++    CFLAGS=&quot;$DEF_CFLAGS&quot;
++    LDFLAGS=&quot;$DEF_LDFLAGS&quot;
++}
++
++# make_exec &quot;command&quot; &quot;short text&quot; &quot;short text argument&quot;
++make_exec() {
++    if test &quot;$V&quot; = &quot;0&quot; ; then   printf &quot;$Bon%s$Boff %s\n&quot; &quot;$2&quot; &quot;$3&quot;
++    else                        echo &quot;$1&quot;
++    fi
++    eval &quot;$1&quot;
++}
++
++# make_c_to_o filename.o
++make_c_to_o() {
++    c=`basename $1 $OBJSUF`.c
++    make_exec &quot;$CC $DONT_LINK_FLAG $OBJ_OUT_FLAG $1 $c $CFLAGS&quot; \
++        &quot;compile&quot; &quot;$c&quot;
++}
++
++# make_link exefilename filename.o libraries ...
++make_link() {
++    exe=$1$EXESUF ; shift 1
++    make_exec &quot;$CC $OBJ_OUT_FLAG $exe $@&quot; &quot;link&quot; &quot;$exe&quot;
++}
++
++# make_o_to_a filename.a object ...
++make_o_to_a() {
++    a=$1 ; shift 1
++    make_exec &quot;$AR $AR_FLAGS $a $@&quot; &quot;archive&quot; &quot;$a&quot;
++}
++
++# ----------------------------------( MAIN )-----------------------------------
++
++if grep -q CONFIGURE_DONE=yes build.config 2&gt;/dev/null ; then
++    . build.config
++else
++    &gt;build.config
++    configure
++    output_build_config
++fi
++
++make_init
++
+
+
+Property changes on: trunk/build.sh
+___________________________________________________________________
+Name: svn:executable
+   + *
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000096.html">[Hmgen-svnlog] r97 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000098.html">[Hmgen-svnlog] r99 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#97">[ date ]</a>
+              <a href="thread.html#97">[ thread ]</a>
+              <a href="subject.html#97">[ subject ]</a>
+              <a href="author.html#97">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

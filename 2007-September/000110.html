@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r111 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r111%20-%20trunk&In-Reply-To=%3C200709111357.l8BDvCNC022332%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000109.html">
+   <LINK REL="Next"  HREF="000111.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r111 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r111%20-%20trunk&In-Reply-To=%3C200709111357.l8BDvCNC022332%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r111 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Tue Sep 11 15:57:12 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000109.html">[Hmgen-svnlog] r110 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000111.html">[Hmgen-svnlog] r112 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#110">[ date ]</a>
+              <a href="thread.html#110">[ thread ]</a>
+              <a href="subject.html#110">[ subject ]</a>
+              <a href="author.html#110">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-11 15:57:12 +0200 (Tue, 11 Sep 2007)
+New Revision: 111
+
+Modified:
+   trunk/build.sh
+Log:
+set exe suffixes in project and not during linking/stripping
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-11 13:50:11 UTC (rev 110)
++++ trunk/build.sh	2007-09-11 13:57:12 UTC (rev 111)
+@@ -280,7 +280,7 @@
+ }
+ 
+ make_link() {
+-    exe=$1$EXESUF ; shift 1
++    exe=$1 ; shift 1
+     make_exec &quot;$CC $OBJ_OUT_FLAG $exe `echo $@` $LDFLAGS&quot; &quot;link&quot; &quot;$exe&quot;
+     sleep 1
+     touch -c $exe
+@@ -374,17 +374,19 @@
+     cli_basenames=&quot;cli_main&quot;
+     cli_objs=`addsuffix $OBJSUF $cli_basenames`
+     cli_srcs=`addsuffix .c $cli_basenames`
+-    cli_exe=hmgen_g
++    cli_g_exe=hmgen_g$EXESUF
++    cli_exe=hmgen$EXESUF
+ 
+     gui_basenames=&quot;gui_main gui_callbacks gui_interface gui_support&quot;
+     gui_objs=`addsuffix $OBJSUF $gui_basenames`
+     gui_srcs=`addsuffix .c $gui_basenames`
+-    gui_exe=hmgengui_g
++    gui_g_exe=hmgengui_g$EXESUF
++    gui_exe=hmgengui$EXESUF
+ 
+     make_set_default_object_deps $libhmgen_objs $cli_objs $gui_objs
+     make_set_deps $libhmgen $libhmgen_objs
+-    make_set_deps $cli_exe $cli_objs $libhmgen
+-    make_set_deps $gui_exe $gui_objs $libhmgen
++    make_set_deps $cli_g_exe $cli_objs $libhmgen
++    make_set_deps $gui_g_exe $gui_objs $libhmgen
+ }
+ 
+ # ----------------------------------( MAIN )-----------------------------------
+@@ -409,19 +411,19 @@
+ 
+ . build.dep
+ 
+-make_exe $cli_exe
++make_exe $cli_g_exe
+ 
+ CFLAGS=&quot;$DEF_CFLAGS $GTK_CFLAGS $GTHREAD_CFLAGS&quot;
+ LDFLAGS=&quot;$DEF_LDFLAGS $GTK_LDFLAGS $GTHREAD_LDFLAGS&quot;
+-make_exe $gui_exe
++make_exe $gui_g_exe
+ 
+-if ! up_to_date hmgen $cli_exe ; then
+-    make_exec &quot;cp $cli_exe hmgen&quot; &quot;copy&quot; &quot;$cli_exe hmgen&quot;
+-    make_exec &quot;$STRIP hmgen&quot; &quot;strip&quot; &quot;hmgen&quot;
++if ! up_to_date $cli_exe $cli_g_exe ; then
++    make_exec &quot;cp $cli_g_exe $cli_exe&quot; &quot;copy&quot; &quot;$cli_g_exe $cli_exe&quot;
++    make_exec &quot;$STRIP $cli_exe&quot; &quot;strip&quot; &quot;$cli_exe&quot;
+ fi
+-if ! up_to_date hmgengui $gui_exe ; then
+-    make_exec &quot;cp $gui_exe hmgengui&quot; &quot;copy&quot; &quot;$gui_exe hmgengui&quot;
+-    make_exec &quot;$STRIP hmgengui&quot; &quot;strip&quot; &quot;hmgengui&quot;
++if ! up_to_date $gui_exe $gui_g_exe ; then
++    make_exec &quot;cp $gui_g_exe $gui_exe&quot; &quot;copy&quot; &quot;$gui_g_exe $gui_exe&quot;
++    make_exec &quot;$STRIP $gui_exe&quot; &quot;strip&quot; &quot;$gui_exe&quot;
+ fi
+ 
+ echo &quot;done&quot;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000109.html">[Hmgen-svnlog] r110 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000111.html">[Hmgen-svnlog] r112 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#110">[ date ]</a>
+              <a href="thread.html#110">[ thread ]</a>
+              <a href="subject.html#110">[ subject ]</a>
+              <a href="author.html#110">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

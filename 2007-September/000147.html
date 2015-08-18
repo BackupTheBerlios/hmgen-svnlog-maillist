@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r147 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r147%20-%20trunk&In-Reply-To=%3C200709131100.l8DB0Bhq029453%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000146.html">
+   <LINK REL="Next"  HREF="000148.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r147 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r147%20-%20trunk&In-Reply-To=%3C200709131100.l8DB0Bhq029453%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r147 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep 13 13:00:11 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000146.html">[Hmgen-svnlog] r146 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000148.html">[Hmgen-svnlog] r148 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#147">[ date ]</a>
+              <a href="thread.html#147">[ thread ]</a>
+              <a href="subject.html#147">[ subject ]</a>
+              <a href="author.html#147">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-13 13:00:10 +0200 (Thu, 13 Sep 2007)
+New Revision: 147
+
+Modified:
+   trunk/build.sh
+Log:
+refactor some more
+also, rename i to arg in main loop to avoid collision later on
+
+
+Modified: trunk/build.sh
+===================================================================
+--- trunk/build.sh	2007-09-13 10:49:56 UTC (rev 146)
++++ trunk/build.sh	2007-09-13 11:00:10 UTC (rev 147)
+@@ -521,16 +521,12 @@
+ }
+ 
+ make_all() {
+-    make_configure
+-    make_init_project
+-    make_deps
++    make_conf_init_deps
+     make_cli
+     make_gui
+ }
+ 
+ make_clean() {
+-    make_configure
+-    make_init_project
+     rm -f $libhmgen_objs $cli_objs $gui_objs $libhmgen
+     rm -f $cli_g_exe $cli_exe $gui_g_exe $gui_exe
+     rm -f *~
+@@ -550,15 +546,15 @@
+     case &quot;$i&quot; in --help|-help|-h|-?) help ; exit ;; esac
+ done
+ 
+-for i in $@ ; do
+-    case &quot;$i&quot; in
+-        --cc=*)         CC=`optarg $i`      ;;
+-        --prefix=*)     PREFIX=`optarg $i`  ;;
+-        --destdir=*)    DESTDIR=`optarg $i` ;;
++for arg in $@ ; do
++    case &quot;$arg&quot; in
++        --cc=*)         CC=`optarg $arg`      ;;
++        --prefix=*)     PREFIX=`optarg $arg`  ;;
++        --destdir=*)    DESTDIR=`optarg $arg` ;;
+         --verbose)      V=1                 ;;
+         --nocolor)      C=0 ; init_colors   ;;
+-        --configfile=*) configfile=`optarg $i`  ;;
+-        --depsfile=*)   depsfile=`optarg $i`    ;;
++        --configfile=*) configfile=`optarg $arg`  ;;
++        --depsfile=*)   depsfile=`optarg $arg`    ;;
+         configure)
+             action=1
+             &gt;$configfile
+@@ -569,33 +565,16 @@
+             &gt;$depsfile
+             make_conf_init_deps
+             ;;
+-        cli)
+-            action=1
+-            make_conf_init_deps
+-            make_cli
+-            ;;
+-        gui)
+-            action=1
+-            make_conf_init_deps
+-            make_gui
+-            ;;
+         lib)
+             action=1
+             make_conf_init_deps
+             make_lib $libhmgen
+             ;;
+-        all)
++        cli|gui|all|clean|distclean)
+             action=1
+-            make_all
++            make_conf_init_deps
++            make_$arg
+             ;;
+-        clean)
+-            action=1
+-            make_clean
+-            ;;
+-        distclean)
+-            action=1
+-            make_distclean
+-            ;;
+         -*)
+             echo unknown option ; exit 1 ;;
+         *)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000146.html">[Hmgen-svnlog] r146 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000148.html">[Hmgen-svnlog] r148 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#147">[ date ]</a>
+              <a href="thread.html#147">[ thread ]</a>
+              <a href="subject.html#147">[ subject ]</a>
+              <a href="author.html#147">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

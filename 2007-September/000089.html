@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r90 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r90%20-%20trunk&In-Reply-To=%3C200709081240.l88Cecqj030575%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000088.html">
+   <LINK REL="Next"  HREF="000090.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r90 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r90%20-%20trunk&In-Reply-To=%3C200709081240.l88Cecqj030575%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r90 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 14:40:38 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000088.html">[Hmgen-svnlog] r89 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000090.html">[Hmgen-svnlog] r91 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 14:40:37 +0200 (Sat, 08 Sep 2007)
+New Revision: 90
+
+Modified:
+   trunk/cli_main.c
+   trunk/gui_callbacks.c
+   trunk/gui_callbacks.h
+   trunk/gui_interface.c
+   trunk/gui_interface.h
+   trunk/gui_main.c
+   trunk/gui_support.c
+   trunk/gui_support.h
+   trunk/lib_algo_ff.c
+   trunk/lib_algo_mpd.c
+   trunk/lib_export.c
+   trunk/lib_hmgen.c
+   trunk/lib_hmgen.h
+   trunk/lib_postproc.c
+   trunk/lib_util.c
+Log:
+proper license headings
+
+
+Modified: trunk/cli_main.c
+===================================================================
+--- trunk/cli_main.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/cli_main.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_callbacks.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;gtk/gtk.h&gt;
+ #include &lt;string.h&gt;
+ #include &lt;assert.h&gt;
+
+Modified: trunk/gui_callbacks.h
+===================================================================
+--- trunk/gui_callbacks.h	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_callbacks.h	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #ifndef HMG_GUI_CALLBACKS_H
+ #define HMG_GUI_CALLBACKS_H
+ 
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_interface.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;sys/types.h&gt;
+ #include &lt;sys/stat.h&gt;
+ #include &lt;unistd.h&gt;
+
+Modified: trunk/gui_interface.h
+===================================================================
+--- trunk/gui_interface.h	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_interface.h	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #ifndef HMG_GUI_INTERFACE_H
+ #define HMG_GUI_INTERFACE_H
+ 
+
+Modified: trunk/gui_main.c
+===================================================================
+--- trunk/gui_main.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_main.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;gtk/gtk.h&gt;
+ #include &lt;locale.h&gt;
+ #include &lt;stdlib.h&gt;
+
+Modified: trunk/gui_support.c
+===================================================================
+--- trunk/gui_support.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_support.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;sys/types.h&gt;
+ #include &lt;sys/stat.h&gt;
+ #include &lt;unistd.h&gt;
+
+Modified: trunk/gui_support.h
+===================================================================
+--- trunk/gui_support.h	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/gui_support.h	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #ifndef HMG_GUI_SUPPORT_H
+ #define HMG_GUI_SUPPORT_H
+ 
+
+Modified: trunk/lib_algo_ff.c
+===================================================================
+--- trunk/lib_algo_ff.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_algo_ff.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+
+Modified: trunk/lib_algo_mpd.c
+===================================================================
+--- trunk/lib_algo_mpd.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_algo_mpd.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+
+Modified: trunk/lib_export.c
+===================================================================
+--- trunk/lib_export.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_export.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &quot;lib_hmgen.h&quot;
+ 
+
+Modified: trunk/lib_hmgen.c
+===================================================================
+--- trunk/lib_hmgen.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_hmgen.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+
+Modified: trunk/lib_hmgen.h
+===================================================================
+--- trunk/lib_hmgen.h	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_hmgen.h	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #ifndef HMG_LIB_HMGEN_H
+ #define HMG_LIB_HMGEN_H
+ 
+
+Modified: trunk/lib_postproc.c
+===================================================================
+--- trunk/lib_postproc.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_postproc.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;math.h&gt;
+ #include &lt;stdlib.h&gt;
+
+Modified: trunk/lib_util.c
+===================================================================
+--- trunk/lib_util.c	2007-09-08 12:36:03 UTC (rev 89)
++++ trunk/lib_util.c	2007-09-08 12:40:37 UTC (rev 90)
+@@ -1,3 +1,24 @@
++/*
++
++    hmgen - Height Map Generator
++    Copyright (C) 2007 Ivo van Poorten
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++
++ */
++
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+ #include &lt;math.h&gt;
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000088.html">[Hmgen-svnlog] r89 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000090.html">[Hmgen-svnlog] r91 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#89">[ date ]</a>
+              <a href="thread.html#89">[ thread ]</a>
+              <a href="subject.html#89">[ subject ]</a>
+              <a href="author.html#89">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

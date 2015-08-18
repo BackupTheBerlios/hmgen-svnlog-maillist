@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r82 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r82%20-%20trunk&In-Reply-To=%3C200709080932.l889Wx5p025359%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000080.html">
+   <LINK REL="Next"  HREF="000082.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r82 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r82%20-%20trunk&In-Reply-To=%3C200709080932.l889Wx5p025359%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r82 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sat Sep  8 11:32:59 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000080.html">[Hmgen-svnlog] r81 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000082.html">[Hmgen-svnlog] r83 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-08 11:32:58 +0200 (Sat, 08 Sep 2007)
+New Revision: 82
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+enable sidepanel crop and clip
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-07 22:50:14 UTC (rev 81)
++++ trunk/gui_callbacks.c	2007-09-08 09:32:58 UTC (rev 82)
+@@ -201,6 +201,29 @@
+     gdk_threads_leave();
+ }
+ 
++static void sanitize_crop_settings(unsigned int *cropleft,
++                                   unsigned int *cropright,
++                                   unsigned int *croptop,
++                                   unsigned int *cropbottom) {
++    /* sanitize crop settings if necessary */
++    if (*cropleft &gt; map_width-3)
++        *cropleft = map_width-3;
++    if (*cropright &gt; map_width-3)
++        *cropright = map_width-3;
++    if ((*cropright + *cropleft) &gt; map_width-3) {
++        *cropright = 0;
++        *cropleft = map_width-3;
++    }
++    if (*croptop &gt; map_height-3)
++        *croptop = map_height-3;
++    if (*cropbottom &gt; map_height-3)
++        *cropbottom = map_height-3;
++    if ((*cropbottom + *croptop) &gt; map_height-3) {
++        *cropbottom = 0;
++        *croptop = map_height-3;
++    }
++}
++
+ static void *generate_thread(void *args) {
+     GtkWidget *widget;
+     gint active;
+@@ -263,23 +286,7 @@
+     gdk_threads_leave();
+ 
+     if (crop) {
+-        /* sanitize crop settings if necessary */
+-        if (cropleft &gt; map_width-3)
+-            cropleft = map_width-3;
+-        if (cropright &gt; map_width-3)
+-            cropright = map_width-3;
+-        if ((cropright+cropleft) &gt; map_width-3) {
+-            cropright = 0;
+-            cropleft = map_width-3;
+-        }
+-        if (croptop &gt; map_height-3)
+-            croptop = map_height-3;
+-        if (cropbottom &gt; map_height-3)
+-            cropbottom = map_height-3;
+-        if ((cropbottom+croptop) &gt; map_height-3) {
+-            cropbottom = 0;
+-            croptop = map_height-3;
+-        }
++        sanitize_crop_settings(&amp;cropleft, &amp;cropright, &amp;croptop, &amp;cropbottom);
+         hmg_crop(&amp;map, &amp;map_width, &amp;map_height, cropleft, cropright,
+                 croptop, cropbottom);
+     }
+@@ -660,10 +667,53 @@
+     g_thread_create(export_thread, button, FALSE, NULL);
+ }
+ 
++static void *clip2_thread(void *args) {
++    unsigned int clipmin, clipmax;
++
++    set_main_progressbar(args);
++    hmg_progress_meter = gui_progress_meter;
++
++    gdk_threads_enter();
++        clipmin = get_spin_button_int  (args, &quot;clip2_min_spinbutton&quot;);
++        clipmax = get_spin_button_int  (args, &quot;clip2_max_spinbutton&quot;);
++    gdk_threads_leave();
++
++    hmg_clip(map, clipmin, clipmax, map_width, map_height);
++    render_map(args);
++
++    activate_main_notebook(args, 1);
++    return NULL;
++}
++
+ void on_clip_button_clicked(GtkButton *button,
+                                    gpointer user_data HMG_ATTR_UNUSED) {
++    deactivate_main_notebook(button);
++    g_thread_create(clip2_thread, button, FALSE, NULL);
+ }
+ 
++static void *crop2_thread(void *args) {
++    unsigned int cropleft, cropright, croptop, cropbottom;
++
++    set_main_progressbar(args);
++    hmg_progress_meter = gui_progress_meter;
++
++    gdk_threads_enter();
++        cropleft   = get_spin_button_int  (args, &quot;crop2_left_spinbutton&quot;);
++        cropright  = get_spin_button_int  (args, &quot;crop2_right_spinbutton&quot;);
++        croptop    = get_spin_button_int  (args, &quot;crop2_top_spinbutton&quot;);
++        cropbottom = get_spin_button_int  (args, &quot;crop2_bottom_spinbutton&quot;);
++    gdk_threads_leave();
++
++    sanitize_crop_settings(&amp;cropleft, &amp;cropright, &amp;croptop, &amp;cropbottom);
++    hmg_crop(&amp;map, &amp;map_width, &amp;map_height, cropleft, cropright, croptop, cropbottom);
++    render_map(args);
++
++    activate_main_notebook(args, 1);
++    return NULL;
++}
++
+ void on_crop_button_clicked(GtkButton *button,
+                                    gpointer user_data HMG_ATTR_UNUSED) {
++    deactivate_main_notebook(button);
++    g_thread_create(crop2_thread, button, FALSE, NULL);
+ }
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000080.html">[Hmgen-svnlog] r81 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000082.html">[Hmgen-svnlog] r83 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#81">[ date ]</a>
+              <a href="thread.html#81">[ thread ]</a>
+              <a href="subject.html#81">[ subject ]</a>
+              <a href="author.html#81">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r59 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r59%20-%20trunk&In-Reply-To=%3C200709052235.l85MZmjj008004%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000057.html">
+   <LINK REL="Next"  HREF="000059.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r59 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r59%20-%20trunk&In-Reply-To=%3C200709052235.l85MZmjj008004%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r59 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Thu Sep  6 00:35:48 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000057.html">[Hmgen-svnlog] r58 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000059.html">[Hmgen-svnlog] r60 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-06 00:35:47 +0200 (Thu, 06 Sep 2007)
+New Revision: 59
+
+Modified:
+   trunk/gui_callbacks.c
+Log:
+do not always switch to 2d view after main_notebook (re)activation
+
+
+Modified: trunk/gui_callbacks.c
+===================================================================
+--- trunk/gui_callbacks.c	2007-09-05 22:32:33 UTC (rev 58)
++++ trunk/gui_callbacks.c	2007-09-05 22:35:47 UTC (rev 59)
+@@ -185,12 +185,13 @@
+     gdk_threads_leave();
+ }
+ 
+-static void activate_main_notebook(void *args) {
++static void activate_main_notebook(void *args, int to_2dview) {
+     GtkWidget *widget;
+ 
+     gdk_threads_enter();
+         widget = lookup_widget(GTK_WIDGET(args), &quot;main_notebook&quot;);
+         gtk_widget_set_sensitive (widget, TRUE);
++        if (to_2dview)
+         gtk_notebook_set_current_page(GTK_NOTEBOOK(widget), 0);
+     gdk_threads_leave();
+ }
+@@ -275,7 +276,7 @@
+     activate_save_buttons(args);
+ 
+ stopit:
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -350,7 +351,7 @@
+     }
+ 
+     activate_save_buttons(args);
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -361,7 +362,7 @@
+     hmg_invert(map, map_width, map_height);
+     render_map(args);
+ 
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -379,7 +380,7 @@
+     hmg_normalize(map, normmin, normmax, map_width, map_height);
+     render_map(args);
+ 
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -400,7 +401,7 @@
+                                                                 map_height);
+     render_map(args);
+ 
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -560,7 +561,7 @@
+ 
+     render_map(args);
+ 
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 1);
+     return NULL;
+ }
+ 
+@@ -611,7 +612,7 @@
+         break;
+     }
+ 
+-    activate_main_notebook(args);
++    activate_main_notebook(args, 0);
+     return NULL;
+ }
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000057.html">[Hmgen-svnlog] r58 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000059.html">[Hmgen-svnlog] r60 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>

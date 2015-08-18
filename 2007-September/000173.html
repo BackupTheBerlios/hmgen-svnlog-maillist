@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [Hmgen-svnlog] r173 - trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/hmgen-svnlog/2007-September/index.html" >
+   <LINK REL="made" HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r173%20-%20trunk&In-Reply-To=%3C200709161353.l8GDr1If002995%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000172.html">
+   <LINK REL="Next"  HREF="000174.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[Hmgen-svnlog] r173 - trunk</H1>
+    <B>ivop at BerliOS</B> 
+    <A HREF="mailto:hmgen-svnlog%40lists.berlios.de?Subject=Re%3A%20%5BHmgen-svnlog%5D%20r173%20-%20trunk&In-Reply-To=%3C200709161353.l8GDr1If002995%40sheep.berlios.de%3E"
+       TITLE="[Hmgen-svnlog] r173 - trunk">ivop at mail.berlios.de
+       </A><BR>
+    <I>Sun Sep 16 15:53:01 CEST 2007</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000172.html">[Hmgen-svnlog] r172 - trunk
+</A></li>
+        <LI>Next message: <A HREF="000174.html">[Hmgen-svnlog] r174 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#173">[ date ]</a>
+              <a href="thread.html#173">[ thread ]</a>
+              <a href="subject.html#173">[ subject ]</a>
+              <a href="author.html#173">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: ivop
+Date: 2007-09-16 15:53:01 +0200 (Sun, 16 Sep 2007)
+New Revision: 173
+
+Modified:
+   trunk/gui_interface.c
+   trunk/gui_main.c
+Log:
+set pixmap directory instead of hardcoded path of hmgen.png
+
+
+Modified: trunk/gui_interface.c
+===================================================================
+--- trunk/gui_interface.c	2007-09-15 21:41:29 UTC (rev 172)
++++ trunk/gui_interface.c	2007-09-16 13:53:01 UTC (rev 173)
+@@ -31,8 +31,6 @@
+ #include &quot;gui_support.h&quot;
+ #include &quot;version.h&quot;
+ 
+-extern char *about_image_filename;
+-
+ #define GLADE_HOOKUP_OBJECT(component,widget,name) \
+   g_object_set_data_full (G_OBJECT (component), name, \
+     gtk_widget_ref (widget), (GDestroyNotify) gtk_widget_unref)
+@@ -1342,7 +1340,7 @@
+   gtk_widget_show (vbox4);
+   gtk_container_add (GTK_CONTAINER (main_notebook), vbox4);
+ 
+-  image3 = create_pixmap (hmgengui, about_image_filename);
++  image3 = create_pixmap (hmgengui, &quot;hmgen.png&quot;);
+   gtk_widget_show (image3);
+   gtk_box_pack_start (GTK_BOX (vbox4), image3, FALSE, FALSE, 64);
+ 
+
+Modified: trunk/gui_main.c
+===================================================================
+--- trunk/gui_main.c	2007-09-15 21:41:29 UTC (rev 172)
++++ trunk/gui_main.c	2007-09-16 13:53:01 UTC (rev 173)
+@@ -29,19 +29,18 @@
+ #include &quot;gui_support.h&quot;
+ #include &quot;lib_hmgen.c&quot;
+ 
+-char *about_image_filename = NULL; 
+-
++static char *image_path = NULL; 
+ static int malloced = 0;
+-static const char * const about_img = &quot;/share/hmgen/hmgen.png&quot;;
++static const char * const about_img = &quot;/share/hmgen/&quot;;
+ 
+-static void assemble_about_image_filename(char *argv0) {
++static void assemble_image_path(char *argv0) {
+     int x, y;
+     char *p;
+ 
+     x = strlen(argv0) - 1;
+ 
+     if (x&lt;=0) {
+-        about_image_filename = &quot;nothing&quot;;
++        image_path = &quot;nothing&quot;;
+         return;
+     }
+ 
+@@ -60,7 +59,7 @@
+ 
+     memcpy(p, argv0, x);
+     snprintf(p+x, strlen(about_img) + 1, about_img);
+-    about_image_filename = p;
++    image_path = p;
+     malloced = 1;
+ }
+ 
+@@ -79,7 +78,7 @@
+     gtk_disable_setlocale();
+     setlocale(LC_ALL, &quot;C&quot;);
+ 
+-    assemble_about_image_filename(argv[0]);
++    assemble_image_path(argv[0]);
+ 
+     hmg_init_colormap(NULL);
+ 
+@@ -89,7 +88,7 @@
+ 
+     gtk_init(&amp;argc, &amp;argv);
+ 
+-    add_pixmap_directory (&quot;.&quot;);
++    add_pixmap_directory (image_path);
+ 
+     hmgengui = create_hmgengui();
+     gtk_widget_show(hmgengui);
+@@ -97,7 +96,7 @@
+     gtk_main ();
+     gdk_threads_leave();
+ 
+-    if (malloced) free(about_image_filename);
++    if (malloced) free(image_path);
+ 
+     return 0;
+ }
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000172.html">[Hmgen-svnlog] r172 - trunk
+</A></li>
+	<LI>Next message: <A HREF="000174.html">[Hmgen-svnlog] r174 - trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#173">[ date ]</a>
+              <a href="thread.html#173">[ thread ]</a>
+              <a href="subject.html#173">[ subject ]</a>
+              <a href="author.html#173">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/hmgen-svnlog">More information about the Hmgen-svnlog
+mailing list</a><br>
+</body></html>
